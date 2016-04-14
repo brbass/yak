@@ -11,7 +11,7 @@ public:
 
     vector<double> &operator()(vector<double> &x)
     {
-        apply_(x);
+        apply(x);
         
         return x;
     }
@@ -24,7 +24,7 @@ public:
     
 private:
     
-    virtual void apply_(vector<double> &x) = 0;
+    virtual void apply(vector<double> &x) = 0;
 };
 
 #endif

@@ -15,7 +15,7 @@ double legendre_polynomial(int n, double &x)
     double pnm1 = 1;
     double pn = x;
     
-    for (int i = 2; i < n; ++i)
+    for (int i = 2; i < n + 1; ++i)
     {
         double j = static_cast<double>(i);
         

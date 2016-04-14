@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "gauss_legendre.h"
+#include "gauss_legendre.hpp"
 
 #include "Check.hh"
 
@@ -33,7 +33,7 @@ void gauss_legendre_vec(int n, std::vector<double> &ordinates, std::vector<doubl
     }
     else
     {
-        Insist(false, "Only even quadratures supported");
+        AssertMsg(false, "Only even quadratures supported");
     }
 }
 

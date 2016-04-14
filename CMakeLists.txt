@@ -10,7 +10,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # standard flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -o3 -fopenmp")
-set(CMAKE_INSTALL_PREFIX /home/brbass/research/owl/bin)
+set(CMAKE_INSTALL_PREFIX /home/brbass/research/yak/bin)
 
 # gsl flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/home/software/rhel6/gsl/1.15/lib -lgsl -lgslcblas -I/home/software/rhel6/gsl/1.15/include")
@@ -18,13 +18,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/home/software/rhel6/gsl/1.15/lib -lgs
 # trilinos flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lepetra -lamesos -laztecoo -lepetraext -ltriutils -lepetra -lteuchosremainder -lteuchosnumerics -lteuchoscomm -lteuchosparameterlist -lteuchoscore -I/usr/cac/rhel6/trilinos/12.0.1/include -L/usr/cac/rhel6/trilinos/12.0.1/lib")
 
-# enable_testing()
+file(GLOB SOURCES "src/*.cc" "lib/*.c" "lib/*.cpp")
 
-file(GLOB SOURCES "src/*.cc")
+include_directories(src lib)
 
-include_directories(src)
-
-add_executable(yak ${SOURCES} ${MAIN})
+add_executable(yak ${SOURCES})
 
 install(TARGETS yak DESTINATION .)
 

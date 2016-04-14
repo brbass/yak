@@ -1,5 +1,5 @@
-#ifndef Moment_To_Discrete_hh
-#define Moment_To_Discrete_hh
+#ifndef Discrete_To_Moment_hh
+#define Discrete_To_Moment_hh
 
 #include "Vector_Operator.hh"
 
@@ -7,11 +7,11 @@
 
 using std::vector;
 
-class Moment_To_Discrete: public Vector_Operator
+class Discrete_To_Moment: public Vector_Operator
 {
 public:
     
-    Moment_To_Discrete(int number_of_cells,
+    Discrete_To_Moment(int number_of_cells,
                        int number_of_nodes,
                        int number_of_groups,
                        int number_of_moments,
@@ -19,11 +19,11 @@ public:
     
     virtual int row_size()
     {
-        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_ordinates_;
+        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_moments_;
     }
     virtual int column_size()
     {
-        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_moments_;
+        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_ordinates_;
     }
     virtual bool square()
     {
