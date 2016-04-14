@@ -1,0 +1,3 @@
+#include "legendre_polynomial.hpp"
+
+class Moment_To_Discrete: public 
