@@ -12,7 +12,7 @@ Finite_Element_Mesh(int dimension,
                     int number_of_elements,
                     int number_of_nodes,
                     string element_type,
-                    vector<double> &node_positions):
+                    vector<double> const &node_positions):
     dimension_(dimension),
     number_of_elements_(number_of_elements),
     number_of_nodes_(number_of_nodes)
@@ -100,7 +100,7 @@ set_element_type(string element_type)
 }
 
 void Finite_Element_Mesh::
-check_class_invariants()
+check_class_invariants() const
 {
     Assert(elements_.size() == number_of_elements_);
 }

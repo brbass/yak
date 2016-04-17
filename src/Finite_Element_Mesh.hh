@@ -18,7 +18,7 @@ public:
                         int number_of_elements,
                         int number_of_nodes,
                         string element_type,
-                        vector<double> &node_positions);
+                        vector<double> const &node_positions);
     
     Finite_Element_Mesh(int dimension,
                         int number_of_elements,
@@ -48,12 +48,12 @@ public:
     {
         return dimension_;
     }
-    Finite_Element const &elements(int element)
+    Finite_Element const &elements(int element) const
     {
         return elements_[element];
     }
 
-    void check_class_invariants();
+    void check_class_invariants() const;
     
 private:
     

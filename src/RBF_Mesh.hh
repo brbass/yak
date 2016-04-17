@@ -13,7 +13,7 @@ public:
     
     RBF_Mesh(int dimension,
              int number_of_points,
-             vector<double> &positions);
+             vector<double> const &positions);
 
     virtual int number_of_points()
     {
@@ -31,12 +31,12 @@ public:
     {
         return dimension_;
     }
-    vector<double> &point_positions()
+    vector<double> const &point_positions() const
     {
         return point_positions_;
     }
 
-    void check_class_invariants();
+    void check_class_invariants() const;
 
 private:
     

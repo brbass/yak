@@ -9,13 +9,37 @@ class Angular_Discretization
 {
 public:
 
-    virtual int dimension() = 0;
-    virtual int number_of_moments() = 0;
-    virtual int number_of_ordinates() = 0;
-    virtual vector<double> const &ordinates() = 0;
-    virtual vector<double> const &weights() = 0;
+    Angular_Discretization(int dimension,
+                           int number_of_moments,
+                           int number_of_ordinates);
+    
+    virtual int dimension()
+    {
+        return dimension_;
+    }
+    virtual int number_of_moments()
+    {
+        return number_of_moments_;
+    }
+    virtual int number_of_ordinates()
+    {
+        return number_of_ordinates_;
+    }
+    virtual double angular_normalization()
+    {
+        return angular_normalization_;
+    }
+    virtual vector<double> const &ordinates() const = 0;
+    virtual vector<double> const &weights() const = 0;
     virtual double moment(int mom,
-                          int ord) = 0;
+                          int ord);
+
+private:
+    
+    int dimension_;
+    int number_of_moments_;
+    int number_of_ordinates_;
+    
 };
 
 #endif

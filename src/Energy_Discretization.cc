@@ -16,7 +16,7 @@ Energy_Discretization(int number_of_groups):
 
 Energy_Discretization::
 Energy_Discretization(int number_of_groups,
-                      vector<double> &energy_bounds):
+                      vector<double> const &energy_bounds):
     number_of_groups_(number_of_groups),
     energy_bounds_(energy_bounds)
 {
@@ -24,7 +24,7 @@ Energy_Discretization(int number_of_groups,
 }
 
 void Energy_Discretization::
-check_class_invariants()
+check_class_invariants() const
 {
     Assert(energy_bounds_.size() == number_of_groups_ + 1);
 }

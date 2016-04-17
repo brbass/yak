@@ -8,7 +8,7 @@ using namespace std;
 
 Finite_Element::
 Finite_Element(int number_of_nodes,
-               vector<double> &node_positions):
+               vector<double> const &node_positions):
     number_of_nodes_(number_of_nodes),
     node_positions_(node_positions)
 {
@@ -16,7 +16,7 @@ Finite_Element(int number_of_nodes,
 }
 
 void Finite_Element::
-check_class_invariants()
+check_class_invariants() const
 {
     Assert(node_positions_.size() == number_of_nodes_);
 }

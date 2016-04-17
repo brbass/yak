@@ -15,36 +15,18 @@ public:
                              int number_of_moments,
                              int number_of_ordinates);
     
-    virtual int dimension()
-    {
-        return dimension_;
-    }
-    virtual int number_of_moments()
-    {
-        return number_of_moments_;
-    }
-    virtual int number_of_ordinates()
-    {
-        return number_of_ordinates_;
-    }
-    virtual vector<double> const &ordinates()
+    virtual vector<double> const &ordinates() const
     {
         return ordinates_;
     }
-    virtual vector<double> const &weights()
+    virtual vector<double> const &weights() const
     {
         return weights_;
     }
-    virtual double moment(int mom,
-                          int ord);
-
-    void check_class_invariants();
+    
+    void check_class_invariants() const;
     
 private:
-
-    int dimension_;
-    int number_of_ordinates_;
-    int number_of_moments_;
 
     vector<double> ordinates_;
     vector<double> weights_;

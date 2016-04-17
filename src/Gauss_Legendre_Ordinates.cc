@@ -2,7 +2,6 @@
 
 #include "Check.hh"
 #include "Gauss_Legendre.hh"
-#include "Legendre_Polynomial.hh"
 
 Gauss_Legendre_Ordinates::
 Gauss_Legendre_Ordinates(int dimension,
@@ -17,15 +16,8 @@ Gauss_Legendre_Ordinates(int dimension,
     check_class_invariants();
 }
 
-double Gauss_Legendre_Ordinates::
-moment(int mom,
-       int ord)
-{
-    return legendre_polynomial(mom, ordinates_[ord]);
-}
-
 void Gauss_Legendre_Ordinates::
-check_class_invariants()
+check_class_invariants() const
 {
     Assert(ordinates_.size() == number_of_ordinates_);
     Assert(weights_.size() == number_of_ordinates_);

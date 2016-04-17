@@ -34,6 +34,7 @@ apply(vector<double> &x)
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    double angular_normalization = angular_discretization_->angular_normalization();
     vector<double> const weights = angular_discretization_->weights();
     vector<double> const ordinates = angular_discretization_->ordinates();
 
@@ -53,7 +54,7 @@ apply(vector<double> &x)
                         
                         double p = angular_discretization_->moment(m, o);
                         
-                        sum += (static_cast<double>(m) + 0.5) * p * y[k];
+                        sum += (2 * static_cast<double>(m) + 1) / angular_normalization * p * y[k];
                     }
                     
                     int k = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
