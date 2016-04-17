@@ -9,12 +9,21 @@ class Finite_Element
 {
 public:
 
-    Finite_Element(int number_of_nodes,
+    Finite_Element(int dimension,
+                   int number_of_nodes,
                    vector<double> const &node_positions);
 
+    int dimension()
+    {
+        return dimension_;
+    }
     int number_of_nodes()
     {
         return number_of_nodes_;
+    }
+    vector<double> const &length() const
+    {
+        return length_;
     }
     vector<double> const &node_positions() const
     {
@@ -25,7 +34,9 @@ public:
 
 private:
 
+    int dimension_;
     int number_of_nodes_;
+    vector<double> length_;
     vector<double> node_positions_;
 };
 

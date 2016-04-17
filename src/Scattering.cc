@@ -25,7 +25,7 @@ Scattering(shared_ptr<Spatial_Discretization> spatial_discretization,
 {
 }
 
-virtual void Scattering::
+void Scattering::
 apply_full(vector<double> &x)
 {
     vector<double> y(x);
@@ -54,10 +54,10 @@ apply_full(vector<double> &x)
                     {
                         for (int m = 0; m < number_of_moments; ++m)
                         {
-                            int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+                            int k_phi = n + number_of_nodes * (gf + number_of_groups * (m + number_of_moments * i));
                             int k_sigma = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * i));
                             
-                            double p = angular_discretization->moment(m, o);
+                            double p = angular_discretization_->moment(m, o);
                             
                             sum += (2 * static_cast<double>(m) + 1) / angular_normalization * sigma_s[k_sigma] * p * y[k_phi];
                         }
@@ -72,7 +72,7 @@ apply_full(vector<double> &x)
     }
 }
 
-virtual void Scattering::
+void Scattering::
 apply_coherent(vector<double> &x)
 {
     vector<double> y(x);
@@ -102,7 +102,7 @@ apply_coherent(vector<double> &x)
                         int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                         int k_sigma = g + number_of_groups * (g + number_of_groups * (m + number_of_moments * i));
                         
-                        double p = angular_discretization->moment(m, o);
+                        double p = angular_discretization_->moment(m, o);
                         
                         sum += (static_cast<double>(m) + 1) / angular_normalization * sigma_s[k_sigma] * p * y[k_phi];
                     }

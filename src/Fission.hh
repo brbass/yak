@@ -22,12 +22,12 @@ public:
             shared_ptr<Angular_Discretization> angular_discretization,
             shared_ptr<Energy_Discretization> energy_discretization,
             shared_ptr<Nuclear_Data> nuclear_data,
-            scattering_type = FULL);
+            Scattering_Type scattering_type = FULL);
     
 private: 
     
     virtual void apply_full(vector<double> &x);
     virtual void apply_coherent(vector<double> &x);
-}
+};
 
 #endif

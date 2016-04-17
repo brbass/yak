@@ -14,7 +14,7 @@ public:
 
     vector<double> &operator()(vector<double> &x)
     {
-        apply_(x);
+        apply(x);
         
         return x;
     }

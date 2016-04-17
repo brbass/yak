@@ -7,9 +7,9 @@ Gauss_Legendre_Ordinates::
 Gauss_Legendre_Ordinates(int dimension,
                          int number_of_moments,
                          int number_of_ordinates): 
-    dimension_(dimension),
-    number_of_moments_(number_of_moments),
-    number_of_ordinates_(number_of_ordinates)
+    Angular_Discretization(dimension,
+                           number_of_moments,
+                           number_of_ordinates)
 {
     gauss_legendre_vec(number_of_ordinates, ordinates_, weights_);
     

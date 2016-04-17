@@ -18,6 +18,7 @@ Finite_Element_Mesh(int dimension,
                            geometry),
     number_of_elements_(number_of_elements),
     number_of_nodes_(number_of_nodes),
+    number_of_boundary_elements_(2),
     element_type_(element_type)
 {
 
@@ -46,10 +47,19 @@ Finite_Element_Mesh(int dimension,
             }
         }
         
-        elements_.emplace_back(number_of_nodes,
+        elements_.emplace_back(dimension,
+                               number_of_nodes,
                                local_node_positions);
     }
 
+    boundary_elements_.push_back(0);
+    boundary_elements_.push_back(number_of_elements_ - 1);
+    
+    for (int i = 1; i < number_of_elements_ - 1; ++i)
+    {
+        internal_elements_.push_back(i);
+    }
+    
     check_class_invariants();
 }
 
@@ -57,4 +67,6 @@ void Finite_Element_Mesh::
 check_class_invariants() const
 {
     Assert(elements_.size() == number_of_elements_);
+    Assert(boundary_elements_.size() == number_of_boundary_elements_);
+    Assert(internal_elements_.size() == number_of_elements_ - number_of_boundary_elements_);
 }

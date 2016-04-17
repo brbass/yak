@@ -25,7 +25,7 @@ Fission(shared_ptr<Spatial_Discretization> spatial_discretization,
 {
 }
 
-virtual void Fission::
+void Fission::
 apply_full(vector<double> &x)
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
@@ -69,14 +69,15 @@ apply_full(vector<double> &x)
     {
         for (int g = 0; g < number_of_groups; ++g)
         {
-            int k_fis = n + number_of_nodes * i;
             int k_chi = g + number_of_groups * i;
             
-            double value = z[k_fis] * chi[k_chi] / angular_normalization;
-            
-            for (int o = 0; o < number_of_ordinates; ++o)
+for (int n = 0; n < number_of_nodes; ++n)
             {
-                for (int n = 0; n < number_of_nodes; ++n)
+                int k_fis = n + number_of_nodes * i;
+                
+                double value = z[k_fis] * chi[k_chi] / angular_normalization;
+                
+                for (int o = 0; o < number_of_ordinates; ++o)
                 {
                     int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                     
@@ -87,7 +88,7 @@ apply_full(vector<double> &x)
     }
 }
 
-virtual void Fission::
+void Fission::
 apply_coherent(vector<double> &x)
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
@@ -118,7 +119,7 @@ apply_coherent(vector<double> &x)
                 {
                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
-                    double value = cs * phi[k_phi];
+                    double value = cs * y[k_phi];
                     
                     for (int o = 0; o < number_of_ordinates; ++o)
                     {

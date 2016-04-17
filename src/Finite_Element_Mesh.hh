@@ -35,9 +35,29 @@ public:
     {
         return number_of_elements_;
     }
+    virtual int number_of_elements()
+    {
+        return number_of_elements_;
+    }
+    virtual int number_of_boundary_cells()
+    {
+        return number_of_boundary_elements_;
+    }
+    virtual int number_of_boundary_points()
+    {
+        return number_of_boundary_elements_;
+    }
     virtual int number_of_nodes()
     {
         return number_of_nodes_;
+    }
+    virtual vector<int> const &boundary_cells() const
+    {
+        return boundary_elements_;
+    }
+    virtual vector<int> const &internal_cells() const
+    {
+        return internal_elements_;
     }
     Finite_Element_Type finite_element_type()
     {
@@ -55,7 +75,11 @@ private:
     int number_of_elements_;
     int number_of_nodes_;
     int number_of_points_;
+    int number_of_boundary_elements_;
     
+    vector<int> boundary_elements_;
+    vector<int> internal_elements_;
+
     Finite_Element_Type element_type_;
     
     vector<Finite_Element> elements_;

@@ -22,13 +22,13 @@ public:
         COHERENT,
         INCOHERENT,
         FULL
-    }
+    };
 
     Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
                         shared_ptr<Angular_Discretization> angular_discretization,
                         shared_ptr<Energy_Discretization> energy_discretization,
                         shared_ptr<Nuclear_Data> nuclear_data,
-                        scattering_type = FULL);
+                        Scattering_Type scattering_type = FULL);
     
 private: 
 
@@ -37,6 +37,8 @@ private:
     virtual void apply_full(vector<double> &x) = 0;
     virtual void apply_coherent(vector<double> &x) = 0;
     virtual void apply_incoherent(vector<double> &x);
+
+protected:
     
     Scattering_Type scattering_type_;
     
@@ -44,6 +46,6 @@ private:
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;
     shared_ptr<Nuclear_Data> nuclear_data_;
-}
+};
 
 #endif

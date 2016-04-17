@@ -1,7 +1,10 @@
 #include "Angular_Discretization.hh"
-#include "Legendre_Polynomial.hh"
 
+#include <cmath>
 #include <vector>
+
+#include "Check.hh"
+#include "Legendre_Polynomial.hh"
 
 using namespace std;
 
@@ -24,14 +27,19 @@ Angular_Discretization(int dimension,
     }
 }
 
-virtual double Angular_Discretization::
+double Angular_Discretization::
 moment(int mom,
        int ord)
 {
     switch(dimension_)
     {
     case 1:
-        return legendre_polynomial(mom, ordinates()[ord]);
+    {
+        double mu = ordinates()[ord];
+        return legendre_polynomial(mom, mu);
+    }
     default:
+        AssertMsg(false, "Only one dimension supported");
+        return 0;
     }
 }

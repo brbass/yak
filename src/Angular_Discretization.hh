@@ -34,11 +34,12 @@ public:
     virtual double moment(int mom,
                           int ord);
 
-private:
+protected:
     
     int dimension_;
     int number_of_moments_;
     int number_of_ordinates_;
+    double angular_normalization_;
     
 };
 

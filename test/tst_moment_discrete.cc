@@ -50,8 +50,8 @@ int main(int argc, char **argv)
         = make_shared<Finite_Element_Mesh>(dimension,
                                            number_of_cells,
                                            number_of_nodes,
-                                           length,
-                                           "DFEM");
+                                           Finite_Element_Mesh::DFEM,
+                                           length);
     shared_ptr<Angular_Discretization> angular_discretization 
         = make_shared<Gauss_Legendre_Ordinates>(dimension,
                                                 number_of_moments,

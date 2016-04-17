@@ -33,7 +33,7 @@ Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
 {
 }
 
-virtual void Scattering_Operator::
+void Scattering_Operator::
 apply(vector<double> &x)
 {
     Check(x.size() == column_size());
@@ -54,9 +54,14 @@ apply(vector<double> &x)
     Check(x.size() == row_size());
 }
 
-virtual void Scattering::
+void Scattering_Operator::
 apply_incoherent(vector<double> &x)
 {
+    int number_of_cells = spatial_discretization_->number_of_cells();
+    int number_of_nodes = spatial_discretization_->number_of_nodes();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+
     vector<double> y(x);
     
     apply_full(y);
