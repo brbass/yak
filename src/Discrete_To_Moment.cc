@@ -5,18 +5,21 @@
 #include "Legendre_Polynomial.hh"
 
 Discrete_To_Moment::
-Discrete_To_Moment(int number_of_cells,
-                    int number_of_nodes,
-                    int number_of_groups,
-                    int number_of_moments,
-                    int number_of_ordinates):
-     number_of_cells_(number_of_cells),
-     number_of_nodes_(number_of_nodes),
-     number_of_groups_(number_of_groups),
-     number_of_moments_(number_of_moments),
-     number_of_ordinates_(number_of_ordinates)
+Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
+                   shared_ptr<Angular_Discretization> angular_discretization,
+                   shared_ptr<Energy_Discretization> energy_discretization):
+    spatial_discretization_(spatial_discretization),
+    angular_discretization_(angular_discretization),
+    energy_discretization_(energy_discretization)
 {
-    gauss_legendre_vec(number_of_ordinates, ordinates_, weights_);
+    int number_of_cells = spatial_discretization_->number_of_cells();
+    int number_of_nodes = spatial_discretization_->number_of_nodes();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_moments = angular_discretization_->number_of_moments();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    
+    row_size_ = number_of_cells * number_of_nodes * number_of_groups * number_of_moments;
+    column_size_ = number_of_cells * number_of_nodes * number_of_groups * number_of_ordinates;
 }
 
 void Discrete_To_Moment::
@@ -28,26 +31,34 @@ apply(vector<double> &x)
     
     x.resize(row_size());
     
-    for (int i = 0; i < number_of_cells_; ++i)
+    int number_of_cells = spatial_discretization_->number_of_cells();
+    int number_of_nodes = spatial_discretization_->number_of_nodes();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_moments = angular_discretization_->number_of_moments();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    vector<double> const weights = angular_discretization_->weights();
+    vector<double> const ordinates = angular_discretization_->ordinates();
+    
+    for (int i = 0; i < number_of_cells; ++i)
     {
-        for (int g = 0; g < number_of_groups_; ++g)
+        for (int g = 0; g < number_of_groups; ++g)
         {
-            for (int n = 0; n < number_of_nodes_; ++n)
+            for (int n = 0; n < number_of_nodes; ++n)
             {
-                for (int m = 0; m < number_of_moments_; ++m)
+                for (int m = 0; m < number_of_moments; ++m)
                 {
                     double sum = 0;
                     
-                    for (int o = 0; o < number_of_ordinates_; ++o)
+                    for (int o = 0; o < number_of_ordinates; ++o)
                     {
-                        int k = n + number_of_nodes_ * (g + number_of_groups_ * (o + number_of_ordinates_ * i));
+                        int k = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                         
-                        double p = legendre_polynomial(m, ordinates_[o]);
+                        double p = angular_discretization_->moment(m, o);
                         
-                        sum += weights_[o] * p * y[k];
+                        sum += weights[o] * p * y[k];
                     }
                     
-                    int k = n + number_of_nodes_ * (g + number_of_groups_ * (m + number_of_moments_ * i));
+                    int k = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
                     x[k] = sum;
                 }

@@ -1,47 +1,48 @@
 #ifndef Discrete_To_Moment_hh
 #define Discrete_To_Moment_hh
 
+#include "Angular_Discretization.hh"
+#include "Energy_Discretization.hh"
+#include "Spatial_Discretization.hh"
 #include "Vector_Operator.hh"
 
+#include <memory>
 #include <vector>
 
+using std::shared_ptr;
 using std::vector;
 
 class Discrete_To_Moment: public Vector_Operator
 {
 public:
     
-    Discrete_To_Moment(int number_of_cells,
-                       int number_of_nodes,
-                       int number_of_groups,
-                       int number_of_moments,
-                       int number_of_ordinates);
+    Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
+                       shared_ptr<Angular_Discretization> angular_discretization,
+                       shared_ptr<Energy_Discretization> energy_discretization);
     
     virtual int row_size()
     {
-        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_moments_;
+        return row_size_;
     }
     virtual int column_size()
     {
-        return number_of_cells_ * number_of_nodes_ * number_of_groups_ * number_of_ordinates_;
+        return row_size_;
     }
     virtual bool square()
     {
-        return (row_size() == column_size());
+        return (row_size_ == column_size_);
     }
     
 private:
 
     virtual void apply(vector<double> &x);
     
-    int number_of_cells_;
-    int number_of_nodes_;
-    int number_of_groups_;
-    int number_of_moments_;
-    int number_of_ordinates_;
-    
-    vector<double> weights_;
-    vector<double> ordinates_;
+    int row_size_;
+    int column_size_;
+
+    shared_ptr<Spatial_Discretization> spatial_discretization_;
+    shared_ptr<Angular_Discretization> angular_discretization_;
+    shared_ptr<Energy_Discretization> energy_discretization_;
 };
 
 #endif

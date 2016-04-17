@@ -7,7 +7,7 @@ Identity_Operator(int size):
 }
 
 void Identity_Operator::
-apply_(vector<double> &x)
+apply(vector<double> &x)
 {
 
 }

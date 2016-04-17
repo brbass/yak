@@ -12,8 +12,6 @@ class Identity_Operator : public Vector_Operator
 public:
  
     Identity_Operator(int size);
-
-    ~Identity_Operator(){};
    
     virtual int row_size()
     {
@@ -32,7 +30,7 @@ public:
 
 private:
     
-    virtual void apply_(vector<double> &x);
+    virtual void apply(vector<double> &x);
     
     int size_;
 };

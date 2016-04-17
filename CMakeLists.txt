@@ -19,10 +19,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/home/software/rhel6/gsl/1.15/lib -lgs
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lepetra -lamesos -laztecoo -lepetraext -ltriutils -lepetra -lteuchosremainder -lteuchosnumerics -lteuchoscomm -lteuchosparameterlist -lteuchoscore -I/usr/cac/rhel6/trilinos/12.0.1/include -L/usr/cac/rhel6/trilinos/12.0.1/lib")
 
 file(GLOB SOURCES "src/*.cc" "lib/*.c" "lib/*.cpp")
+set(MAIN "main/Yak.cc")
+set(TEST_ANGLE "test/tst_moment_discrete.cc")
 
 include_directories(src lib)
 
-add_executable(yak ${SOURCES})
+add_executable(yak ${SOURCES} ${MAIN})
+add_executable(tst_moment_discrete ${SOURCES} ${TEST_ANGLE})
+
+add_test(test_moment_discrete tst_moment_discrete)
 
 install(TARGETS yak DESTINATION .)
 
