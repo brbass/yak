@@ -52,6 +52,8 @@ public:
     {
         return elements_[element];
     }
+
+    void check_class_invariants();
     
 private:
     

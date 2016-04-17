@@ -47,6 +47,8 @@ Finite_Element_Mesh(int dimension,
         elements_.emplace_back(number_of_nodes,
                                local_node_positions);
     }
+
+    check_class_invariants();
 }
 
 Finite_Element_Mesh::
@@ -80,6 +82,8 @@ Finite_Element_Mesh(int dimension,
         elements_.emplace_back(number_of_nodes,
                                node_positions);
     }
+
+    check_class_invariants();
 }
 
 void Finite_Element_Mesh::
@@ -93,4 +97,10 @@ set_element_type(string element_type)
     {
         element_type_ = DFEM;
     }
+}
+
+void Finite_Element_Mesh::
+check_class_invariants()
+{
+    Assert(elements_.size() == number_of_elements_);
 }

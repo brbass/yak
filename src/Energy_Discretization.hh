@@ -21,6 +21,7 @@ public:
     {
         return energy_bounds_;
     }
+    void check_class_invariants();
     
 private:
     

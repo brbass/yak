@@ -37,6 +37,8 @@ public:
     }
     virtual double moment(int mom,
                           int ord);
+
+    void check_class_invariants();
     
 private:
 

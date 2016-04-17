@@ -36,6 +36,8 @@ public:
         return point_positions_;
     }
 
+    void check_class_invariants();
+
 private:
     
     int number_of_points_;
