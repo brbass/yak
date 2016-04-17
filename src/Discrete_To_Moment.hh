@@ -20,26 +20,10 @@ public:
                        shared_ptr<Angular_Discretization> angular_discretization,
                        shared_ptr<Energy_Discretization> energy_discretization);
     
-    virtual int row_size()
-    {
-        return row_size_;
-    }
-    virtual int column_size()
-    {
-        return row_size_;
-    }
-    virtual bool square()
-    {
-        return (row_size_ == column_size_);
-    }
-    
 private:
 
     virtual void apply(vector<double> &x);
     
-    int row_size_;
-    int column_size_;
-
     shared_ptr<Spatial_Discretization> spatial_discretization_;
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;

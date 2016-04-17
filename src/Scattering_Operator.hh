@@ -30,19 +30,6 @@ public:
                         shared_ptr<Nuclear_Data> nuclear_data,
                         scattering_type = FULL);
     
-    virtual int row_size()
-    {
-        return row_size_;
-    }
-    virtual int column_size() 
-    {
-        return column_size_;
-    }
-    virtual bool square()
-    {
-        return (row_size_ == column_size_);
-    }
-    
 private: 
 
     virtual void apply(vector<double> &x);
@@ -50,9 +37,6 @@ private:
     virtual void apply_full(vector<double> &x) = 0;
     virtual void apply_coherent(vector<double> &x) = 0;
     virtual void apply_incoherent(vector<double> &x);
-    
-    int row_size_;
-    int column_size_;
     
     Scattering_Type scattering_type_;
     

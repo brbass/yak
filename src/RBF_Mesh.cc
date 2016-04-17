@@ -9,8 +9,10 @@ using namespace std;
 RBF_Mesh::
 RBF_Mesh(int dimension,
          int number_of_points,
+         Geometry geometry,
          vector<double> const &positions):
-    dimension_(dimension),
+    Spatial_Discretization(dimension,
+                           geometry),
     number_of_points_(number_of_points),
     point_positions_(positions)
 {

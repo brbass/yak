@@ -2,7 +2,8 @@
 
 Identity_Operator::
 Identity_Operator(int size):
-    size_(size)
+    Vector_Operator(size,
+                    size)
 {
 }
 
