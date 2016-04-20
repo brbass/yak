@@ -16,9 +16,9 @@ Solver_Parser(pugi::xml_node &input_file,
     nuclear_(nuclear),
     source_(source)
 {
-    pugi::xml_node solver_node = input_file.child("solver");
+    pugi::xml_node solver_node = input_file.child("solution_method");
     
-    string solver_type = child_value<string>(solver_node, "solver_type");
+    string solver_type = child_value<string>(solver_node, "type");
     
     if (solver_type == "source_iteration")
     {
@@ -33,7 +33,7 @@ Solver_Parser(pugi::xml_node &input_file,
 shared_ptr<Source_Iteration> Solver_Parser::
 parse_source_iteration()
 {
-    pugi::xml_node solver_node = input_file.child("solver");
+    pugi::xml_node solver_node = input_file_.child("solver");
     
     int max_iterations = child_value<int>(solver_node, "max_iterations");
     double tolerance = child_value<int>(solver_node, "tolerance");
@@ -60,11 +60,12 @@ parse_source_iteration()
 shared_ptr<Ordinate_Sweep_Operator> Solver_Parser::
 parse_sweeper()
 {
-    pugi::xml_node sweeper = input_file_.child("sweeper");
+    pugi::xml_node solver = input_file_.child("solution_method");
+    pugi::xml_node sweeper = solver.child("sweeper");
     
     string sweeper_type = child_value<string>(sweeper, "type");
-
-    if (sweeper_type == "DFEM")
+    
+    if (sweeper_type == "dfem")
     {
         return parse_dfem();
     }

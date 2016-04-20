@@ -67,7 +67,7 @@ get_fem(pugi::xml_node &spatial)
     
     for (pugi::xml_node region = regions.child("region"); region; region = region.next_sibling("region"))
     {
-        int region_cells = child_value<int>(region, "number_of_cells");
+        int region_cells = child_value<int>(region, "number_of_elements");
         int region_material = child_value<int>(region, "material");
         double region_length = child_value<double>(region, "length");
         double dx = region_length / region_cells;
