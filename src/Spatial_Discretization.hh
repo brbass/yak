@@ -34,7 +34,8 @@ public:
     }
     virtual vector<int> const &boundary_cells() const = 0;
     virtual vector<int> const &internal_cells() const = 0;
-
+    virtual vector<int> const &material() const = 0;
+    
 protected:
     
     int dimension_;

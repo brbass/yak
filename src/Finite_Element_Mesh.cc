@@ -13,13 +13,15 @@ Finite_Element_Mesh(int dimension,
                     int number_of_nodes,
                     Geometry geometry,
                     Finite_Element_Type element_type,
+                    vector<int> const &material,
                     vector<double> const &node_positions):
     Spatial_Discretization(dimension,
                            geometry),
     number_of_elements_(number_of_elements),
     number_of_nodes_(number_of_nodes),
     number_of_boundary_elements_(2),
-    element_type_(element_type)
+    element_type_(element_type),
+    material_(material)
 {
 
     switch(element_type_)

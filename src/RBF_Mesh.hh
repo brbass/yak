@@ -28,6 +28,18 @@ public:
     {
         return 1;
     }
+    virtual vector<int> const &boundary_cells() const
+    {
+        return boundary_points_;
+    }
+    virtual vector<int> const &internal_cells() const
+    {
+        return internal_points_;
+    }
+    virtual vector<int> const &material() const
+    {
+        return material_;
+    }
     vector<double> const &point_positions() const
     {
         return point_positions_;
@@ -39,6 +51,9 @@ private:
     
     int number_of_points_;
     
+    vector<int> boundary_points_;
+    vector<int> internal_points_;
+    vector<int> material_;
     vector<double> point_positions_;
 };
 

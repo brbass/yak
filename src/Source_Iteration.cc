@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "Check.hh"
+
 using namespace std;
 
 Source_Iteration::
@@ -10,23 +12,25 @@ Source_Iteration(int max_iterations,
                  shared_ptr<Spatial_Discretization> spatial_discretization,
                  shared_ptr<Angular_Discretization> angular_discretization,
                  shared_ptr<Energy_Discretization> energy_discretization,
+                 shared_ptr<Nuclear_Data> nuclear_data,
+                 shared_ptr<Source_Data> source_data,
                  shared_ptr<Vector_Operator> sweeper,
                  shared_ptr<Vector_Operator> discrete_to_moment,
                  shared_ptr<Vector_Operator> moment_to_discrete,
                  shared_ptr<Vector_Operator> scattering,
-                 shared_ptr<Vector_Operator> fission,
-                 shared_ptr<Source_Data> source_data):
-    Vector_Operator(moment_to_discrete->column_size(),
-                    moment_to_discrete->column_size()),
-    spatial_discretization_(spatial_discretization),
-    angular_discretization_(angular_discretization),
-    energy_discretization_(energy_discretization),
+                 shared_ptr<Vector_Operator> fission):
+    Solver(spatial_discretization,
+           angular_discretization,
+           energy_discretization,
+           nuclear_data,
+           source_data),
+    nuclear_data_(nuclear_data),
+    source_data_(source_data),
     sweeper_(sweeper),
     discrete_to_moment_(discrete_to_moment),
     moment_to_discrete_(moment_to_discrete),
     scattering_(scattering),
-    fission_(fission),
-    source_data_(source_data)
+    fission_(fission)
 {
 }
 
@@ -34,7 +38,7 @@ Source_Iteration(int max_iterations,
   Apply phi(l+1) = D(Linv(M(S phi(l)))) + D(Linv(q))
 */
 void Source_Iteration::
-apply(vector<double> &x)
+solve_steady_state(vector<double> &x)
 {
     shared_ptr<Vector_Operator> Linv = sweeper_;
     shared_ptr<Vector_Operator> D = discrete_to_moment_;
@@ -62,7 +66,7 @@ apply(vector<double> &x)
             x[i] = x[i] + q[i];
         }
         
-        if (check_convergence(x, x_old))
+        if (check_phi_convergence(x, x_old))
         {
             total_iterations_ = i + 1;
             
@@ -71,9 +75,13 @@ apply(vector<double> &x)
     }
 }
 
+/*
+  Check convergence of pointwise relative error in scalar flux
+*/
+
 bool Source_Iteration::
-check_convergence(vector<double> const &x, 
-                  vector<double> const &x_old)
+check_phi_convergence(vector<double> const &x, 
+                      vector<double> const &x_old)
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
@@ -101,4 +109,14 @@ check_convergence(vector<double> const &x,
     }
     
     return true;
+}
+
+void solve_k_eigenvalue(vector<double> &x)
+{
+    AssertMsg(false, "not implemented");
+}
+
+void solve_time_dependent(vector<double> &x)
+{
+    AssertMsg(false, "not implemented");
 }

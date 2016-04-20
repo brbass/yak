@@ -22,8 +22,7 @@ public:
                  vector<double> const &sigma_s,
                  vector<double> const &nu,
                  vector<double> const &sigma_f,
-                 vector<double> const &chi,
-                 vector<double> const &boundary_source);
+                 vector<double> const &chi);
 
     vector<double> const &sigma_t() const
     {
@@ -59,8 +58,6 @@ private:
     vector<double> nu_;
     vector<double> sigma_f_;
     vector<double> chi_;
-    
-    vector<double> boundary_source_;
 };
 
 #endif

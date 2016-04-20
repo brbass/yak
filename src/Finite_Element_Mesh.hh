@@ -25,6 +25,7 @@ public:
                         int number_of_nodes,
                         Geometry geometry,
                         Finite_Element_Type element_type,
+                        vector<int> const &material,
                         vector<double> const &node_positions);
     
     virtual int number_of_points()
@@ -59,6 +60,10 @@ public:
     {
         return internal_elements_;
     }
+    virtual vector<int> const &material() const
+    {
+        return material_;
+    }
     Finite_Element_Type finite_element_type()
     {
         return element_type_;
@@ -79,6 +84,7 @@ private:
     
     vector<int> boundary_elements_;
     vector<int> internal_elements_;
+    vector<int> material_;
 
     Finite_Element_Type element_type_;
     

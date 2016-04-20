@@ -21,7 +21,7 @@ public:
                             shared_ptr<Energy_Discretization> energy_discretization,
                             shared_ptr<Nuclear_Data> nuclear_data,
                             shared_ptr<Source_Data> source_data);
-
+    
     virtual void apply(vector<double> &x) = 0;
     
 protected:
