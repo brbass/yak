@@ -1,4 +1,4 @@
-#include "Source_Data_Parser.cc"
+#include "Source_Data_Parser.hh"
 
 Source_Data_Parser::
 Source_Data_Parser(pugi::xml_node &input_file,
