@@ -1,4 +1,4 @@
-#include "Nuclear_Data_Parser.cc"
+#include "Nuclear_Data_Parser.hh"
 
 Nuclear_Data_Parser::
 Nuclear_Data_Parser(pugi::xml_node &input_file,

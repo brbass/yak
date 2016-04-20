@@ -14,12 +14,11 @@ using std::vector;
 class Source_Data
 {
 public:
-
+    
     enum Source_Type
     {
-        FULL,
-        ISOTROPIC,
-        MOMENT
+        FULL
+        // MOMENT
     };
 
     Source_Data(Source_Type internal_source_type,

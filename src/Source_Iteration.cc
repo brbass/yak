@@ -49,6 +49,11 @@ solve_steady_state(vector<double> &x)
     
     vector<double> q(q_dat);
     
+    if(source_data_->internal_source_type_ == Source_Data::MOMENT)
+    {
+        (*M)(q);
+    }
+    
     (*D)((*Linv)(q));
     
     vector<double> x_old;

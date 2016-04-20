@@ -11,6 +11,11 @@ Energy_Discretization(int number_of_groups):
     number_of_groups_(number_of_groups),
     energy_bounds_(number_of_groups + 1, 0)
 {
+    for (int g = 0; g < number_of_groups + 1; ++g)
+    {
+        energy_bounds_[g] = g + 1;
+    }
+    
     check_class_invariants();
 }
 

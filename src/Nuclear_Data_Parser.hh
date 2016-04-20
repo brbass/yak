@@ -11,7 +11,7 @@ public:
                         shared_ptr<Spatial_Discretization> spatial,
                         shared_ptr<Angular_Discretization> angular,
                         shared_ptr<Energy_Discretization> energy);
-
+    
     virtual shared_ptr<Nuclear_Data> get_ptr()
     {
         return nuclear_;

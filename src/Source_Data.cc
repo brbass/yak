@@ -32,9 +32,6 @@ Source_Data(Source_Type internal_source_type,
     case FULL:
         psi_boundary_.resize(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
         break;
-    case ISOTROPIC:
-        phi_boundary_.resize(number_of_boundary_cells * number_of_nodes * number_of_groups);
-        break;
     case MOMENT:
         phi_boundary_.resize(number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
@@ -57,13 +54,10 @@ check_class_invariants() const
     switch(internal_source_type_)
     {
     case FULL:
-        Assert(internal_source_.size() == number_of_cells * number_of_ordinates * number_of_groups);
-        break;
-    case ISOTROPIC:
-        Assert(internal_source_.size() == number_of_cells * number_of_groups);
+        Assert(internal_source_.size() == number_of_cells * number_of_nodes * number_of_ordinates * number_of_groups);
         break;
     case MOMENT:
-        Assert(internal_source_.size() == number_of_cells * number_of_moments * number_of_groups);
+        Assert(internal_source_.size() == number_of_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
     }
     switch(boundary_source_type_)
@@ -71,10 +65,6 @@ check_class_invariants() const
     case FULL:
         Assert(boundary_source_.size() == number_of_boundary_cells * number_of_ordinates * number_of_groups);
         Assert(psi_boundary_.size() == number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
-        break;
-    case ISOTROPIC:
-        Assert(boundary_source_.size() == number_of_boundary_cells * number_of_groups);
-        Assert(phi_boundary_.size() == number_of_boundary_cells * number_of_nodes * number_of_groups);
         break;
     case MOMENT:
         Assert(boundary_source_.size() == number_of_boundary_cells * number_of_moments * number_of_groups);
