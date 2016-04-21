@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Check.hh"
+#include "XML_Child_Value.hh"
 
 using namespace std;
 
@@ -11,11 +12,6 @@ Energy_Discretization(int number_of_groups):
     number_of_groups_(number_of_groups),
     energy_bounds_(number_of_groups + 1, 0)
 {
-    for (int g = 0; g < number_of_groups + 1; ++g)
-    {
-        energy_bounds_[g] = g + 1;
-    }
-    
     check_class_invariants();
 }
 
@@ -32,4 +28,13 @@ void Energy_Discretization::
 check_class_invariants() const
 {
     Assert(energy_bounds_.size() == number_of_groups_ + 1);
+}
+
+void Energy_Discretization::
+output(pugi::xml_node &output_node) const
+{
+    pugi::xml_node energy = output_node.append_child("energy_discretization");
+    
+    append_child(energy, number_of_groups_, "number_of_groups");
+    append_child(energy, energy_bounds_, "energy_bounds", "group_bound");
 }

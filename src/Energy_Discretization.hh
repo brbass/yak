@@ -2,6 +2,7 @@
 #define Energy_Discretization_hh
 
 #include <vector>
+#include "pugixml.hpp"
 
 using std::vector;
 
@@ -22,6 +23,8 @@ public:
         return energy_bounds_;
     }
     void check_class_invariants() const;
+    
+    void output(pugi::xml_node &output_node) const;
     
 private:
     

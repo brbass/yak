@@ -60,6 +60,7 @@ public:
     }
     
     void check_class_invariants() const;
+    void output(pugi::xml_node &output_node) const;
 
     void update_psi_boundary(vector<double> const &psi);
     void update_phi_boundary(vector<double> const &phi);

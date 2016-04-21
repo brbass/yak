@@ -2,6 +2,7 @@
 #define Finite_Element_hh
 
 #include <vector>
+#include "pugixml.hpp"
 
 using std::vector;
 
@@ -31,6 +32,7 @@ public:
     }
 
     void check_class_invariants() const;
+    void output(pugi::xml_node &element_node) const;
 
 private:
 

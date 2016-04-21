@@ -81,7 +81,7 @@ get_fem(pugi::xml_node &spatial)
             
             for (int n = 0; n < number_of_nodes; ++n)
             {
-                int k = n + number_of_nodes * i;
+                int k = n + number_of_nodes * cell;
 
                 node_positions[k] = x + dx * i + dn * n;
             }

@@ -33,10 +33,11 @@ public:
     virtual void solve_steady_state(vector<double> &x);
     virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x);
     virtual void solve_time_dependent(vector<double> &x);
-    
+    virtual void output(pugi::xml_node &output_node) const;
+
     bool check_phi_convergence(vector<double> const &x, 
                                vector<double> const &x_old);
-
+    
 private:
     
     int max_iterations_;

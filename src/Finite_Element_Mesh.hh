@@ -74,6 +74,7 @@ public:
     }
     
     void check_class_invariants() const;
+    virtual void output(pugi::xml_node &output_node) const;
     
 private:
 

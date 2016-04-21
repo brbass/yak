@@ -2,6 +2,7 @@
 #define Transport_Problem_hh
 
 #include <memory>
+#include "pugixml.hpp"
 
 #include "Solver.hh"
 
@@ -22,6 +23,8 @@ public:
                       shared_ptr<Solver> solver);
     
     void solve();
+
+    void output(pugi::xml_node &output_node) const;
 
 private:
     

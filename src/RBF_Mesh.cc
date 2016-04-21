@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Check.hh"
+#include "XML_Child_Value.hh"
 
 using namespace std;
 
@@ -36,4 +37,17 @@ check_class_invariants() const
     Assert(internal_points_.size() == number_of_points_ - 2);
     Assert(material_.size() == number_of_points_);
     Assert(point_positions_.size() == number_of_points_ * dimension_);
+}
+
+void RBF_Mesh::
+output(pugi::xml_node &output_node)
+{
+    pugi::xml_node rbf = output_node.append_child("rbf_mesh");
+    
+    append_child(rbf, dimension_, "dimension");
+    append_child(rbf, number_of_points_, "number_of_points");
+    append_child(rbf, boundary_points_, "boundary_points", "point");
+    append_child(rbf, internal_points_, "internal_points", "point");
+    append_child(rbf, material_, "material", "point");
+    append_child(rbf, point_positions_, "point_positions", "dimension-point");
 }

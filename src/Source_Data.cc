@@ -1,6 +1,11 @@
 #include "Source_Data.hh"
 
+#include <string>
+
 #include "Check.hh"
+#include "XML_Child_Value.hh"
+
+using namespace std;
 
 Source_Data::
 Source_Data(Source_Type internal_source_type,
@@ -134,3 +139,35 @@ update_phi_boundary(vector<double> const &phi)
     }
 }
 
+void Source_Data::
+output(pugi::xml_node &output_node) const
+{
+    pugi::xml_node source = output_node.append_child("source_data");
+
+    string internal_order;
+    string boundary_order;
+    switch(internal_source_type_)
+    {
+    case FULL:
+        internal_order = "node-group-ordinate-cell";
+        break;
+    case MOMENT:
+        internal_order = "node-group-moment-cell";
+        break;
+    }
+    switch(boundary_source_type_)
+    {
+    case FULL:
+        boundary_order = "group-ordinate-boundary_cell";
+        break;
+    case MOMENT:
+        boundary_order = "group-moment-boundary_cell";
+        break;
+    }
+
+    append_child(source, alpha_, "alpha", "boundary_cell");
+    append_child(source, internal_source_, "internal_source", internal_order);
+    append_child(source, boundary_source_, "boundary_source", boundary_order);
+    append_child(source, phi_boundary_, "phi_boundary", "node-group-moment-boundary_cell");
+    append_child(source, psi_boundary_, "psi_boundary", "node-group-ordinate-boundary_cell");
+}

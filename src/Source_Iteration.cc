@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Check.hh"
+#include "XML_Child_Value.hh"
 
 using namespace std;
 
@@ -62,7 +63,7 @@ solve_steady_state(vector<double> &x)
     for (int it = 0; it < max_iterations_; ++it)
     {
         x_old = x;
-
+        
         (*S)(x);
         (*Linv)(x);
         (*D)(x);
@@ -128,4 +129,20 @@ void Source_Iteration::
 solve_time_dependent(vector<double> &x)
 {
     AssertMsg(false, "not implemented");
+}
+
+void Source_Iteration::
+output(pugi::xml_node &output_node) const
+{
+    pugi::xml_node source = output_node.append_child("source_iteration");
+    
+    append_child(source, max_iterations_, "max_iterations");
+    append_child(source, total_iterations_, "total_iterations");
+    append_child(source, tolerance_, "tolerance");
+    
+    spatial_discretization_->output(output_node);
+    angular_discretization_->output(output_node);
+    energy_discretization_->output(output_node);
+    nuclear_data_->output(output_node);
+    source_data_->output(output_node);
 }

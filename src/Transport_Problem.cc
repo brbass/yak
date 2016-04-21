@@ -1,5 +1,7 @@
 #include "Transport_Problem.hh"
 
+#include "XML_Child_Value.hh"
+
 Transport_Problem::
 Transport_Problem(Problem_Type problem_type,
                   shared_ptr<Solver> solver):
@@ -23,4 +25,19 @@ solve()
         solver_->solve_time_dependent(phi_);
         break;
     }
+}
+
+void Transport_Problem::
+output(pugi::xml_node &output_node) const
+{
+    pugi::xml_node solution = output_node.append_child("solution");
+    
+    if (problem_type_ == K_EIGENVALUE)
+    {
+        append_child(solution, k_eigenvalue_, "k_eigenvalue");
+    }
+    append_child(solution, phi_, "phi", "node-group-moment-cell");
+    // append_child(solution, psi_, "psi");
+    
+    solver_->output(output_node);
 }

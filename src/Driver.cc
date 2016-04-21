@@ -90,5 +90,7 @@ run_problem()
     pugi::xml_document output_document;
     pugi::xml_node output_file = output_document.append_child("output");
     
-    // transport.output(xml_out_);
+    transport->output(output_file);
+    
+    output_document.save_file(xml_out_.c_str());
 }

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Check.hh"
+#include "XML_Child_Value.hh"
 
 using namespace std;
 
@@ -24,4 +25,13 @@ void Finite_Element::
 check_class_invariants() const
 {
     Assert(node_positions_.size() == number_of_nodes_);
+}
+
+void Finite_Element::
+output(pugi::xml_node &element_node) const
+{
+    append_child(element_node, dimension_, "dimension");
+    append_child(element_node, number_of_nodes_, "number_of_nodes"); 
+    append_child(element_node, length_, "length", "dimension");
+    append_child(element_node, node_positions_, "node_positions", "node");
 }

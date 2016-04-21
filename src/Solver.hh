@@ -26,7 +26,8 @@ public:
     virtual void solve_steady_state(vector<double> &x) = 0;
     virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) = 0;
     virtual void solve_time_dependent(vector<double> &x) = 0;
-    
+    virtual void output(pugi::xml_node &output_node) const;
+
 protected:
     
     shared_ptr<Spatial_Discretization> spatial_discretization_;

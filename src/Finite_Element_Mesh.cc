@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Check.hh"
+#include "XML_Child_Value.hh"
 
 using namespace std;
 
@@ -71,4 +72,27 @@ check_class_invariants() const
     Assert(elements_.size() == number_of_elements_);
     Assert(boundary_elements_.size() == number_of_boundary_elements_);
     Assert(internal_elements_.size() == number_of_elements_ - number_of_boundary_elements_);
+}
+
+void Finite_Element_Mesh::
+output(pugi::xml_node &output_node) const
+{
+    pugi::xml_node finite = output_node.append_child("finite_element_mesh");
+    
+    append_child(finite, number_of_elements_, "number_of_elements");
+    append_child(finite, number_of_nodes_, "number_of_nodes");
+    append_child(finite, number_of_points_, "number_of_points");
+    append_child(finite, number_of_boundary_elements_, "number_of_boundary_elements");
+    append_child(finite, boundary_elements_, "boundary_elements", "element");
+    append_child(finite, internal_elements_, "internal_elements", "element");
+    append_child(finite, material_, "material", "element");
+    
+    for (int i = 0; i < number_of_elements_; ++i)
+    {
+        pugi::xml_node finite_element = finite.append_child("element");
+        pugi::xml_attribute num = finite_element.append_attribute("number");
+        num.set_value(to_string(i).c_str());
+        
+        elements_[i].output(finite_element);
+    }
 }

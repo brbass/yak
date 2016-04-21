@@ -2,6 +2,7 @@
 #define Angular_Discretization_hh
 
 #include <vector>
+#include "pugixml.hpp"
 
 using std::vector;
 
@@ -33,6 +34,8 @@ public:
     virtual vector<double> const &weights() const = 0;
     virtual double moment(int mom,
                           int ord);
+
+    virtual void output(pugi::xml_node &output_node) const = 0;
 
 protected:
     
