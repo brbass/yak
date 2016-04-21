@@ -21,7 +21,7 @@ RBF_Mesh(int dimension,
     boundary_points_.push_back(0);
     boundary_points_.push_back(number_of_points_ - 1);
     
-    for (int i = 1; i < number_of_points_ - 1)
+    for (int i = 1; i < number_of_points_ - 1; ++i)
     {
         internal_points_.push_back(i);
     }
@@ -32,8 +32,8 @@ RBF_Mesh(int dimension,
 void RBF_Mesh::
 check_class_invariants() const
 {
-    Assert(boundary_cells_.size() == 2);
-    Assert(internal_cells_.size() == number_of_points_ - 2);
+    Assert(boundary_points_.size() == 2);
+    Assert(internal_points_.size() == number_of_points_ - 2);
     Assert(material_.size() == number_of_points_);
     Assert(point_positions_.size() == number_of_points_ * dimension_);
 }

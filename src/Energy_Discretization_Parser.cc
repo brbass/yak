@@ -1,5 +1,7 @@
 #include "Energy_Discretization_Parser.hh"
 
+using namespace std;
+
 Energy_Discretization_Parser::
 Energy_Discretization_Parser(pugi::xml_node &input_file):
     Parser(input_file)

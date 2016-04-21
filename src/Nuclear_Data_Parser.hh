@@ -2,6 +2,7 @@
 #define Nuclear_Data_Parser_hh
 
 #include "Nuclear_Data.hh"
+#include "Parser.hh"
 
 class Nuclear_Data_Parser : public Parser<Nuclear_Data>
 {
@@ -24,6 +25,6 @@ private:
     shared_ptr<Spatial_Discretization> spatial_;
     shared_ptr<Angular_Discretization> angular_;
     shared_ptr<Energy_Discretization> energy_;
-}
+};
 
 #endif

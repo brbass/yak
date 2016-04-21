@@ -14,7 +14,7 @@ class Finite_Element_Mesh : public Spatial_Discretization
 {
 public:
     
-    enum Finite_Element_Type
+    enum Element_Type
     {
         DFEM,
         CFEM
@@ -24,7 +24,7 @@ public:
                         int number_of_elements,
                         int number_of_nodes,
                         Geometry geometry,
-                        Finite_Element_Type element_type,
+                        Element_Type element_type,
                         vector<int> const &material,
                         vector<double> const &node_positions);
     
@@ -64,7 +64,7 @@ public:
     {
         return material_;
     }
-    Finite_Element_Type finite_element_type()
+    Element_Type element_type()
     {
         return element_type_;
     }
@@ -86,7 +86,7 @@ private:
     vector<int> internal_elements_;
     vector<int> material_;
 
-    Finite_Element_Type element_type_;
+    Element_Type element_type_;
     
     vector<Finite_Element> elements_;
 };

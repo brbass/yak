@@ -5,6 +5,8 @@
 
 #include "Angular_Discretization.hh"
 #include "Energy_Discretization.hh"
+#include "Solver.hh"
+#include "Nuclear_Data.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
 #include "Vector_Operator.hh"
@@ -29,11 +31,11 @@ public:
                      shared_ptr<Vector_Operator> fission);
     
     virtual void solve_steady_state(vector<double> &x);
-    virtual void solve_k_eigenvalue(vector<double> &x);
+    virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x);
     virtual void solve_time_dependent(vector<double> &x);
     
-    bool check_convergence(vector<double> const &x, 
-                           vector<double> const &x_old);
+    bool check_phi_convergence(vector<double> const &x, 
+                               vector<double> const &x_old);
 
 private:
     

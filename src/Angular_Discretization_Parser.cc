@@ -1,5 +1,9 @@
 #include "Angular_Discretization_Parser.hh"
 
+#include "Gauss_Legendre_Ordinates.hh"
+
+using namespace std;
+
 Angular_Discretization_Parser::
 Angular_Discretization_Parser(pugi::xml_node &input_file):
     Parser(input_file)

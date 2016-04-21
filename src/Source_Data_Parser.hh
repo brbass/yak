@@ -1,6 +1,7 @@
 #ifndef Source_Data_Parser_hh
 #define Source_Data_Parser_hh
 
+#include "Parser.hh"
 #include "Source_Data.hh"
 
 class Source_Data_Parser : public Parser<Source_Data>
@@ -25,3 +26,5 @@ private:
     shared_ptr<Angular_Discretization> angular_;
     shared_ptr<Energy_Discretization> energy_;
 };
+
+#endif

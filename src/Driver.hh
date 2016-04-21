@@ -14,4 +14,4 @@ private:
     
     string xml_in_;
     string xml_out_;
-}
+};

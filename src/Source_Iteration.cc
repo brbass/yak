@@ -24,8 +24,6 @@ Source_Iteration(int max_iterations,
            energy_discretization,
            nuclear_data,
            source_data),
-    nuclear_data_(nuclear_data),
-    source_data_(source_data),
     sweeper_(sweeper),
     discrete_to_moment_(discrete_to_moment),
     moment_to_discrete_(moment_to_discrete),
@@ -49,10 +47,10 @@ solve_steady_state(vector<double> &x)
     
     vector<double> q(q_dat);
     
-    if(source_data_->internal_source_type_ == Source_Data::MOMENT)
-    {
-        (*M)(q);
-    }
+    // if(source_data_->internal_source_type() == Source_Data::MOMENT)
+    // {
+    //     (*M)(q);
+    // }
     
     (*D)((*Linv)(q));
     
@@ -116,12 +114,15 @@ check_phi_convergence(vector<double> const &x,
     return true;
 }
 
-void solve_k_eigenvalue(vector<double> &x)
+void Source_Iteration::
+solve_k_eigenvalue(double &k_eigenvalue, 
+                   vector<double> &x)
 {
     AssertMsg(false, "not implemented");
 }
 
-void solve_time_dependent(vector<double> &x)
+void Source_Iteration::
+solve_time_dependent(vector<double> &x)
 {
     AssertMsg(false, "not implemented");
 }

@@ -1,5 +1,7 @@
 #include "Nuclear_Data_Parser.hh"
 
+using namespace std;
+
 Nuclear_Data_Parser::
 Nuclear_Data_Parser(pugi::xml_node &input_file,
                     shared_ptr<Spatial_Discretization> spatial,
@@ -104,7 +106,7 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
                                          energy_,
                                          sigma_t,
                                          sigma_s,
-                                         nu_,
+                                         nu,
                                          sigma_f,
                                          chi);
 } // constructor

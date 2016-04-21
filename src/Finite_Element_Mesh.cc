@@ -12,7 +12,7 @@ Finite_Element_Mesh(int dimension,
                     int number_of_elements,
                     int number_of_nodes,
                     Geometry geometry,
-                    Finite_Element_Type element_type,
+                    Element_Type element_type,
                     vector<int> const &material,
                     vector<double> const &node_positions):
     Spatial_Discretization(dimension,

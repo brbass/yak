@@ -1,5 +1,7 @@
 #include "Spatial_Discretization_Parser.hh"
 
+using namespace std;
+
 Spatial_Discretization_Parser::
 Spatial_Discretization_Parser(pugi::xml_node &input_file):
     Parser(input_file)
@@ -18,7 +20,7 @@ Spatial_Discretization_Parser(pugi::xml_node &input_file):
     }
     else 
     {
-        AssertMsg(false, "spatial discretization type \"" + spatial_type "\" not found");
+        AssertMsg(false, "spatial discretization type \"" + spatial_type + "\" not found");
     }
 }
 
@@ -89,7 +91,19 @@ get_fem(pugi::xml_node &spatial)
         
         x += region_length;
     }
-    Assert(cell == number_of_cells);
+    Assert(cell == number_of_elements);
+
+    string element_type_str = child_value<string>(spatial, "element_type");
+    Finite_Element_Mesh::Element_Type element_type;
+
+    if (element_type_str == "cfem")
+    {
+        element_type = Finite_Element_Mesh::CFEM;
+    }
+    else
+    {
+        element_type = Finite_Element_Mesh::DFEM;
+    }
 
     return make_shared<Finite_Element_Mesh>(dimension,
                                             number_of_elements,

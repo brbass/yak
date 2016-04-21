@@ -1,5 +1,7 @@
 #include "Source_Data_Parser.hh"
 
+using namespace std;
+
 Source_Data_Parser::
 Source_Data_Parser(pugi::xml_node &input_file,
                     shared_ptr<Spatial_Discretization> spatial,
@@ -16,6 +18,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     
     int number_of_materials = child_value<int>(nuclear_node, "number_of_materials");
     int number_of_cells = spatial_->number_of_cells();
+    int number_of_nodes = spatial_->number_of_nodes();
     int number_of_boundary_cells = spatial_->number_of_boundary_cells();
     int number_of_moments = angular_->number_of_moments();
     int number_of_ordinates = angular_->number_of_ordinates();
@@ -53,9 +56,11 @@ Source_Data_Parser(pugi::xml_node &input_file,
 
         internal_source.resize(number_of_cells * number_of_ordinates * number_of_groups * number_of_nodes);
         
+        vector<int> const material = spatial_->material();
+
         for (int i = 0; i < number_of_cells; ++i)
         {
-            int a = child_value<int>(material, "material_number");
+            int a = material[i];
             
             for (int o = 0; o < number_of_ordinates; ++o)
             {
@@ -109,7 +114,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
         AssertMsg(false, "source type \"" + boundary_type_str + "\" not found");
     }
     
-    vector<double> alpha = child_vector<double>(source_node, "alpha");
+    vector<double> alpha = child_vector<double>(source_node, "alpha", number_of_boundary_cells);
     
     source_ = make_shared<Source_Data>(internal_type,
                                        boundary_type,

@@ -1,10 +1,13 @@
 #include "Transport_Problem_Parser.hh"
 
+using namespace std;
+
 Transport_Problem_Parser::
-Transport_Problem_Parser(pugi::xml_node const &input_file,
-                         shared_ptr<Solver> solver)
+Transport_Problem_Parser(pugi::xml_node &input_file,
+                         shared_ptr<Solver> solver):
+    Parser(input_file)
 {
-    string problem_type_str = child_value<string>(input_file, "problem_type");
+    string problem_type_str = child_value<string>(input_file_, "problem_type");
     
     Transport_Problem::Problem_Type problem_type;
     
@@ -28,11 +31,4 @@ Transport_Problem_Parser(pugi::xml_node const &input_file,
     transport_ = make_shared<Transport_Problem>(problem_type,
                                                 solver);
 }
-
-shared_ptr<Transport_Problem> Transport_Problem_Parser::
-parse()
-{
-    return transport_;
-}
-
 

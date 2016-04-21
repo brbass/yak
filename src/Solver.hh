@@ -6,6 +6,7 @@
 
 #include "Angular_Discretization.hh"
 #include "Energy_Discretization.hh"
+#include "Nuclear_Data.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
 
@@ -23,7 +24,7 @@ public:
            shared_ptr<Source_Data> source_data);
 
     virtual void solve_steady_state(vector<double> &x) = 0;
-    virtual void solve_k_eigenvalue(vector<double> &x) = 0;
+    virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) = 0;
     virtual void solve_time_dependent(vector<double> &x) = 0;
     
 protected:

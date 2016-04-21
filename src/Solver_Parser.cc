@@ -1,5 +1,7 @@
 #include "Solver_Parser.hh"
 
+#include "Check.hh"
+
 using namespace std;
 
 Solver_Parser::
@@ -45,11 +47,11 @@ parse_source_iteration()
     
     return make_shared<Source_Iteration>(max_iterations,
                                          tolerance,
-                                         spatial,
-                                         angular,
-                                         energy,
-                                         nuclear,
-                                         source,
+                                         spatial_,
+                                         angular_,
+                                         energy_,
+                                         nuclear_,
+                                         source_,
                                          sweeper,
                                          discrete_to_moment,
                                          moment_to_discrete,
@@ -71,7 +73,7 @@ parse_sweeper()
     }
     else
     {
-        InsistMsg(false, "sweeper type " + sweeper_type + " not found");
+        AssertMsg(false, "sweeper type " + sweeper_type + " not found");
         
         return shared_ptr<Ordinate_Sweep_Operator>();
     }

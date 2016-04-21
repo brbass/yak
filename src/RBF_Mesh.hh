@@ -14,6 +14,7 @@ public:
     RBF_Mesh(int dimension,
              int number_of_points,
              Geometry geometry,
+             vector<int> const &material,
              vector<double> const &positions);
 
     virtual int number_of_points()

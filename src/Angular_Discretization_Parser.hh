@@ -1,6 +1,7 @@
 #ifndef Angular_Discretization_Parser_hh
 #define Angular_Discretization_Parser_hh
 
+#include "Parser.hh"
 #include "Angular_Discretization.hh"
 
 class Angular_Discretization_Parser : public Parser<Angular_Discretization>

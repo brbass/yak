@@ -10,7 +10,7 @@ Nuclear_Data(shared_ptr<Spatial_Discretization> spatial_discretization,
              vector<double> const &sigma_s,
              vector<double> const &nu,
              vector<double> const &sigma_f,
-             vector<double> const &chi)
+             vector<double> const &chi):
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization),

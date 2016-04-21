@@ -17,8 +17,8 @@ public:
     
     enum Source_Type
     {
-        FULL
-        // MOMENT
+        FULL,
+        MOMENT
     };
 
     Source_Data(Source_Type internal_source_type,
@@ -30,6 +30,14 @@ public:
                 vector<double> const &boundary_source,
                 vector<double> const &alpha);
 
+    Source_Type internal_source_type() const
+    {
+        return internal_source_type_;
+    }
+    Source_Type boundary_source_type() const
+    {
+        return boundary_source_type_;
+    }
     vector<double> const &internal_source() const
     {
         return internal_source_;

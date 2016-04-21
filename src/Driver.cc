@@ -8,7 +8,6 @@
 #include "Nuclear_Data_Parser.hh"
 #include "Solver_Parser.hh"
 #include "Source_Data_Parser.hh"
-#include "Sweeper_Parser.hh"
 #include "Spatial_Discretization_Parser.hh"
 #include "Transport_Problem_Parser.hh"
 #include "Vector_Operator.hh"
@@ -31,7 +30,7 @@ run_problem()
     
     pugi::xml_document input_document;
     
-    if (!input_file.load_file(xml_in_.c_str()))
+    if (!input_document.load_file(xml_in_.c_str()))
     {
         AssertMsg(false, "Could not open xml input file \"" + xml_in_ + "\"");
     }
@@ -40,10 +39,10 @@ run_problem()
     
     // level 1 classes
 
-    Spatial_Discretization_Parser spatial_parser(input_file_);
-    Angular_Discretization_Parser angular_parser(input_file_);
-    Energy_Discretization_Parser energy_parser(input_file_);
-    // Temporal_Discretization_Parser temporal_parser(input_file_);
+    Spatial_Discretization_Parser spatial_parser(input_file);
+    Angular_Discretization_Parser angular_parser(input_file);
+    Energy_Discretization_Parser energy_parser(input_file);
+    // Temporal_Discretization_Parser temporal_parser(input_file);
     
     shared_ptr<Spatial_Discretization> spatial = spatial_parser.get_ptr();
     shared_ptr<Angular_Discretization> angular = angular_parser.get_ptr();
@@ -52,11 +51,11 @@ run_problem()
     
     // level 2 classes
     
-    Nuclear_Data_Parser nuclear_parser(input_file_,
+    Nuclear_Data_Parser nuclear_parser(input_file,
                                        spatial,
                                        angular,
                                        energy);
-    Source_Data_Parser source_parser(input_file_,
+    Source_Data_Parser source_parser(input_file,
                                      spatial,
                                      angular,
                                      energy);
@@ -66,7 +65,7 @@ run_problem()
     
     // level 3 class
     
-    Solver_Parser solver_parser(input_file_,
+    Solver_Parser solver_parser(input_file,
                                 spatial,
                                 angular,
                                 energy,
@@ -77,19 +76,19 @@ run_problem()
     
     // level 4 class
     
-    string transport_type = child_value<string>(input_file_, "transport_type");
+    string transport_type = child_value<string>(input_file, "transport_type");
     
-    Transport_Problem_Parser transport_parser(input_file_,
+    Transport_Problem_Parser transport_parser(input_file,
                                               solver);
     
     shared_ptr<Transport_Problem> transport = transport_parser.get_ptr();
 
     // solve problem
     
-    problem.solve();
+    transport->solve();
     
     pugi::xml_document output_document;
     pugi::xml_node output_file = output_document.append_child("output");
     
-    problem.output(xml_out_);
+    // transport.output(xml_out_);
 }

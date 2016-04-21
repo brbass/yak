@@ -31,6 +31,6 @@ private:
     double k_eigenvalue_;
     vector<double> phi_;
     vector<double> psi_;
-}
+};
 
 #endif

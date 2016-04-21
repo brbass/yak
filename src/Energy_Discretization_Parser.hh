@@ -2,6 +2,7 @@
 #define Energy_Discretization_Parser_hh
 
 #include "Energy_Discretization.hh"
+#include "Parser.hh"
 
 class Energy_Discretization_Parser : public Parser<Energy_Discretization>
 {
