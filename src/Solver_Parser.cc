@@ -35,10 +35,10 @@ Solver_Parser(pugi::xml_node &input_file,
 shared_ptr<Source_Iteration> Solver_Parser::
 parse_source_iteration()
 {
-    pugi::xml_node solver_node = input_file_.child("solver");
+    pugi::xml_node solver_node = input_file_.child("solution_method");
     
     int max_iterations = child_value<int>(solver_node, "max_iterations");
-    double tolerance = child_value<int>(solver_node, "tolerance");
+    double tolerance = child_value<double>(solver_node, "tolerance");
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
     shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();

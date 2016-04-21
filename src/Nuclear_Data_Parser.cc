@@ -13,9 +13,9 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
     energy_(energy)
 {
     pugi::xml_node nuclear_node = input_file.child("nuclear_data");
-    pugi::xml_node materials = input_file.child("materials");
+    pugi::xml_node materials = nuclear_node.child("materials");
 
-    int number_of_materials = child_value<int>(nuclear_node, "number_of_materials");
+    int number_of_materials = child_value<int>(materials, "number_of_materials");
     int number_of_cells = spatial_->number_of_cells();
     int number_of_moments = angular_->number_of_moments();
     int number_of_groups = energy_->number_of_groups();

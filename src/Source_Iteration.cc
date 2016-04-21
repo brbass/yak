@@ -24,6 +24,8 @@ Source_Iteration(int max_iterations,
            energy_discretization,
            nuclear_data,
            source_data),
+    max_iterations_(max_iterations),
+    tolerance_(tolerance),
     sweeper_(sweeper),
     discrete_to_moment_(discrete_to_moment),
     moment_to_discrete_(moment_to_discrete),
@@ -54,9 +56,10 @@ solve_steady_state(vector<double> &x)
     
     (*D)((*Linv)(q));
     
+    x.resize(moment_to_discrete_->column_size(), 0);
     vector<double> x_old;
     
-    for (int i = 0; i < max_iterations_; ++i)
+    for (int it = 0; it < max_iterations_; ++it)
     {
         x_old = x;
 
@@ -71,7 +74,7 @@ solve_steady_state(vector<double> &x)
         
         if (check_phi_convergence(x, x_old))
         {
-            total_iterations_ = i + 1;
+            total_iterations_ = it + 1;
             
             break;
         }

@@ -15,9 +15,12 @@ solve()
     {
     case STEADY_STATE:
         solver_->solve_steady_state(phi_);
+        break;
     case K_EIGENVALUE:
         solver_->solve_k_eigenvalue(k_eigenvalue_, phi_);
+        break;
     case TIME_DEPENDENT:
         solver_->solve_time_dependent(phi_);
+        break;
     }
 }

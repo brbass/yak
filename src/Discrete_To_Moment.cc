@@ -8,14 +8,14 @@ Discrete_To_Moment::
 Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
                    shared_ptr<Angular_Discretization> angular_discretization,
                    shared_ptr<Energy_Discretization> energy_discretization):
-    Vector_Operator(spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_moments(),
-                    spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_ordinates()),
+    Vector_Operator(spatial_discretization->number_of_cells() * 
+                    spatial_discretization->number_of_nodes() * 
+                    energy_discretization->number_of_groups() * 
+                    angular_discretization->number_of_moments(),
+                    spatial_discretization->number_of_cells() * 
+                    spatial_discretization->number_of_nodes() * 
+                    energy_discretization->number_of_groups() * 
+                    angular_discretization->number_of_ordinates()),
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization)

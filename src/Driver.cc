@@ -76,7 +76,7 @@ run_problem()
     
     // level 4 class
     
-    string transport_type = child_value<string>(input_file, "transport_type");
+    string transport_type = child_value<string>(input_file, "problem_type");
     
     Transport_Problem_Parser transport_parser(input_file,
                                               solver);

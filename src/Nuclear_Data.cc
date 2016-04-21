@@ -30,7 +30,7 @@ check_class_invariants() const
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_groups = energy_discretization_->number_of_groups();
     
-    Assert(sigma_t_.size() == number_of_cells * number_of_moments);
+    Assert(sigma_t_.size() == number_of_cells * number_of_groups);
     Assert(sigma_s_.size() == number_of_cells * number_of_moments * number_of_groups * number_of_groups);
     Assert(nu_.size() == number_of_cells * number_of_groups);
     Assert(sigma_f_.size() == number_of_cells * number_of_groups);

@@ -10,14 +10,14 @@ DFEM_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
            shared_ptr<Energy_Discretization> energy_discretization,
            shared_ptr<Nuclear_Data> nuclear_data,
            shared_ptr<Source_Data> source_data):
-    Vector_Operator(spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_ordinates(),
-                    spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_ordinates()),
+    Vector_Operator(spatial_discretization->number_of_cells() * 
+                    spatial_discretization->number_of_nodes() * 
+                    energy_discretization->number_of_groups() * 
+                    angular_discretization->number_of_ordinates(),
+                    spatial_discretization->number_of_cells() * 
+                    spatial_discretization->number_of_nodes() * 
+                    energy_discretization->number_of_groups() * 
+                    angular_discretization->number_of_ordinates()),
     Ordinate_Sweep_Operator(spatial_discretization,
                             angular_discretization,
                             energy_discretization,

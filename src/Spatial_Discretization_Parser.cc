@@ -61,8 +61,8 @@ get_fem(pugi::xml_node &spatial)
 
     int number_of_regions = child_value<int>(regions, "number_of_regions");
     
-    vector<int> material;
-    vector<double> node_positions;
+    vector<int> material(number_of_elements);
+    vector<double> node_positions(number_of_elements * number_of_nodes);
 
     int cell = 0;
     int x = 0;
