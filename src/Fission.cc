@@ -53,7 +53,7 @@ apply_full(vector<double> &x)
                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     int k_sig = g + number_of_groups * i;
                     
-                    sum += chi[k_sig] * sigma_f[k_sig] * x[k_phi];
+                    sum += nu[k_sig] * sigma_f[k_sig] * x[k_phi];
                 }
                 
                 int k_fis = n + number_of_nodes * i;
@@ -63,25 +63,23 @@ apply_full(vector<double> &x)
         }
     }
     
-    x.resize(row_size());
+    x.assign(x.size(), 0);
     
-    for (int i = 0; i < number_of_cells; ++i)
     {
-        for (int g = 0; g < number_of_groups; ++g)
+        int m = 0;
+        for (int i = 0; i < number_of_cells; ++i)
         {
-            int k_chi = g + number_of_groups * i;
-            
-for (int n = 0; n < number_of_nodes; ++n)
+            for (int g = 0; g < number_of_groups; ++g)
             {
-                int k_fis = n + number_of_nodes * i;
+                int k_chi = g + number_of_groups * i;
                 
-                double value = z[k_fis] * chi[k_chi] / angular_normalization;
-                
-                for (int o = 0; o < number_of_ordinates; ++o)
+                for (int n = 0; n < number_of_nodes; ++n)
                 {
-                    int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
+                    int k_fis = n + number_of_nodes * i;
+                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
-                    x[k_psi] = value;
+                    
+                    x[k_phi] = chi[k_chi] * z[k_fis];
                 }
             }
         }

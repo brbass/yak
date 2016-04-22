@@ -55,23 +55,35 @@ solve_steady_state(vector<double> &x)
     //     (*M)(q);
     // }
     
-    (*D)((*Linv)(q));
-    
+    // (*D)((*Linv)(q));
+    // (*D)(q);
+
     x.resize(moment_to_discrete_->column_size(), 0);
     vector<double> x_old;
-    
+    vector<double> x1;
+
     for (int it = 0; it < max_iterations_; ++it)
     {
         x_old = x;
+        x1 = x;
         
-        (*S)(x);
-        (*Linv)(x);
-        (*D)(x);
+        (*S)(x); // moment scattering source
+        (*F)(x1); // moment fission source
         
         for (int i = 0; i < x.size(); ++i)
         {
-            x[i] = x[i] + q[i];
+            x[i] += x1[i];
         }
+        
+        (*M)(x); // discrete fission+scattering source
+        
+        for (int i = 0; i < x.size(); ++i)
+        {
+            x[i] += q[i]; // discrete total source
+        }
+        
+        (*Linv)(x); // solution
+        (*D)(x); // moment solution
         
         if (check_phi_convergence(x, x_old))
         {
@@ -140,9 +152,9 @@ output(pugi::xml_node &output_node) const
     append_child(source, total_iterations_, "total_iterations");
     append_child(source, tolerance_, "tolerance");
     
+    nuclear_data_->output(output_node);
+    source_data_->output(output_node);
     spatial_discretization_->output(output_node);
     angular_discretization_->output(output_node);
     energy_discretization_->output(output_node);
-    nuclear_data_->output(output_node);
-    source_data_->output(output_node);
 }

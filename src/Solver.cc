@@ -17,9 +17,9 @@ Solver(shared_ptr<Spatial_Discretization> spatial_discretization,
 void Solver::
 output(pugi::xml_node &output_node) const
 {
+    nuclear_data_->output(output_node);
+    source_data_->output(output_node);
     spatial_discretization_->output(output_node);
     angular_discretization_->output(output_node);
     energy_discretization_->output(output_node);
-    nuclear_data_->output(output_node);
-    source_data_->output(output_node);
 }

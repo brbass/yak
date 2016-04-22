@@ -78,7 +78,7 @@ sweep_slab(vector<double> &x)
             }
         }
     }
-
+    
     // sweep right
     for (int i = 0; i < number_of_elements; ++i)
     {
@@ -96,11 +96,11 @@ sweep_slab(vector<double> &x)
                 int k_psi2 = 1 + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                 int k_inc = g + number_of_groups * o;
                 
-                double a1 = ordinates[o] / 2 + sigma_t[k_sig] * length / 2;
-                double a2 = ordinates[o] / 2;
-                double a3 = -ordinates[o] / 2;
-                double a4 = ordinates[o] / 2 + sigma_t[k_sig] * length / 2;
-                double s1 = length * y[k_psi1] + ordinates[o] * psi_inc[k_inc];
+                double a1 = ordinates[o] + sigma_t[k_sig] * length;
+                double a2 = ordinates[o];
+                double a3 = -ordinates[o];
+                double a4 = ordinates[o] + sigma_t[k_sig] * length;
+                double s1 = length * y[k_psi1] + 2 * ordinates[o] * psi_inc[k_inc];
                 double s2 = length * y[k_psi2];
                 
                 x[k_psi1] = (a4 * s1 - a2 * s2) / (a1 * a4 - a2 * a3);
@@ -123,9 +123,9 @@ sweep_slab(vector<double> &x)
                 int o1 = number_of_ordinates - o - 1;
                 int k_bs = g + number_of_groups * (o + number_of_ordinates * b);
                 int k_inc = g + number_of_groups * o;
-                int k_ref = n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * i));
+                int k_ref = n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
                 
-                psi_inc[k_inc] = boundary_source[k_bs] + alpha[b] * x[k_ref];
+                psi_inc[k_inc] = boundary_source[k_bs] + alpha[b] * psi_boundary[k_ref];
             }
         }
     }
@@ -147,12 +147,12 @@ sweep_slab(vector<double> &x)
                 int k_psi2 = 1 + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                 int k_inc = g + number_of_groups * o;
 
-                double a1 = -ordinates[o] / 2 + sigma_t[k_sig] * length / 2;
-                double a2 = ordinates[o] / 2;
-                double a3 = -ordinates[o] / 2;
-                double a4 = -ordinates[o] / 2 + sigma_t[k_sig] * length / 2;
+                double a1 = -ordinates[o] + sigma_t[k_sig] * length;
+                double a2 = ordinates[o];
+                double a3 = -ordinates[o];
+                double a4 = -ordinates[o] + sigma_t[k_sig] * length;
                 double s1 = length * y[k_psi1];
-                double s2 = length * y[k_psi2] - ordinates[o] * psi_inc[k_inc];
+                double s2 = length * y[k_psi2] - 2 * ordinates[o] * psi_inc[k_inc];
                 
                 x[k_psi1] = (a4 * s1 - a2 * s2) / (a1 * a4 - a2 * a3);
                 x[k_psi2] = (a3 * s1 - a1 * s2) / (a2 * a3 - a1 * a4);

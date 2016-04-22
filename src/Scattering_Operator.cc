@@ -20,7 +20,7 @@ Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
     Vector_Operator(spatial_discretization->number_of_cells() * 
                     spatial_discretization->number_of_nodes() * 
                     energy_discretization->number_of_groups() * 
-                    angular_discretization->number_of_ordinates(),
+                    angular_discretization->number_of_moments(),
                     spatial_discretization->number_of_cells() * 
                     spatial_discretization->number_of_nodes() * 
                     energy_discretization->number_of_groups() * 
@@ -60,7 +60,7 @@ apply_incoherent(vector<double> &x)
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
     int number_of_groups = energy_discretization_->number_of_groups();
-    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    int number_of_moments = angular_discretization_->number_of_ordinates();
 
     vector<double> y(x);
     
@@ -70,15 +70,15 @@ apply_incoherent(vector<double> &x)
     
     for (int i = 0; i < number_of_cells; ++i)
     {
-        for (int o = 0; o < number_of_ordinates; ++o)
+        for (int m = 0; m < number_of_moments; ++m)
         {
             for (int g = 0; g < number_of_groups; ++g)
             {
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
-                    int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
+                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
-                    x[k_psi] = y[k_psi] - x[k_psi];
+                    x[k_phi] = y[k_phi] - x[k_phi];
                 }
             }
         }
