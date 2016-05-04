@@ -30,8 +30,6 @@ apply_full(vector<double> &x)
 {
     vector<double> y(x);
     
-    x.resize(row_size());
-    
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
     int number_of_groups = energy_discretization_->number_of_groups();
@@ -82,12 +80,13 @@ apply_coherent(vector<double> &x)
         {
             for (int g = 0; g < number_of_groups; ++g)
             {
+                int k_sigma = g + number_of_groups * (g + number_of_groups * (m + number_of_moments * i));
+                
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
                     double sum = 0;
                     
                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-                    int k_sigma = g + number_of_groups * (g + number_of_groups * (m + number_of_moments * i));
                     
                     x[k_phi] = sigma_s[k_sigma] * x[k_phi];
                 }

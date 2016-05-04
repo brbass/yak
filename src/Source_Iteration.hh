@@ -42,6 +42,7 @@ private:
     
     int max_iterations_;
     int total_iterations_;
+    int source_iterations_;
     double tolerance_;
 
     shared_ptr<Vector_Operator> sweeper_;

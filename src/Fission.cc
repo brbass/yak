@@ -13,10 +13,10 @@ using namespace std;
 
 Fission::
 Fission(shared_ptr<Spatial_Discretization> spatial_discretization,
-           shared_ptr<Angular_Discretization> angular_discretization,
-           shared_ptr<Energy_Discretization> energy_discretization,
-           shared_ptr<Nuclear_Data> nuclear_data,
-           Scattering_Type scattering_type):
+        shared_ptr<Angular_Discretization> angular_discretization,
+        shared_ptr<Energy_Discretization> energy_discretization,
+        shared_ptr<Nuclear_Data> nuclear_data,
+        Scattering_Type scattering_type):
     Scattering_Operator(spatial_discretization,
                         angular_discretization,
                         energy_discretization,
@@ -101,9 +101,7 @@ apply_coherent(vector<double> &x)
     
     vector<double> y(x);
     
-    x.resize(row_size());
-    
-    {    
+    {
         int m = 0;
         for (int i = 0; i < number_of_cells; ++i)
         {
@@ -117,14 +115,7 @@ apply_coherent(vector<double> &x)
                 {
                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
-                    double value = cs * y[k_phi];
-                    
-                    for (int o = 0; o < number_of_ordinates; ++o)
-                    {
-                        int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
-                        
-                        x[k_psi] = value;
-                    }
+                    x[k_phi] = cs * y[k_phi];
                 }
             }
         }

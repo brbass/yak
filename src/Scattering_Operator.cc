@@ -17,14 +17,15 @@ Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
                     shared_ptr<Energy_Discretization> energy_discretization,
                     shared_ptr<Nuclear_Data> nuclear_data,
                     Scattering_Type scattering_type):
-    Vector_Operator(spatial_discretization->number_of_cells() * 
-                    spatial_discretization->number_of_nodes() * 
-                    energy_discretization->number_of_groups() * 
-                    angular_discretization->number_of_moments(),
-                    spatial_discretization->number_of_cells() * 
-                    spatial_discretization->number_of_nodes() * 
-                    energy_discretization->number_of_groups() * 
-                    angular_discretization->number_of_moments()),
+    Vector_Operator(get_size(spatial_discretization,
+                             angular_discretization,
+                             energy_discretization),
+                    get_size(spatial_discretization,
+                             angular_discretization,
+                             energy_discretization),
+                    get_number_of_augments(spatial_discretization,
+                                           angular_discretization,
+                                           energy_discretization)),
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization),
@@ -36,8 +37,6 @@ Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
 void Scattering_Operator::
 apply(vector<double> &x)
 {
-    Check(x.size() == column_size());
-    
     switch(scattering_type_)
     {
     case FULL:
@@ -50,8 +49,6 @@ apply(vector<double> &x)
         apply_incoherent(x);
         break;
     }
-    
-    Check(x.size() == row_size());
 }
 
 void Scattering_Operator::
@@ -67,20 +64,21 @@ apply_incoherent(vector<double> &x)
     apply_full(y);
     
     apply_coherent(x);
-    
-    for (int i = 0; i < number_of_cells; ++i)
+
+    for (int i = 0; i < row_size(); ++i)
     {
-        for (int m = 0; m < number_of_moments; ++m)
-        {
-            for (int g = 0; g < number_of_groups; ++g)
-            {
-                for (int n = 0; n < number_of_nodes; ++n)
-                {
-                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-                    
-                    x[k_phi] = y[k_phi] - x[k_phi];
-                }
-            }
-        }
+        x[i] = y[i] - x[i];
     }
 }
+
+int Scattering_Operator::
+get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+         shared_ptr<Angular_Discretization> angular_discretization,
+         shared_ptr<Energy_Discretization> energy_discretization)
+{
+    return (spatial_discretization->number_of_cells()
+            * spatial_discretization->number_of_nodes()
+            * energy_discretization->number_of_groups()
+            * angular_discretization->number_of_moments());
+}
+

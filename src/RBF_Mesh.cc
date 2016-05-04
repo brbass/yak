@@ -21,6 +21,7 @@ RBF_Mesh(int dimension,
 {
     boundary_points_.push_back(0);
     boundary_points_.push_back(number_of_points_ - 1);
+    boundary_nodes_.assign(2, true);
     
     for (int i = 1; i < number_of_points_ - 1; ++i)
     {

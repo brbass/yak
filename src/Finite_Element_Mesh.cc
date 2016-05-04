@@ -24,7 +24,8 @@ Finite_Element_Mesh(int dimension,
     element_type_(element_type),
     material_(material)
 {
-
+    Assert(dimension == 1);
+    
     switch(element_type_)
     {
     case CFEM:
@@ -33,7 +34,7 @@ Finite_Element_Mesh(int dimension,
     case DFEM:
         number_of_points_ = number_of_elements_ * number_of_nodes_;
     }
-
+    
     for (int i = 0; i < number_of_elements_; ++i)
     {
         int k1 = dimension * number_of_nodes_ * i;
@@ -58,6 +59,10 @@ Finite_Element_Mesh(int dimension,
     boundary_elements_.push_back(0);
     boundary_elements_.push_back(number_of_elements_ - 1);
     
+    boundary_nodes_.assign(false, number_of_nodes * number_of_boundary_elements);
+    boundary_nodes_[0 + number_of_nodes * 0] = true;
+    boundary_nodes_[(number_of_nodes - 1) + number_of_nodes * (number_of_boundary_elements - 1)] = true;
+    
     for (int i = 1; i < number_of_elements_ - 1; ++i)
     {
         internal_elements_.push_back(i);
@@ -71,6 +76,7 @@ check_class_invariants() const
 {
     Assert(elements_.size() == number_of_elements_);
     Assert(boundary_elements_.size() == number_of_boundary_elements_);
+    Assert(boundary_nodes_.size() == number_of_boundary_elements_ * number_of_nodes_);
     Assert(internal_elements_.size() == number_of_elements_ - number_of_boundary_elements_);
 }
 
@@ -83,6 +89,7 @@ output(pugi::xml_node &output_node) const
     append_child(finite, number_of_nodes_, "number_of_nodes");
     append_child(finite, number_of_points_, "number_of_points");
     append_child(finite, number_of_boundary_elements_, "number_of_boundary_elements");
+    append_child(finite, boundary_nodes_, "boundary_nodes", "element-node");
     append_child(finite, boundary_elements_, "boundary_elements", "element");
     append_child(finite, internal_elements_, "internal_elements", "element");
     append_child(finite, material_, "material", "element");

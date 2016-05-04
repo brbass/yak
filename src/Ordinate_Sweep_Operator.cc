@@ -6,14 +6,13 @@ Ordinate_Sweep_Operator(shared_ptr<Spatial_Discretization> spatial_discretizatio
                         shared_ptr<Energy_Discretization> energy_discretization,
                         shared_ptr<Nuclear_Data> nuclear_data,
                         shared_ptr<Source_Data> source_data):
-    Vector_Operator(spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_ordinates(),
-                    spatial_discretization_->number_of_cells() * 
-                    spatial_discretization_->number_of_nodes() * 
-                    energy_discretization_->number_of_groups() * 
-                    angular_discretization_->number_of_ordinates()),
+    Vector_Operator(get_size(spatial_discretization,
+                             angular_discretization,
+                             energy_discretization),
+                    get_size(spatial_discretization,
+                             angular_discretization,
+                             energy_discretization)),
+    include_boundary_source_(false),
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization),
@@ -22,3 +21,15 @@ Ordinate_Sweep_Operator(shared_ptr<Spatial_Discretization> spatial_discretizatio
 {
 }
 
+int Ordinate_Sweep_Operator::
+get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+         shared_ptr<Angular_Discretization> angular_discretization,
+         shared_ptr<Energy_Discretization> energy_discretization,
+         shared_ptr<Source_Data> source_data)
+{
+    return (spatial_discretization->number_of_cells()
+            * spatial_discretization->number_of_nodes()
+            * energy_discretization->number_of_groups()
+            * angular_discretization->number_of_ordinates()
+            + source_data->number_of_augments());
+}

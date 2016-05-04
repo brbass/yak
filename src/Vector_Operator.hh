@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Check.hh"
+
 using std::vector;
 
 class Vector_Operator
@@ -14,7 +16,11 @@ public:
 
     vector<double> &operator()(vector<double> &x)
     {
+        Check(x.size() == column_size_);
+        
         apply(x);
+        
+        Check(x.size() == row_size_);
         
         return x;
     }

@@ -52,6 +52,10 @@ public:
     {
         return number_of_nodes_;
     }
+    virtual vector<bool> const &boundary_nodes() const
+    {
+        return boundary_nodes_;
+    }
     virtual vector<int> const &boundary_cells() const
     {
         return boundary_elements_;
@@ -83,6 +87,7 @@ private:
     int number_of_points_;
     int number_of_boundary_elements_;
     
+    vector<bool> boundary_nodes_;
     vector<int> boundary_elements_;
     vector<int> internal_elements_;
     vector<int> material_;

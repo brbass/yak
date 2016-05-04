@@ -24,24 +24,15 @@ Source_Data(Source_Type internal_source_type,
     internal_source_(internal_source),
     boundary_source_(boundary_source),
     alpha_(alpha)
-    
 {
     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_groups = energy_discretization_->number_of_groups();
-    
-    switch(boundary_source_type_)
-    {
-    case FULL:
-        psi_boundary_.resize(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
-        break;
-    case MOMENT:
-        phi_boundary_.resize(number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
-        break;
-    }
-    
+
+    number_of_augments_ = number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups;
+
     check_class_invariants();
 }
 
@@ -68,76 +59,154 @@ check_class_invariants() const
     switch(boundary_source_type_)
     {
     case FULL:
-        Assert(boundary_source_.size() == number_of_boundary_cells * number_of_ordinates * number_of_groups);
-        Assert(psi_boundary_.size() == number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
+        Assert(boundary_source_.size() == number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
         break;
     case MOMENT:
-        Assert(boundary_source_.size() == number_of_boundary_cells * number_of_moments * number_of_groups);
-        Assert(phi_boundary_.size() == number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
+        Assert(boundary_source_.size() == number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
     }
 }
 
-void Source_Data::
-update_psi_boundary(vector<double> const &psi)
+bool Source_Data::
+has_reflection() const
+{
+    for (int i = 0; i < alpha_.size(); ++i)
+    {
+        if (alpha[i] != 0)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+vector<double> Source_Data::
+total_source() const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
-    int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    vector<int> boundary_cells = spatial_discretization_->boundary_cells();
-    
-    for (int b = 0; b < number_of_boundary_cells; ++b)
-    {
-        int i = boundary_cells[b];
-        
-        for (int g = 0; g < number_of_groups; ++g)
-        {
-            for (int o = 0; o < number_of_ordinates; ++o)
-            {
-                for (int n = 0; n < number_of_nodes; ++n)
-                {
-                    int k_psib = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
-                    int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
-                    
-                    psi_boundary_[k_psib] = psi[k_psi];
-                }
-            }
-        }
-    }
-}
-
-
-void Source_Data::
-update_phi_boundary(vector<double> const &phi)
-{
-    int number_of_cells = spatial_discretization_->number_of_cells();
-    int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
-    int number_of_nodes = spatial_discretization_->number_of_nodes();
+    int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_groups = energy_discretization_->number_of_groups();
-    int number_of_moments = angular_discretization_->number_of_ordinates();
-    vector<int> boundary_cells = spatial_discretization_->boundary_cells();
     
-    for (int b = 0; b < number_of_boundary_cells; ++b)
+    vector<double> total_source(internal_source);
+    vector<int> const boundary_cells = spatial_discretization_->boundary_cells();
+
+    switch(internal_source_type_)
     {
-        int i = boundary_cells[b];
-        
-        for (int g = 0; g < number_of_groups; ++g)
+    case FULL:
+        Assert(boundary_source_type_ == FULL);
+
+        for (int b = 0; b < number_of_boundary_cells; ++b)
         {
-            for (int m = 0; m < number_of_moments; ++m)
+            int i = boundary_cells[b];
+            
+            for (int n = 0; n < number_of_nodes; ++n)
             {
-                for (int n = 0; n < number_of_nodes; ++n)
+                int k = n + number_of_nodes * b;
+                
+                for (int g = 0; g < number_of_groups; ++g)
                 {
-                    int k_phib = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * b));
-                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-                    
-                    phi_boundary_[k_phib] = phi[k_phi];
+                    for (int o = 0; o < number_of_ordinates; ++o)
+                    {
+                        int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+                        int k_ts = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
+                            
+                        total_source[k_ts] += boundary_source[k_bs];
+                    }
                 }
             }
         }
+        break;
+    case MOMENT:
+        Assert(boundary_source_type_ == MOMENT);
+
+        for (int b = 0; b < number_of_boundary_cells; ++b)
+        {
+            int i = boundary_cells[b];
+            
+            for (int n = 0; n < number_of_nodes; ++n)
+            {
+                int k = n + number_of_nodes * b;
+                
+                for (int g = 0; g < number_of_groups; ++g)
+                {
+                    for (int m = 0; m < number_of_moments; ++m)
+                    {
+                        int k_bs = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * b));
+                        int k_ts = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+                            
+                        total_source[k_ts] += boundary_source[k_bs];
+                    }
+                }
+            }
+        }
+        break;
     }
 }
+
+// void Source_Data::
+// update_psi_boundary(vector<double> const &psi)
+// {
+//     int number_of_cells = spatial_discretization_->number_of_cells();
+//     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
+//     int number_of_nodes = spatial_discretization_->number_of_nodes();
+//     int number_of_groups = energy_discretization_->number_of_groups();
+//     int number_of_ordinates = angular_discretization_->number_of_ordinates();
+//     vector<int> boundary_cells = spatial_discretization_->boundary_cells();
+    
+//     for (int b = 0; b < number_of_boundary_cells; ++b)
+//     {
+//         int i = boundary_cells[b];
+        
+//         for (int g = 0; g < number_of_groups; ++g)
+//         {
+//             for (int o = 0; o < number_of_ordinates; ++o)
+//             {
+//                 for (int n = 0; n < number_of_nodes; ++n)
+//                 {
+//                     int k_psib = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+//                     int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
+                    
+//                     psi_boundary_[k_psib] = psi[k_psi];
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+// void Source_Data::
+// update_phi_boundary(vector<double> const &phi)
+// {
+//     int number_of_cells = spatial_discretization_->number_of_cells();
+//     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
+//     int number_of_nodes = spatial_discretization_->number_of_nodes();
+//     int number_of_groups = energy_discretization_->number_of_groups();
+//     int number_of_moments = angular_discretization_->number_of_ordinates();
+//     vector<int> boundary_cells = spatial_discretization_->boundary_cells();
+    
+//     for (int b = 0; b < number_of_boundary_cells; ++b)
+//     {
+//         int i = boundary_cells[b];
+        
+//         for (int g = 0; g < number_of_groups; ++g)
+//         {
+//             for (int m = 0; m < number_of_moments; ++m)
+//             {
+//                 for (int n = 0; n < number_of_nodes; ++n)
+//                 {
+//                     int k_phib = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * b));
+//                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+                    
+//                     phi_boundary_[k_phib] = phi[k_phi];
+//                 }
+//             }
+//         }
+//     }
+// }
 
 void Source_Data::
 output(pugi::xml_node &output_node) const

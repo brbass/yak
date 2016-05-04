@@ -8,14 +8,12 @@ Discrete_To_Moment::
 Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
                    shared_ptr<Angular_Discretization> angular_discretization,
                    shared_ptr<Energy_Discretization> energy_discretization):
-    Vector_Operator(spatial_discretization->number_of_cells() * 
-                    spatial_discretization->number_of_nodes() * 
-                    energy_discretization->number_of_groups() * 
-                    angular_discretization->number_of_moments(),
-                    spatial_discretization->number_of_cells() * 
-                    spatial_discretization->number_of_nodes() * 
-                    energy_discretization->number_of_groups() * 
-                    angular_discretization->number_of_ordinates()),
+    Vector_Operator(get_row_size(spatial_discretization,
+                                 angular_discretization,
+                                 energy_discretization)
+                    get_column_size(spatial_discretization,
+                                    angular_discretization,
+                                    energy_discretization)),
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization)
@@ -25,8 +23,6 @@ Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
 void Discrete_To_Moment::
 apply(vector<double> &x)
 {
-    Check(x.size() == column_size());
-    
     vector<double> y(x);
     
     x.resize(row_size());
@@ -65,6 +61,27 @@ apply(vector<double> &x)
             }
         }
     }
-    
-    Check(x.size() == row_size());
 }
+
+int Discrete_To_Moment::
+get_row_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+             shared_ptr<Angular_Discretization> angular_discretization,
+             shared_ptr<Energy_Discretization> energy_discretization)
+{
+    return (spatial_discretization->number_of_cells()
+            * spatial_discretization->number_of_nodes()
+            * energy_discretization->number_of_groups()
+            * angular_discretization->number_of_moments());
+}
+
+int Discrete_To_Moment::
+get_column_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+                shared_ptr<Angular_Discretization> angular_discretization,
+                shared_ptr<Energy_Discretization> energy_discretization)
+{
+    return (spatial_discretization->number_of_cells()
+            * spatial_discretization->number_of_nodes()
+            * energy_discretization->number_of_groups()
+            * angular_discretization->number_of_ordinates());
+}
+

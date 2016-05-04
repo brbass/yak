@@ -26,6 +26,8 @@ Source_Iteration(int max_iterations,
            nuclear_data,
            source_data),
     max_iterations_(max_iterations),
+    total_iterations_(0),
+    source_iterations_(0),
     tolerance_(tolerance),
     sweeper_(sweeper),
     discrete_to_moment_(discrete_to_moment),
@@ -41,27 +43,65 @@ Source_Iteration(int max_iterations,
 void Source_Iteration::
 solve_steady_state(vector<double> &x)
 {
+    int number_of_augments = source_data_->number_of_augments();
+    int phi_size = x.size() - number_of_augments;
+    
     shared_ptr<Vector_Operator> Linv = sweeper_;
-    shared_ptr<Vector_Operator> D = discrete_to_moment_;
-    shared_ptr<Vector_Operator> M = moment_to_discrete_;
-    shared_ptr<Vector_Operator> S = scattering_;
-    shared_ptr<Vector_Operator> F = fission_;
-    vector<double> const q_dat = source_data_->internal_source();
-    
-    vector<double> q(q_dat);
-    
-    // if(source_data_->internal_source_type() == Source_Data::MOMENT)
-    // {
-    //     (*M)(q);
-    // }
-    
-    // (*D)((*Linv)(q));
-    // (*D)(q);
+    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(number_of_augments, discrete_to_moment_);
+    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(number_of_augments, moment_to_discrete_);
+    shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(number_of_augments, scattering_);
+    shared_ptr<Vector_Operator> F = make_shared<Augmented_Operator>(number_of_augments, fission_);
 
+    vector<double> const qdat = source_data_->internal_source();
+    vector<double> q(qdat);
+    
+    Linv->include_boundary_source(true);
+    
+    q.resize(q.size() + number_of_augments, 0);
+    
+    if(source_data_->internal_source_type() == Source_Data::FULL)
+    {
+        (*D)(q);
+    }
+    if (source_data_->has_reflection())
+    {
+        vector<double> q_old;
+        vector<double> q_mom = q;
+        
+        for (int it = 0; it < max_iterations_; ++it)
+        {
+            q_old = q;
+            
+            for (int i = 0; i < phi_size; ++i)
+            {
+                q[i] = q_mom[i];
+            }
+            
+            (*M)(q);
+            (*Linv)(q);
+            (*D)(q);
+            
+            if (check_phi_convergence(q, q_old))
+            {
+                source_iterations_ = it + 1;
+                
+                break;
+            }
+        }
+    }
+    else
+    {
+        Linv(q);
+        
+        source_iterations_ = 1;
+    }
+    
+    Linv->include_boundary_source(false);
+    
     x.resize(moment_to_discrete_->column_size(), 0);
     vector<double> x_old;
     vector<double> x1;
-
+    
     for (int it = 0; it < max_iterations_; ++it)
     {
         x_old = x;
@@ -70,20 +110,20 @@ solve_steady_state(vector<double> &x)
         (*S)(x); // moment scattering source
         (*F)(x1); // moment fission source
         
-        for (int i = 0; i < x.size(); ++i)
+        for (int i = 0; i < phi_size; ++i)
         {
             x[i] += x1[i];
         }
         
         (*M)(x); // discrete fission+scattering source
         
-        for (int i = 0; i < x.size(); ++i)
-        {
-            x[i] += q[i]; // discrete total source
-        }
-        
         (*Linv)(x); // solution
         (*D)(x); // moment solution
+        
+        for (int i = 0; i < phi_size; ++i)
+        {
+            x[i] += q[i]; // add source
+        }
         
         if (check_phi_convergence(x, x_old))
         {
@@ -117,7 +157,7 @@ check_phi_convergence(vector<double> const &x,
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
                     int k = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-
+                    
                     if (abs(x[k] - x_old[k]) / (abs(x_old[k]) + tolerance_ * tolerance_) > tolerance_)
                     {
                         return false;

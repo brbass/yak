@@ -19,7 +19,7 @@ public:
     
     Spatial_Discretization(int dimension,
                            Geometry geometry);
-    
+
     virtual int number_of_points() = 0;
     virtual int number_of_boundary_points() = 0;
     virtual int number_of_cells() = 0;
@@ -33,6 +33,7 @@ public:
     {
         return geometry_;
     }
+    virtual vector<bool> const &boundary_nodes() const = 0;
     virtual vector<int> const &boundary_cells() const = 0;
     virtual vector<int> const &internal_cells() const = 0;
     virtual vector<int> const &material() const = 0;

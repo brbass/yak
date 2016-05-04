@@ -24,6 +24,13 @@ private:
 
     virtual void apply(vector<double> &x);
     
+    int get_row_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+                     shared_ptr<Angular_Discretization> angular_discretization,
+                     shared_ptr<Energy_Discretization> energy_discretization);
+    int get_column_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+                        shared_ptr<Angular_Discretization> angular_discretization,
+                        shared_ptr<Energy_Discretization> energy_discretization);
+    
     shared_ptr<Spatial_Discretization> spatial_discretization_;
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;

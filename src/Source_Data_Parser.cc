@@ -23,6 +23,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     int number_of_moments = angular_->number_of_moments();
     int number_of_ordinates = angular_->number_of_ordinates();
     int number_of_groups = energy_->number_of_groups();
+    vector<bool> const boundary_nodes = spatial_->boundary_nodes();
     
     string internal_type_str = child_value<string>(source_node, "internal_source_type");
     string boundary_type_str = child_value<string>(source_node, "boundary_source_type");
@@ -93,18 +94,26 @@ Source_Data_Parser(pugi::xml_node &input_file,
         
         vector<double> boundary_m = child_vector<double>(source_node, "boundary_source", number_of_boundary_cells * number_of_groups);
         
-        boundary_source.resize(number_of_boundary_cells * number_of_ordinates * number_of_groups);
+        boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
         
         for (int b = 0; b < number_of_boundary_cells; ++b)
         {
-            for (int o = 0; o < number_of_ordinates; ++o)
+            for (int n = 0; n < number_of_nodes; ++n)
             {
-                for (int g = 0; g < number_of_groups; ++g)
+                int k_bn = n + number_of_nodes * b;
+                
+                if (boundary_nodes[k_bn])
                 {
-                    int k = g + number_of_groups * b;
-                    int k_o = g + number_of_groups * (o + number_of_ordinates * b);
+                    for (int o = 0; o < number_of_ordinates; ++o)
+                    {
+                        for (int g = 0; g < number_of_groups; ++g)
+                        {
+                            int k = g + number_of_groups * b;
+                            int k_o = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                     
-                    boundary_source[k_o] = boundary_m[k];
+                            boundary_source[k_o] = boundary_m[k];
+                        }
+                    }
                 }
             }
         }

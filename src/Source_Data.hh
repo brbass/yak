@@ -30,6 +30,10 @@ public:
                 vector<double> const &boundary_source,
                 vector<double> const &alpha);
 
+    int number_of_augments() const
+    {
+        return number_of_augments_;
+    }
     Source_Type internal_source_type() const
     {
         return internal_source_type_;
@@ -50,20 +54,12 @@ public:
     {
         return alpha_;
     }
-    vector<double> const &phi_boundary() const
-    {
-        return phi_boundary_;
-    }
-    vector<double> const &psi_boundary() const
-    { 
-        return psi_boundary_;
-    }
+
+    bool has_reflection() const;
+    vector<double> total_source() const;
     
     void check_class_invariants() const;
     void output(pugi::xml_node &output_node) const;
-
-    void update_psi_boundary(vector<double> const &psi);
-    void update_phi_boundary(vector<double> const &phi);
 
 private:
 
@@ -73,12 +69,10 @@ private:
     shared_ptr<Spatial_Discretization> spatial_discretization_;
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;
-    
+
     vector<double> internal_source_;
     vector<double> boundary_source_;
     vector<double> alpha_;
-    vector<double> phi_boundary_;
-    vector<double> psi_boundary_;
 };
 
 #endif

@@ -40,6 +40,10 @@ private:
 
 protected:
     
+    virtual int get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+                         shared_ptr<Angular_Discretization> angular_discretization,
+                         shared_ptr<Energy_Discretization> energy_discretization);
+    
     Scattering_Type scattering_type_;
     
     shared_ptr<Spatial_Discretization> spatial_discretization_;
