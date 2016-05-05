@@ -12,10 +12,12 @@ DFEM_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
            shared_ptr<Source_Data> source_data):
     Vector_Operator(get_size(spatial_discretization,
                              angular_discretization,
-                             energy_discretization),
+                             energy_discretization,
+                             source_data),
                     get_size(spatial_discretization,
                              angular_discretization,
-                             energy_discretization))
+                             energy_discretization,
+                             source_data)),
     Ordinate_Sweep_Operator(spatial_discretization,
                             angular_discretization,
                             energy_discretization,
@@ -51,9 +53,11 @@ sweep_slab(vector<double> &x)
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     int number_of_boundary_cells = finite_element_mesh_->number_of_boundary_cells();
     int number_of_augments = source_data_->number_of_augments();
-    int number_of_values = row_size() - number_of_augments;
+    int psi_size = row_size() - number_of_augments;
     vector<double> const ordinates = angular_discretization_->ordinates();
     vector<double> const sigma_t = nuclear_data_->sigma_t();
+    vector<double> const boundary_source = source_data_->boundary_source();
+    vector<double> const alpha = source_data_->alpha();
     vector<double> psi_inc(number_of_groups * number_of_ordinates, 0);
     
     // boundary value at x = 0
@@ -68,7 +72,7 @@ sweep_slab(vector<double> &x)
                 int o1 = number_of_ordinates - o - 1;
                 int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                 int k_inc = g + number_of_groups * o;
-                int k_ref = number_of_values + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
+                int k_ref = psi_size + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
                 
                 psi_inc[k_inc] = alpha[b] * y[k_ref];
                 
@@ -124,9 +128,9 @@ sweep_slab(vector<double> &x)
                 int o1 = number_of_ordinates - o - 1;
                 int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                 int k_inc = g + number_of_groups * o;
-                int k_ref = number_of_values + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
+                int k_ref = psi_size + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
                 
-                psi_inc[k_inc] = boundary_source[k_bs] + alpha[b] * psi_boundary[k_ref];
+                psi_inc[k_inc] = alpha[b] * y[k_ref];
                 
                 if (include_boundary_source_)
                 {
@@ -180,7 +184,10 @@ sweep_slab(vector<double> &x)
             {
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
-                    int k_b = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+                    int k_b = psi_size + n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+                    int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
+                    
+                    x[k_b] = x[k_psi];
                 }
             }
         }

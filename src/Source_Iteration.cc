@@ -2,7 +2,9 @@
 
 #include <cmath>
 
+#include "Augmented_Operator.hh"
 #include "Check.hh"
+#include "Ordinate_Sweep_Operator.hh"
 #include "XML_Child_Value.hh"
 
 using namespace std;
@@ -44,9 +46,9 @@ void Source_Iteration::
 solve_steady_state(vector<double> &x)
 {
     int number_of_augments = source_data_->number_of_augments();
-    int phi_size = x.size() - number_of_augments;
+    int phi_size = moment_to_discrete_->column_size();
     
-    shared_ptr<Vector_Operator> Linv = sweeper_;
+    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(sweeper_);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(number_of_augments, discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(number_of_augments, moment_to_discrete_);
     shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(number_of_augments, scattering_);
@@ -91,14 +93,14 @@ solve_steady_state(vector<double> &x)
     }
     else
     {
-        Linv(q);
+        (*Linv)(q);
         
         source_iterations_ = 1;
     }
     
     Linv->include_boundary_source(false);
     
-    x.resize(moment_to_discrete_->column_size(), 0);
+    x.resize(phi_size + number_of_augments, 0);
     vector<double> x_old;
     vector<double> x1;
     
@@ -132,6 +134,8 @@ solve_steady_state(vector<double> &x)
             break;
         }
     }
+    
+    x.resize(phi_size); // remove augments
 }
 
 /*
@@ -189,6 +193,7 @@ output(pugi::xml_node &output_node) const
     pugi::xml_node source = output_node.append_child("source_iteration");
     
     append_child(source, max_iterations_, "max_iterations");
+    append_child(source, source_iterations_, "source_iterations");
     append_child(source, total_iterations_, "total_iterations");
     append_child(source, tolerance_, "tolerance");
     

@@ -70,6 +70,7 @@ private:
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;
 
+    int number_of_augments_;
     vector<double> internal_source_;
     vector<double> boundary_source_;
     vector<double> alpha_;

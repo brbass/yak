@@ -5,6 +5,7 @@
 	</solution>
 	<source_iteration>
 		<max_iterations>5000</max_iterations>
+		<source_iterations>10</source_iterations>
 		<total_iterations>169</total_iterations>
 		<tolerance>1e-06</tolerance>
 	</source_iteration>
@@ -18,15 +19,14 @@
 	<source_data>
 		<alpha data_order="boundary_cell">1 1 </alpha>
 		<internal_source data_order="node-group-ordinate-cell">0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </internal_source>
-		<boundary_source data_order="group-ordinate-boundary_cell">0 0 0 0 </boundary_source>
-		<phi_boundary data_order="node-group-moment-boundary_cell"></phi_boundary>
-		<psi_boundary data_order="node-group-ordinate-boundary_cell">4.99993 4.99993 4.99993 4.99993 4.99993 4.99993 4.99993 4.99993 </psi_boundary>
+		<boundary_source data_order="group-ordinate-boundary_cell">0 0 0 0 0 0 0 0 </boundary_source>
 	</source_data>
 	<finite_element_mesh>
 		<number_of_elements>4</number_of_elements>
 		<number_of_nodes>2</number_of_nodes>
 		<number_of_points>8</number_of_points>
 		<number_of_boundary_elements>2</number_of_boundary_elements>
+		<boundary_nodes data_order="element-node">1 0 0 1 </boundary_nodes>
 		<boundary_elements data_order="element">0 3 </boundary_elements>
 		<internal_elements data_order="element">1 2 </internal_elements>
 		<material data_order="element">0 0 0 0 </material>

@@ -1,4 +1,4 @@
-#include "Augmented_Operator.cc"
+#include "Augmented_Operator.hh"
 
 Augmented_Operator::
 Augmented_Operator(unsigned number_of_augments,
@@ -18,8 +18,6 @@ apply(vector<double> &x)
     
     vector<double> y(x.begin() + column_size, x.end());
     x.resize(column_size);
-    apply(x);
+    (*vector_operator_)(x);
     x.insert(x.end(), y.begin(), y.end());
-    
-    return x;
 }

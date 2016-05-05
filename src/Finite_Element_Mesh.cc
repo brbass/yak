@@ -59,9 +59,9 @@ Finite_Element_Mesh(int dimension,
     boundary_elements_.push_back(0);
     boundary_elements_.push_back(number_of_elements_ - 1);
     
-    boundary_nodes_.assign(false, number_of_nodes * number_of_boundary_elements);
+    boundary_nodes_.assign(number_of_nodes * number_of_boundary_elements_, false);
     boundary_nodes_[0 + number_of_nodes * 0] = true;
-    boundary_nodes_[(number_of_nodes - 1) + number_of_nodes * (number_of_boundary_elements - 1)] = true;
+    boundary_nodes_[(number_of_nodes - 1) + number_of_nodes * (number_of_boundary_elements_ - 1)] = true;
     
     for (int i = 1; i < number_of_elements_ - 1; ++i)
     {

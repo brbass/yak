@@ -72,7 +72,7 @@ has_reflection() const
 {
     for (int i = 0; i < alpha_.size(); ++i)
     {
-        if (alpha[i] != 0)
+        if (alpha_[i] != 0)
         {
             return true;
         }
@@ -91,7 +91,7 @@ total_source() const
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_groups = energy_discretization_->number_of_groups();
     
-    vector<double> total_source(internal_source);
+    vector<double> total_source(internal_source_);
     vector<int> const boundary_cells = spatial_discretization_->boundary_cells();
 
     switch(internal_source_type_)
@@ -114,7 +114,7 @@ total_source() const
                         int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                         int k_ts = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                             
-                        total_source[k_ts] += boundary_source[k_bs];
+                        total_source[k_ts] += boundary_source_[k_bs];
                     }
                 }
             }
@@ -138,7 +138,7 @@ total_source() const
                         int k_bs = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * b));
                         int k_ts = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                             
-                        total_source[k_ts] += boundary_source[k_bs];
+                        total_source[k_ts] += boundary_source_[k_bs];
                     }
                 }
             }
@@ -237,6 +237,4 @@ output(pugi::xml_node &output_node) const
     append_child(source, alpha_, "alpha", "boundary_cell");
     append_child(source, internal_source_, "internal_source", internal_order);
     append_child(source, boundary_source_, "boundary_source", boundary_order);
-    append_child(source, phi_boundary_, "phi_boundary", "node-group-moment-boundary_cell");
-    append_child(source, psi_boundary_, "psi_boundary", "node-group-ordinate-boundary_cell");
 }

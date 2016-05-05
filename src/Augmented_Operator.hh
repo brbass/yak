@@ -1,7 +1,11 @@
 #ifndef Augmented_Operator_hh
 #define Augmented_Operator_hh
 
+#include <memory>
+
 #include "Vector_Operator.hh"
+
+using std::shared_ptr;
 
 class Augmented_Operator : public Vector_Operator
 {
@@ -16,6 +20,6 @@ private:
     
     int number_of_augments_;
     shared_ptr<Vector_Operator> vector_operator_;
-}
+};
 
 #endif

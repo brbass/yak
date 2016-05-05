@@ -10,7 +10,7 @@ Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
                    shared_ptr<Energy_Discretization> energy_discretization):
     Vector_Operator(get_row_size(spatial_discretization,
                                  angular_discretization,
-                                 energy_discretization)
+                                 energy_discretization),
                     get_column_size(spatial_discretization,
                                     angular_discretization,
                                     energy_discretization)),
