@@ -1,4 +1,4 @@
-#include "Source_Iteration.hh"
+#include "Krylov_Iteration.hh"
 
 #include <cmath>
 
@@ -9,8 +9,8 @@
 
 using namespace std;
 
-Source_Iteration::
-Source_Iteration(int max_iterations,
+Krylov_Iteration::
+Krylov_Iteration(int max_iterations,
                  double tolerance,
                  shared_ptr<Spatial_Discretization> spatial_discretization,
                  shared_ptr<Angular_Discretization> angular_discretization,
@@ -42,23 +42,46 @@ Source_Iteration(int max_iterations,
 /*
   Apply phi(l+1) = D(Linv(M(S phi(l)))) + D(Linv(q))
 */
-void Source_Iteration::
+void Krylov_Iteration::
 solve_steady_state(vector<double> &x)
 {
-    shared_ptr<Vector_Operator> SI = make_shared<Source_Iterator>(*this);
-    shared_ptr<Vector_Operator> FI = make_shared<Flux_Iterator>(*this);
+    int number_of_augments = source_data_->number_of_augments();
+    int phi_size = moment_to_discrete_->column_size();
     
-    vector<double> q(phi_size() + number_of_augments(), 0);
+    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(sweeper_);
+    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(number_of_augments, discrete_to_moment_);
+    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(number_of_augments, moment_to_discrete_);
+    shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(number_of_augments, scattering_);
+    shared_ptr<Vector_Operator> F = make_shared<Augmented_Operator>(number_of_augments, fission_);
+
+    vector<double> const qdat = source_data_->internal_source();
+    vector<double> q(qdat);
     
+    Linv->include_boundary_source(true);
+    
+    q.resize(q.size() + number_of_augments, 0);
+    
+    if(source_data_->internal_source_type() == Source_Data::FULL)
+    {
+        (*D)(q);
+    }
     if (source_data_->has_reflection())
     {
         vector<double> q_old;
+        vector<double> q_mom = q;
         
         for (int it = 0; it < max_iterations_; ++it)
         {
             q_old = q;
             
-            (*SI)(q);
+            for (int i = 0; i < phi_size; ++i)
+            {
+                q[i] = q_mom[i];
+            }
+            
+            (*M)(q);
+            (*Linv)(q);
+            (*D)(q);
             
             if (check_phi_convergence(q, q_old))
             {
@@ -70,21 +93,36 @@ solve_steady_state(vector<double> &x)
     }
     else
     {
-        (*SI)(q);
+        (*Linv)(q);
         
         source_iterations_ = 1;
     }
     
-    x.resize(phi_size() + number_of_augments(), 0);
+    Linv->include_boundary_source(false);
+    
+    x.resize(phi_size + number_of_augments, 0);
     vector<double> x_old;
+    vector<double> x1;
     
     for (int it = 0; it < max_iterations_; ++it)
     {
         x_old = x;
+        x1 = x;
         
-        (*FI)(x);
+        (*S)(x); // moment scattering source
+        (*F)(x1); // moment fission source
         
-        for (int i = 0; i < phi_size(); ++i)
+        for (int i = 0; i < phi_size; ++i)
+        {
+            x[i] += x1[i];
+        }
+        
+        (*M)(x); // discrete fission+scattering source
+        
+        (*Linv)(x); // solution
+        (*D)(x); // moment solution
+        
+        for (int i = 0; i < phi_size; ++i)
         {
             x[i] += q[i]; // add source
         }
@@ -97,14 +135,14 @@ solve_steady_state(vector<double> &x)
         }
     }
     
-    x.resize(phi_size()); // remove augments
+    x.resize(phi_size); // remove augments
 }
 
 /*
   Check convergence of pointwise relative error in scalar flux
 */
 
-bool Source_Iteration::
+bool Krylov_Iteration::
 check_phi_convergence(vector<double> const &x, 
                       vector<double> const &x_old)
 {
@@ -136,20 +174,20 @@ check_phi_convergence(vector<double> const &x,
     return true;
 }
 
-void Source_Iteration::
+void Krylov_Iteration::
 solve_k_eigenvalue(double &k_eigenvalue, 
                    vector<double> &x)
 {
     AssertMsg(false, "not implemented");
 }
 
-void Source_Iteration::
+void Krylov_Iteration::
 solve_time_dependent(vector<double> &x)
 {
     AssertMsg(false, "not implemented");
 }
 
-void Source_Iteration::
+void Krylov_Iteration::
 output(pugi::xml_node &output_node) const
 {
     pugi::xml_node source = output_node.append_child("source_iteration");
@@ -164,85 +202,4 @@ output(pugi::xml_node &output_node) const
     spatial_discretization_->output(output_node);
     angular_discretization_->output(output_node);
     energy_discretization_->output(output_node);
-}
-
-Source_Iteration::Source_Iterator::
-Source_Iterator(Source_Iteration const &si):
-    Vector_Operator(si.phi_size() + si.number_of_augments(),
-                    si.phi_size() + si.number_of_augments()),
-    si_(si)
-{
-}
-
-void Source_Iteration::Source_Iterator::
-apply(vector<double> &x)
-{
-    vector<double> const internal_source = si_.source_data_->internal_source();
-    
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);
-    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
-    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
-    
-    Linv->include_boundary_source(true);
-    
-    if(si_.source_data_->internal_source_type() == Source_Data::FULL)
-    {
-        vector<double> q(internal_source);
-        q.resize(q.size() + si_.number_of_augments());
-        
-        (*D)(q);
-        for (int i = 0; i < si_.phi_size(); ++i)
-        {
-            x[i] = q[i];
-        }
-    }
-    else
-    {
-        for (int i = 0; i < si_.phi_size(); ++i)
-        {
-            x[i] = internal_source[i];
-        }
-    }
-    
-    (*M)(x);
-    (*Linv)(x);
-    (*D)(x);
-}
-
-Source_Iteration::Flux_Iterator::
-Flux_Iterator(Source_Iteration const &si):
-    Vector_Operator(si.phi_size() + si.number_of_augments(),
-                    si.phi_size() + si.number_of_augments()),
-    si_(si)
-{
-    
-}
-
-void Source_Iteration::Flux_Iterator::
-apply(vector<double> &x)
-{
-
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);
-    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
-    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
-    shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.scattering_);
-    shared_ptr<Vector_Operator> F = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.fission_);
-
-    Linv->include_boundary_source(false);
-    
-    {
-        vector<double> x1(x);
-        
-        (*S)(x); // moment scattering source
-        (*F)(x1); // moment fission source
-        
-        for (int i = 0; i < si_.phi_size(); ++i)
-        {
-            x[i] += x1[i];
-        }
-    }
-    
-    (*M)(x); // discrete fission+scattering source
-    (*Linv)(x); // solution
-    (*D)(x); // moment solution
 }
