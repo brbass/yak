@@ -26,6 +26,10 @@ Solver_Parser(pugi::xml_node &input_file,
     {
         solver_  = parse_source_iteration();
     }
+    else if (solver_type == "krylov_iteration")
+    {
+        solver_ = parse_krylov_iteration();
+    }
     else
     {
         AssertMsg(false, "solver type " + solver_type + " not found");
@@ -46,6 +50,39 @@ parse_source_iteration()
     shared_ptr<Vector_Operator> fission = parse_fission();
     
     return make_shared<Source_Iteration>(max_iterations,
+                                         tolerance,
+                                         spatial_,
+                                         angular_,
+                                         energy_,
+                                         nuclear_,
+                                         source_,
+                                         sweeper,
+                                         discrete_to_moment,
+                                         moment_to_discrete,
+                                         scattering,
+                                         fission);
+}
+
+shared_ptr<Krylov_Iteration> Solver_Parser::
+parse_krylov_iteration()
+{
+    pugi::xml_node solver_node = input_file_.child("solution_method");
+    
+    int max_iterations = child_value<int>(solver_node, "max_iterations");
+    int kspace = child_value<int>(solver_node, "kspace");
+    int poly_ord = child_value<int>(solver_node, "poly_ord");
+    int solver_print = child_value<int>(solver_node, "solver_print");
+    double tolerance = child_value<double>(solver_node, "tolerance");
+    shared_ptr<Vector_Operator> sweeper = parse_sweeper();
+    shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
+    shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
+    shared_ptr<Vector_Operator> scattering = parse_scattering();
+    shared_ptr<Vector_Operator> fission = parse_fission();
+    
+    return make_shared<Krylov_Iteration>(max_iterations,
+                                         kspace,
+                                         poly_ord,
+                                         solver_print,
                                          tolerance,
                                          spatial_,
                                          angular_,

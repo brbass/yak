@@ -4,6 +4,7 @@
 #include "DFEM_Sweep.hh"
 #include "Discrete_To_Moment.hh"
 #include "Fission.hh"
+#include "Krylov_Iteration.hh"
 #include "Moment_To_Discrete.hh"
 #include "Ordinate_Sweep_Operator.hh"
 #include "Parser.hh"
@@ -28,6 +29,7 @@ public:
     }
     
     shared_ptr<Source_Iteration> parse_source_iteration();
+    shared_ptr<Krylov_Iteration> parse_krylov_iteration();
     shared_ptr<Ordinate_Sweep_Operator> parse_sweeper();
     shared_ptr<DFEM_Sweep> parse_dfem();
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();
