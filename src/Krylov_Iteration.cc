@@ -3,12 +3,8 @@
 #include <cmath>
 
 #include <AztecOO.h>
-#ifdef EPETRA_MPI
-#  include <mpi.h>
-#  include <Epetra_MpiComm.h>
-#else
-# include <Epetra_SerialComm.h>
-#endif
+#include <mpi.h>
+#include <Epetra_MpiComm.h>
 #include <Epetra_Map.h>
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
@@ -97,11 +93,7 @@ solve_steady_state(vector<double> &x)
     
     x.resize(phi_size() + number_of_augments(), 0);
   
-#ifdef EPETRA_MPI
     shared_ptr<Epetra_Comm> comm = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
-#else
-    shared_ptr<Epetra_Comm> comm = make_shared<Epetra_SerialComm>();
-#endif
     shared_ptr<Epetra_Map> map = make_shared<Epetra_Map>(phi_size() + number_of_augments(), 0, *comm);
     shared_ptr<Epetra_Vector> lhs = make_shared<Epetra_Vector>(*map);
     shared_ptr<Epetra_Vector> rhs = make_shared<Epetra_Vector>(Copy, *map, &q[0]);
@@ -125,6 +117,8 @@ solve_steady_state(vector<double> &x)
     {
         solver->SetAztecOption(AZ_output, AZ_none);
     }
+
+    lhs->PutScalar(1.0);
 
     solver->Iterate(max_iterations_, tolerance_);
     
