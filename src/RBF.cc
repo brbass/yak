@@ -194,4 +194,3 @@ get_distance_squared(vector<double> const &r) const
 
     return sum;
 }
-

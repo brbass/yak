@@ -6,32 +6,32 @@
   <solution_method>
     <type>krylov_iteration</type>
     <max_iterations>5000</max_iterations>
-    <kspace>10</kspace>
+    <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>dfem</type>
+      <type>rbf</type>
     </sweeper>
   </solution_method>
   
   <spatial_discretization>
-    <type>finite_element</type>
-    <element_type>dfem</element_type>
+    <type>rbf</type>
     <dimension>1</dimension>
-    <number_of_elements>300</number_of_elements>
-    <number_of_nodes>2</number_of_nodes>
+    <number_of_points>32</number_of_points>
+    <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
+    <basis_type>gaussian</basis_type>
     
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_elements>100</number_of_elements>
+        <number_of_points>10</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_elements>200</number_of_elements>
+        <number_of_points>20</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>

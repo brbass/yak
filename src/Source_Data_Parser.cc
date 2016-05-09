@@ -33,7 +33,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     
     vector<double> internal_source;
 
-    if (internal_type_str == "isotropic")
+    if (internal_type_str == "isotropic_full")
     {
         internal_type = Source_Data::FULL;
         
@@ -79,7 +79,54 @@ Source_Data_Parser(pugi::xml_node &input_file,
             }
         }
     }
-    else
+    else if (internal_type_str == "isotropic")
+    {
+        internal_type = Source_Data::MOMENT;
+        
+        // double angular_normalization = angular_->angular_normalization();
+        
+        vector<double> internal_m(number_of_materials * number_of_groups);
+        
+        for (pugi::xml_node material = materials.child("material"); material; material = material.next_sibling("material"))
+        {
+            int a = child_value<int>(material, "material_number");
+            
+            vector<double> internal_a = child_vector<double>(material, "internal_source", number_of_groups);
+            
+            for (int g = 0; g < number_of_groups; ++g)
+            {
+                int k = g + number_of_groups * a;
+                
+                internal_m[k] = internal_a[g];
+            }
+        }
+
+        internal_source.assign(number_of_cells * number_of_moments * number_of_groups * number_of_nodes, 0);
+        
+        vector<int> const material = spatial_->material();
+
+        for (int i = 0; i < number_of_cells; ++i)
+        {
+            int a = material[i];
+            
+            {
+                int m = 0;
+                
+                for (int g = 0; g < number_of_groups; ++g)
+                {
+                    int k_m = g + number_of_groups * a;
+                    
+                    for (int n = 0; n < number_of_nodes; ++n)
+                    {
+                        int k_i = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+                        
+                        internal_source[k_i] = internal_m[k_m];
+                    }
+                }
+            }
+        }
+    }
+    else 
     {
         AssertMsg(false, "source type \"" + internal_type_str + "\" not found");
     }
