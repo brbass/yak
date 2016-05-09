@@ -70,9 +70,9 @@ public:
     {
         return material_;
     }
-    RBF const &basis_function(int point) const
+    shared_ptr<RBF> const &basis_function(int point) const
     {
-        return *basis_functions_[point];
+        return basis_functions_[point];
     }
     
     void check_class_invariants() const;

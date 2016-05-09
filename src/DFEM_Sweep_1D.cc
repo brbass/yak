@@ -70,7 +70,6 @@ sweep_slab(vector<double> &x)
             for (int o = number_of_ordinates / 2; o < number_of_ordinates; ++o)
             {
                 int o1 = number_of_ordinates - o - 1;
-                int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                 int k_inc = g + number_of_groups * o;
                 int k_ref = psi_size + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
                 
@@ -78,6 +77,8 @@ sweep_slab(vector<double> &x)
                 
                 if (include_boundary_source_)
                 {
+                    int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+                    
                     psi_inc[k_inc] += boundary_source[k_bs];
                 }
             }
@@ -126,7 +127,6 @@ sweep_slab(vector<double> &x)
             for (int o = 0; o < number_of_ordinates / 2; ++o)
             {
                 int o1 = number_of_ordinates - o - 1;
-                int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
                 int k_inc = g + number_of_groups * o;
                 int k_ref = psi_size + n + number_of_nodes * (g + number_of_groups * (o1 + number_of_ordinates * b));
                 
@@ -134,6 +134,8 @@ sweep_slab(vector<double> &x)
                 
                 if (include_boundary_source_)
                 {
+                    int k_bs = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
+                    
                     psi_inc[k_inc] += boundary_source[k_bs];
                 }
             }
