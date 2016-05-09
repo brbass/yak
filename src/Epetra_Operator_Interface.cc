@@ -34,4 +34,6 @@ Apply(Epetra_MultiVector const &X,
     {
         Y.ReplaceMyValue(i, 0, x[i]);
     }
+
+    return 0;
 }

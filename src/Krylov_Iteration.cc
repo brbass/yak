@@ -105,10 +105,12 @@ solve_steady_state(vector<double> &x)
                                                                                  rhs.get());
     shared_ptr<AztecOO> solver = make_shared<AztecOO>(*problem);
     
-    solver->SetAztecOption(AZ_precond, AZ_Jacobi);
-    solver->SetAztecOption(AZ_poly_ord, poly_ord_);
+    solver->SetAztecOption(AZ_precond, AZ_none);
+    // solver->SetAztecOption(AZ_precond, AZ_Jacobi);
+    // solver->SetAztecOption(AZ_poly_ord, poly_ord_);
     solver->SetAztecOption(AZ_solver, AZ_gmres);
     solver->SetAztecOption(AZ_kspace, kspace_);
+    solver->SetAztecOption(AZ_conv, AZ_rhs);
     if (solver_print_)
     {
         solver->SetAztecOption(AZ_output, AZ_all);
@@ -117,9 +119,9 @@ solve_steady_state(vector<double> &x)
     {
         solver->SetAztecOption(AZ_output, AZ_none);
     }
-
+    
     lhs->PutScalar(1.0);
-
+    
     solver->Iterate(max_iterations_, tolerance_);
     
     lhs->ExtractCopy(&x[0]);

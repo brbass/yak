@@ -9,7 +9,7 @@
     <kspace>10</kspace>
     <poly_ord>2</poly_ord>
     <solver_print>1</solver_print>
-    <tolerance>1e-6</tolerance>
+    <tolerance>1e-8</tolerance>
     
     <sweeper>
       <type>dfem</type>
