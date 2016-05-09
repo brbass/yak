@@ -19,7 +19,6 @@ public:
     
     Krylov_Iteration(int max_iterations,
                      int kspace,
-                     int poly_ord,
                      int solver_print,
                      double tolerance,
                      shared_ptr<Spatial_Discretization> spatial_discretization,
@@ -54,7 +53,6 @@ private:
     
     int max_iterations_;
     int kspace_;
-    int poly_ord_;
     int solver_print_;
     int total_iterations_;
     int source_iterations_;

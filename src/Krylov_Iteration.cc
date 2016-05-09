@@ -20,7 +20,6 @@ using namespace std;
 Krylov_Iteration::
 Krylov_Iteration(int max_iterations,
                  int kspace,
-                 int poly_ord,
                  int solver_print,
                  double tolerance,
                  shared_ptr<Spatial_Discretization> spatial_discretization,
@@ -40,7 +39,6 @@ Krylov_Iteration(int max_iterations,
            source_data),
     max_iterations_(max_iterations),
     kspace_(kspace),
-    poly_ord_(poly_ord),
     solver_print_(solver_print),
     total_iterations_(0),
     source_iterations_(0),
@@ -83,6 +81,10 @@ solve_steady_state(vector<double> &x)
                 break;
             }
         }
+        for (int i = phi_size(); i < phi_size() + number_of_augments(); ++i)
+        {
+            q[i] = 0;
+        }
     }
     else
     {
@@ -90,7 +92,7 @@ solve_steady_state(vector<double> &x)
         
         source_iterations_ = 1;
     }
-    
+
     x.resize(phi_size() + number_of_augments(), 0);
   
     shared_ptr<Epetra_Comm> comm = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
@@ -107,7 +109,6 @@ solve_steady_state(vector<double> &x)
     
     solver->SetAztecOption(AZ_precond, AZ_none);
     // solver->SetAztecOption(AZ_precond, AZ_Jacobi);
-    // solver->SetAztecOption(AZ_poly_ord, poly_ord_);
     solver->SetAztecOption(AZ_solver, AZ_gmres);
     solver->SetAztecOption(AZ_kspace, kspace_);
     solver->SetAztecOption(AZ_conv, AZ_rhs);
@@ -123,7 +124,8 @@ solve_steady_state(vector<double> &x)
     lhs->PutScalar(1.0);
     
     solver->Iterate(max_iterations_, tolerance_);
-    
+    total_iterations_ = solver->NumIters();
+   
     lhs->ExtractCopy(&x[0]);
     
     x.resize(phi_size()); // remove augments

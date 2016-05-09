@@ -67,6 +67,10 @@ solve_steady_state(vector<double> &x)
                 break;
             }
         }
+        for (int i = phi_size(); i < phi_size() + number_of_augments(); ++i)
+        {
+            q[i] = 0;
+        }
     }
     else
     {

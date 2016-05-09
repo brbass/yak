@@ -70,7 +70,6 @@ parse_krylov_iteration()
     
     int max_iterations = child_value<int>(solver_node, "max_iterations");
     int kspace = child_value<int>(solver_node, "kspace");
-    int poly_ord = child_value<int>(solver_node, "poly_ord");
     int solver_print = child_value<int>(solver_node, "solver_print");
     double tolerance = child_value<double>(solver_node, "tolerance");
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
@@ -81,7 +80,6 @@ parse_krylov_iteration()
     
     return make_shared<Krylov_Iteration>(max_iterations,
                                          kspace,
-                                         poly_ord,
                                          solver_print,
                                          tolerance,
                                          spatial_,
