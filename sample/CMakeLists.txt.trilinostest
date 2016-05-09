@@ -1,0 +1,60 @@
+cmake_minimum_required (VERSION 3.1)
+
+project(Yak)
+
+# compiler options
+set(CMAKE_VERBOSE_MAKEFILE off)
+set(CMAKE_BUILD_TYPE Debug)
+
+# standard flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -o3")
+set(CMAKE_INSTALL_PREFIX /Users/brbass/Documents/research/yak/bin)
+set(Trilinos_PREFIX /software/trilinos)
+
+# mpi flags
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
+
+# gsl flags
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/home/software/rhel6/gsl/1.15/lib -lgsl -lgslcblas -I/home/software/rhel6/gsl/1.15/include")
+
+# trilinos flags
+find_package(Trilinos REQUIRED)
+message("\nFound Trilinos!  Here are the details: ")
+message("   Trilinos_DIR = ${Trilinos_DIR}")
+message("   Trilinos_VERSION = ${Trilinos_VERSION}")
+message("   Trilinos_PACKAGE_LIST = ${Trilinos_PACKAGE_LIST}")
+message("   Trilinos_LIBRARIES = ${Trilinos_LIBRARIES}")
+message("   Trilinos_INCLUDE_DIRS = ${Trilinos_INCLUDE_DIRS}")
+message("   Trilinos_LIBRARY_DIRS = ${Trilinos_LIBRARY_DIRS}")
+message("   Trilinos_TPL_LIST = ${Trilinos_TPL_LIST}")
+message("   Trilinos_TPL_INCLUDE_DIRS = ${Trilinos_TPL_INCLUDE_DIRS}")
+message("   Trilinos_TPL_LIBRARIES = ${Trilinos_TPL_LIBRARIES}")
+message("   Trilinos_TPL_LIBRARY_DIRS = ${Trilinos_TPL_LIBRARY_DIRS}")
+message("   Trilinos_BUILD_SHARED_LIBS = ${Trilinos_BUILD_SHARED_LIBS}")
+message("   Trilinos_CXX_COMPILER = ${Trilinos_CXX_COMPILER}")
+message("   Trilinos_C_COMPILER = ${Trilinos_C_COMPILER}")
+message("   Trilinos_Fortran_COMPILER = ${Trilinos_Fortran_COMPILER}")
+message("End of Trilinos details\n")
+
+SET(CMAKE_CXX_COMPILER ${Trilinos_CXX_COMPILER} )
+SET(CMAKE_C_COMPILER ${Trilinos_C_COMPILER} )
+SET(CMAKE_Fortran_COMPILER ${Trilinos_Fortran_COMPILER} )
+
+SET(CMAKE_CXX_FLAGS  "${Trilinos_CXX_COMPILER_FLAGS} ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_C_FLAGS  "${Trilinos_C_COMPILER_FLAGS} ${CMAKE_C_FLAGS}")
+SET(CMAKE_Fortran_FLAGS  "${Trilinos_Fortran_COMPILER_FLAGS} ${CMAKE_Fortran_FLAGS}")
+
+
+# find local files
+file(GLOB SOURCES "src/*.cc" "lib/*.c" "lib/*.cpp")
+set(MAIN "main/Yak.cc")
+# set(TEST_ANGLE "test/tst_moment_discrete.cc")
+
+include_directories(src lib)
+
+add_executable(yak ${SOURCES} ${MAIN})
+target_link_libraries(yak ${MPI_COMPILE_FLAGS})
+
+install(TARGETS yak DESTINATION .)
+

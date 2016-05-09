@@ -1,4 +1,4 @@
-/*
+/*
 	Numerical Integration by Gauss-Legendre Quadrature Formulas of high orders.
 	High-precision abscissas and weights are used.
 
