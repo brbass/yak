@@ -1,13 +1,14 @@
 #ifndef Solver_Parser_hh
 #define Solver_Parser_hh
 
-#include "DFEM_Sweep.hh"
+#include "DFEM_Sweep_1D.hh"
 #include "Discrete_To_Moment.hh"
 #include "Fission.hh"
 #include "Krylov_Iteration.hh"
 #include "Moment_To_Discrete.hh"
 #include "Ordinate_Sweep_Operator.hh"
 #include "Parser.hh"
+#include "RBF_Sweep_1D.hh"
 #include "Scattering.hh"
 #include "Solver.hh"
 #include "Source_Iteration.hh"
@@ -31,7 +32,8 @@ public:
     shared_ptr<Source_Iteration> parse_source_iteration();
     shared_ptr<Krylov_Iteration> parse_krylov_iteration();
     shared_ptr<Ordinate_Sweep_Operator> parse_sweeper();
-    shared_ptr<DFEM_Sweep> parse_dfem();
+    shared_ptr<DFEM_Sweep_1D> parse_dfem();
+    shared_ptr<RBF_Sweep_1D> parse_rbf();
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();
     shared_ptr<Moment_To_Discrete> parse_moment_to_discrete();
     shared_ptr<Scattering> parse_scattering();

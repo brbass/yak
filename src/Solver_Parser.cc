@@ -106,6 +106,10 @@ parse_sweeper()
     {
         return parse_dfem();
     }
+    else if (sweeper_type == "rbf")
+    {
+        return parse_rbf();
+    }
     else
     {
         AssertMsg(false, "sweeper type " + sweeper_type + " not found");
@@ -114,14 +118,24 @@ parse_sweeper()
     }
 }
 
-shared_ptr<DFEM_Sweep> Solver_Parser::
+shared_ptr<DFEM_Sweep_1D> Solver_Parser::
 parse_dfem()
 {
-    return make_shared<DFEM_Sweep>(spatial_,
-                                   angular_,
-                                   energy_,
-                                   nuclear_,
-                                   source_);
+    return make_shared<DFEM_Sweep_1D>(spatial_,
+                                      angular_,
+                                      energy_,
+                                      nuclear_,
+                                      source_);
+}
+
+shared_ptr<RBF_Sweep_1D> Solver_Parser::
+parse_rbf()
+{
+    return make_shared<RBF_Sweep_1D>(spatial_,
+                                     angular_,
+                                     energy_,
+                                     nuclear_,
+                                     source_);
 }
 
 shared_ptr<Discrete_To_Moment> Solver_Parser::

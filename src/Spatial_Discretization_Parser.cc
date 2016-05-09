@@ -118,8 +118,12 @@ shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
 get_rbf(pugi::xml_node &spatial)
 {
     int dimension = child_value<int>(spatial, "dimension");
+    int number_of_points = child_value<int>(spatial, "number_of_points");
+    double shape_multiplier = child_value<int>(spatial, "shape_multiplier");
     string geometry_str = child_value<string>(spatial, "geometry");
+    string basis_str = child_value<string>(spatial, "basis_type");
     Spatial_Discretization::Geometry geometry;
+    RBF_Mesh::Basis_Type basis_type;
     
     if (dimension == 1)
     {
@@ -129,11 +133,11 @@ get_rbf(pugi::xml_node &spatial)
         }
         else if (geometry_str == "spherical")
         {
-            geometry = Spatial_Discretization::SLAB;
+            geometry = Spatial_Discretization::SPHERICAL;
         }
         else if (geometry_str == "cylindrical")
         {
-            geometry = Spatial_Discretization::SLAB;
+            geometry = Spatial_Discretization::CYLINDRICAL;
         }
         else
         {
@@ -145,5 +149,69 @@ get_rbf(pugi::xml_node &spatial)
         AssertMsg(false, "dimension " + to_string(dimension) + " not available");
     }
     
+    if (basis_str == "gaussian")
+    {
+        basis_type = RBF_Mesh::GAUSSIAN;
+    }
+    else
+    {
+        AssertMsg(false, "basis_type \"" + basis_str + "\" not found");
+    }
+
+    pugi::xml_node regions = spatial.child("regions");
+
+    int number_of_regions = child_value<int>(regions, "number_of_regions");
+
+    vector<int> material(number_of_points);
+    vector<double> positions(number_of_points);
+    vector<double> shape_parameter(number_of_points);
+
+    int point = 0;
+    int region_x = 0;
     
+    for (pugi::xml_node region = regions.child("region"); region; region = region.next_sibling("region"))
+    {
+        int region_points = child_value<int>(region, "number_of_points");
+        int region_material = child_value<int>(region, "material");
+        double region_length = child_value<double>(region, "length");
+        double dx = region_length / region_points;
+        
+        if (point == 0)
+        {
+            material[point] = region_material;
+            positions[point] = region_x;
+            shape_parameter[point] = shape_multiplier / dx;
+            
+            point += 1;
+        }
+        
+        for (int i = 0; i < region_points; ++i)
+        {
+            material[point] = region_material;
+            positions[point] = region_x + (0.5 + i) * dx;
+            shape_parameter[point] = shape_multiplier / dx;
+            
+            point += 1;
+        }
+        
+        region_x += region_length;
+        
+        if (point == number_of_points - 1)
+        {
+            material[point] = region_material;
+            positions[point] = region_x;
+            shape_parameter[point] = shape_multiplier / dx;
+            
+            point += 1;
+        }
+    }
+    Assert(point == number_of_points);
+    
+    return make_shared<RBF_Mesh>(dimension,
+                                 number_of_points,
+                                 geometry,
+                                 basis_type,
+                                 material,
+                                 positions,
+                                 shape_parameter);
 }
