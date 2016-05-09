@@ -59,13 +59,15 @@ sweep_slab(vector<double> &x)
     Dense_Solve matrix_solver(number_of_points);
     
     int d = 0; // dimension
-    vector<double> a_data(number_of_points*number_of_points, 0.0); // matrix
+    vector<double> a_data(number_of_points * number_of_points, 0.0); // matrix
     vector<double> b_data(number_of_points, 0.0); // rhs
     vector<double> x_data(number_of_points, 1.0); //lhs
     for (int o = 0; o < number_of_ordinates; ++o)
     {
         for (int g = 0; g < number_of_groups; ++g)
         {
+            // a_data.assign(number_of_points * number_of_points, 0.0);
+            
             if (ordinates[o]>0)
             {
                 for (int i = 0; i < number_of_points; ++i) // basis point
@@ -79,9 +81,9 @@ sweep_slab(vector<double> &x)
                         vector<double> const equation_position = equation_rbf->position();
                         
                         int k_a = i + number_of_points * j;
-                        int k_sig = g + number_of_groups * i;
+                        int k_sig = g + number_of_groups * j;
 
-                        a_data[k_a] = ordinates[o] * basis_rbf->dbasis(d, equation_position) 
+                        a_data[k_a] = ordinates[o] * basis_rbf->dbasis(d, equation_position)
                             + sigma_t[k_sig] * basis_rbf->basis(equation_position);
                     }
                     
@@ -97,27 +99,27 @@ sweep_slab(vector<double> &x)
             }
             else
             {
-                for (int i = 0; i < number_of_points; ++i)
+                for (int i = 0; i < number_of_points; ++i) // basis point
                 {
                     shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(i);
                     
                     // internal points
-                    for (int j = 0; j < number_of_points - 1; ++j)
+                    for (int j = 0; j < number_of_points - 1; ++j) // equation point
                     {
                         shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(j);
                         vector<double> const equation_position = equation_rbf->position();
 
                         int k_a = i + number_of_points * j;
-                        int k_sig = g + number_of_groups * i;
-                    
+                        int k_sig = g + number_of_groups * j;
+                        
                         a_data[k_a] = ordinates[o] * basis_rbf->dbasis(d, equation_position)
                             + sigma_t[k_sig] * basis_rbf->basis(equation_position);
                     }
-
+                    
                     // boundary point
                     int j = number_of_points - 1;
-                    int k_a = i + number_of_points*j;
-
+                    int k_a = i + number_of_points * j;
+                    
                     shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(j);
                     vector<double> const equation_position = equation_rbf->position();
                     
@@ -199,7 +201,7 @@ sweep_slab(vector<double> &x)
                     sum += x_data[j] * basis_rbf->basis(position);
                 }
                 
-                int k_x = g + number_of_groups * (o + number_of_ordinates) * i;
+                int k_x = g + number_of_groups * (o + number_of_ordinates * i);
                 
                 x[k_x] = sum;
             }

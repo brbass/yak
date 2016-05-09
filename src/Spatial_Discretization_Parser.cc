@@ -119,7 +119,7 @@ get_rbf(pugi::xml_node &spatial)
 {
     int dimension = child_value<int>(spatial, "dimension");
     int number_of_points = child_value<int>(spatial, "number_of_points");
-    double shape_multiplier = child_value<int>(spatial, "shape_multiplier");
+    double shape_multiplier = child_value<double>(spatial, "shape_multiplier");
     string geometry_str = child_value<string>(spatial, "geometry");
     string basis_str = child_value<string>(spatial, "basis_type");
     Spatial_Discretization::Geometry geometry;

@@ -25,7 +25,7 @@ dbasis(int dim,
        vector<double> const &r) const
 {
     double dist2 = get_distance_squared(r);
-    double kr2 = shape_[dim] * shape_[dim] * r[dim];
+    double kr2 = shape_[dim] * shape_[dim] * (r[dim] - position_[dim]);
     
     return -2 * kr2 * exp(-dist2);
 }
@@ -35,7 +35,8 @@ ddbasis(int dim,
         vector<double> const &r) const
 {
     double dist2 = get_distance_squared(r);
-    double k2r2 = shape_[dim] * shape_[dim] * r[dim] * r[dim];
+    double distdim = r[dim] - position_[dim];
+    double k2r2 = shape_[dim] * shape_[dim] * distdim * distdim;
     
     return 2 * (2 * k2r2 - 1) * shape_[dim] * shape_[dim] * exp(-dist2);
 }
