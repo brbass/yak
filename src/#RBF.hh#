@@ -35,7 +35,7 @@ public:
                            vector<double> const &r) const = 0;
     
     virtual double get_distance_squared(vector<double> const &r) const;
-
+    
 protected:
 
     int number_of_dimensions_;

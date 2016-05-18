@@ -22,7 +22,6 @@ public:
                             shared_ptr<Nuclear_Data> nuclear_data,
                             shared_ptr<Source_Data> source_data);
     
-    virtual void apply(vector<double> &x) = 0;
     virtual void include_boundary_source(bool include_source)
     {
         include_boundary_source_ = include_source;
@@ -41,6 +40,10 @@ protected:
     shared_ptr<Energy_Discretization> energy_discretization_;
     shared_ptr<Nuclear_Data> nuclear_data_;
     shared_ptr<Source_Data> source_data_;
+
+private:
+    
+    virtual void apply(vector<double> &x) = 0;
 };
 
 #endif

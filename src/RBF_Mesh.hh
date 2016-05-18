@@ -70,7 +70,7 @@ public:
     {
         return material_;
     }
-    shared_ptr<RBF> const &basis_function(int point) const
+    shared_ptr<RBF> const basis_function(int point) const
     {
         return basis_functions_[point];
     }
@@ -78,7 +78,7 @@ public:
     void check_class_invariants() const;
     virtual void output(pugi::xml_node &output_node) const;
     
-private:
+protected:
     
     int number_of_points_;
     int number_of_boundary_points_;
