@@ -42,6 +42,7 @@ parse_source_iteration()
     pugi::xml_node solver_node = input_file_.child("solution_method");
     
     int max_iterations = child_value<int>(solver_node, "max_iterations");
+    int solver_print = child_value<int>(solver_node, "solver_print");
     double tolerance = child_value<double>(solver_node, "tolerance");
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
@@ -50,6 +51,7 @@ parse_source_iteration()
     shared_ptr<Vector_Operator> fission = parse_fission();
     
     return make_shared<Source_Iteration>(max_iterations,
+                                         solver_print,
                                          tolerance,
                                          spatial_,
                                          angular_,

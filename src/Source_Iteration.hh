@@ -29,6 +29,7 @@ public:
 
     // Constructor
     Source_Iteration(int max_iterations,
+                     int solver_print,
                      double tolerance,
                      shared_ptr<Spatial_Discretization> spatial_discretization,
                      shared_ptr<Angular_Discretization> angular_discretization,

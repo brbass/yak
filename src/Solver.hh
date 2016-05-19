@@ -2,6 +2,7 @@
 #define Solver_hh
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "Angular_Discretization.hh"
@@ -11,6 +12,7 @@
 #include "Spatial_Discretization.hh"
 
 using std::shared_ptr;
+using std::string;
 using std::vector;
 
 /*
@@ -21,7 +23,8 @@ class Solver
 public:
 
     // Constructor
-    Solver(shared_ptr<Spatial_Discretization> spatial_discretization,
+    Solver(int solver_print,
+           shared_ptr<Spatial_Discretization> spatial_discretization,
            shared_ptr<Angular_Discretization> angular_discretization,
            shared_ptr<Energy_Discretization> energy_discretization,
            shared_ptr<Nuclear_Data> nuclear_data,
@@ -41,6 +44,12 @@ public:
 
 protected:
 
+    virtual void print_name(string solution_type);
+    virtual void print_iteration(int iteration);
+    virtual void print_convergence();
+    virtual void print_failure();
+
+    int solver_print_;
     shared_ptr<Spatial_Discretization> spatial_discretization_;
     shared_ptr<Angular_Discretization> angular_discretization_;
     shared_ptr<Energy_Discretization> energy_discretization_;

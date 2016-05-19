@@ -1,6 +1,8 @@
 #include "Krylov_Iteration.hh"
 
 #include <cmath>
+#include <iomanip>
+#include <iostream>
 
 #include <AztecOO.h>
 #include <mpi.h>
@@ -65,8 +67,12 @@ solve_steady_state(vector<double> &x)
     {
         vector<double> q_old;
         
+        print_name("Initial source iteration");
+        
         for (int it = 0; it < max_iterations_; ++it)
         {
+            print_iteration(it);
+
             q_old = q;
             
             (*SI)(q);
@@ -74,6 +80,8 @@ solve_steady_state(vector<double> &x)
             if (check_phi_convergence(q, q_old))
             {
                 source_iterations_ = it + 1;
+
+                print_convergence();
                 
                 break;
             }
@@ -81,7 +89,12 @@ solve_steady_state(vector<double> &x)
         for (int i = phi_size(); i < phi_size() + number_of_augments(); ++i)
         {
             q[i] = 0;
+        }        
+        if (source_iterations_ == max_iterations_)
+        {
+            print_failure();
         }
+
     }
     else
     {

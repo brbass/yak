@@ -11,6 +11,7 @@ using namespace std;
 
 Source_Iteration::
 Source_Iteration(int max_iterations,
+                 int solver_print,
                  double tolerance,
                  shared_ptr<Spatial_Discretization> spatial_discretization,
                  shared_ptr<Angular_Discretization> angular_discretization,
@@ -22,7 +23,8 @@ Source_Iteration(int max_iterations,
                  shared_ptr<Vector_Operator> moment_to_discrete,
                  shared_ptr<Vector_Operator> scattering,
                  shared_ptr<Vector_Operator> fission):
-    Solver(spatial_discretization,
+    Solver(solver_print,
+           spatial_discretization,
            angular_discretization,
            energy_discretization,
            nuclear_data,
@@ -54,8 +56,12 @@ solve_steady_state(vector<double> &x)
     {
         vector<double> q_old;
         
+        print_name("Initial source iteration");
+
         for (int it = 0; it < max_iterations_; ++it)
         {
+            print_iteration(it);
+
             q_old = q;
             
             (*SI)(q);
@@ -64,12 +70,18 @@ solve_steady_state(vector<double> &x)
             {
                 source_iterations_ = it + 1;
                 
+                print_convergence();
+                
                 break;
             }
         }
         for (int i = phi_size(); i < phi_size() + number_of_augments(); ++i)
         {
             q[i] = 0;
+        }
+        if (source_iterations_ == max_iterations_)
+        {
+            print_failure();
         }
     }
     else
@@ -81,9 +93,13 @@ solve_steady_state(vector<double> &x)
     
     x.resize(phi_size() + number_of_augments(), 0);
     vector<double> x_old;
+
+    print_name("Source iteration");
     
     for (int it = 0; it < max_iterations_; ++it)
     {
+        print_iteration(it);
+
         x_old = x;
         
         (*FI)(x);
@@ -97,8 +113,14 @@ solve_steady_state(vector<double> &x)
         {
             total_iterations_ = it + 1;
             
+            print_convergence();
+            
             break;
         }
+    }
+    if (total_iterations_ == max_iterations_)
+    {
+        print_failure();
     }
     
     x.resize(phi_size()); // remove augments
