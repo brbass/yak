@@ -76,7 +76,6 @@ private:
     
     int max_iterations_;
     int kspace_;
-    int solver_print_;
     int total_iterations_;
     int source_iterations_;
     double tolerance_;
