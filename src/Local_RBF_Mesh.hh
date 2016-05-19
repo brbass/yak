@@ -3,10 +3,14 @@
 
 #include "RBF_Mesh.hh"
 
+#include <Epetra_SerialDenseMatrix.h>
+#include <Epetra_SerialDenseVector.h>
+#include <Epetra_SerialDenseSolver.h>
+
 /*
-  Mesh designed for use with radial basis functions with sparse neighbor relationships
+  Mesh designed for use with radial basis functions which have sparse neighbor relationships
 */
-Local_RBF_Mesh : public RBF_Mesh
+class Local_RBF_Mesh : public RBF_Mesh
 {
 public:
 
@@ -40,12 +44,14 @@ protected:
 
     // Initilize matrices for conversion to solution solve
     void initialize_trilinos();
-
+    void get_neighbors(int point,
+                       vector<int> &local_neighbors);
+    
     int number_of_neighbors_;
     vector<vector<int> > neighbors_;
     // vector<vector<double> > neighbor_distance_;
     vector<shared_ptr<Epetra_SerialDenseMatrix> > matrices_;
     vector<shared_ptr<Epetra_SerialDenseSolver> > solvers_;
-}
+};
 
 #endif

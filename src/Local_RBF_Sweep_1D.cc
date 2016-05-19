@@ -3,16 +3,6 @@
 #include "Check.hh"
 #include "Dense_Solve.hh"
 
-#include <Amesos.h>
-#include <AztecOO.h>
-#include <AztecOO_Version.h>
-#include <mpi.h>
-#include <Epetra_MpiComm.h>
-#include <Epetra_Map.h>
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_Vector.h>
-#include <Epetra_LinearProblem.h>
-
 using namespace std;
 
 Local_RBF_Sweep_1D::
@@ -38,7 +28,7 @@ Local_RBF_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
     solver_type_(solver_type)
 {
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
-    Insist(rbf_mesh_);
+    Assert(rbf_mesh_);
 
     initialize_trilinos();
 }
@@ -63,13 +53,14 @@ sweep_slab(vector<double> &x)
     int number_of_points = rbf_mesh_->number_of_points();
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    int number_of_internal_points = rbf_mesh_->number_of_internal_points();
     int number_of_boundary_points = rbf_mesh_->number_of_boundary_points();
+    int number_of_internal_points = rbf_mesh_->number_of_internal_points();
     int number_of_augments = source_data_->number_of_augments();
     int psi_size = row_size() - number_of_augments;
     vector<int> const boundary_points = rbf_mesh_->boundary_cells();
-    vector<int> const boundary_normal = rbf_mesh_->boundary_normal();
-    vector<int> const internal_points = rbf_mesh_->internal_points();
+    vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
+    vector<int> const internal_points = rbf_mesh_->internal_cells();
+    vector<double> const ordinates = angular_discretization_->ordinates();
     
     for (int o = 0; o < number_of_ordinates; ++o)
     {
@@ -79,7 +70,7 @@ sweep_slab(vector<double> &x)
             {
                 int i = boundary_points[b];
                     
-                if (boundary_normal_[b] * ordinates[o] < 1)
+                if (boundary_normal[b] * ordinates[o] < 1)
                 {
                     add_boundary_point(b, i, o, g, x);
                 }
@@ -99,18 +90,18 @@ sweep_slab(vector<double> &x)
             switch(solver_type_)
             {
             case AMESOS:
-                amesos_solver_->NumericFactorization();
-                amesos_solver_->Solve();
+                (*amesos_solver_)->NumericFactorization();
+                (*amesos_solver_)->Solve();
         
                 break;
             case AZTECOO:
             {
-                aztec_solver->Iterate(max_iterations_, tolerance_);
+                aztec_solver_->Iterate(max_iterations_, tolerance_);
                 
                 break;
             }
             default:
-                InsistMsg(false, "Solver type not implemented");
+                AssertMsg(false, "Solver type not implemented");
             }
 
             for (int i = 0; i < number_of_points; ++i)
@@ -124,7 +115,6 @@ sweep_slab(vector<double> &x)
 
     // Update augments
 
-    vector<int> boundary_points = spatial_discretization_->boundary_cells();
     for (int b = 0; b < number_of_boundary_points; ++b)
     {
         int i = boundary_points[b];
@@ -183,6 +173,7 @@ add_boundary_point(int b,
     
     // Replace RHS value
     int psi_size = row_size() - number_of_augments;
+    int o1 = number_of_ordinates - o - 1;
     int k_ref = psi_size + g + number_of_groups * (o1 + number_of_ordinates * b);
     double rhs = alpha[b] * x[k_ref];
 
@@ -213,7 +204,7 @@ add_internal_point(int i,
     vector<double> const ordinates = angular_discretization_->ordinates();
     vector<double> const sigma_t = nuclear_data_->sigma_t();
 
-    shared_ptr<RBF> equation_rbf = rhf_mesh_->basis_function(i);
+    shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
     vector<double> const equation_position = equation_rbf->position();
     
     // Replace matrix values
@@ -250,10 +241,10 @@ initialize_trilinos()
     int number_of_neighbors = rbf_mesh_->number_of_neighbors();
 
     comm_ = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
-    map_ = make_shared<Epetra_Map>(number_of_points, 0, *comm);
-    lhs_ = make_shared<Epetra_Vector>(*map);
-    rhs_ = make_shared<Epetra_Vector>(*map);
-    mat_ = make_shared<Epetra_CrsMatrix>(Copy, *map, number_of_neighbors, true);
+    map_ = make_shared<Epetra_Map>(number_of_points, 0, *comm_);
+    lhs_ = make_shared<Epetra_Vector>(*map_);
+    rhs_ = make_shared<Epetra_Vector>(*map_);
+    mat_ = make_shared<Epetra_CrsMatrix>(Copy, *map_, number_of_neighbors, true);
 
     lhs_->PutScalar(1.0);
     rhs_->PutScalar(1.0);
@@ -263,11 +254,11 @@ initialize_trilinos()
         vector<int> const neighbors = rbf_mesh_->neighbors(i);
         vector<double> ones(number_of_neighbors, 1);
         
-        matrix_->InsertGlobalValues(i, number_of_neighbors, &ones[0], &neighbors[0]);
+        mat_->InsertGlobalValues(i, number_of_neighbors, &ones[0], &neighbors[0]);
     }
-    matrix_->FillComplete();
+    mat_->FillComplete();
     
-    problem_ = make_shared<Epetra_LinearProblem>(matrix_.get(),
+    problem_ = make_shared<Epetra_LinearProblem>(mat_.get(),
                                                  lhs_.get(),
                                                  rhs_.get());
     
@@ -275,27 +266,27 @@ initialize_trilinos()
     {
     case AMESOS:
         Amesos factory;
-        amesos_solver_ = make_shared<Amesos_BaseSolver*>(factory.Create("Klu", *problem));
+        amesos_solver_ = make_shared<Amesos_BaseSolver*>(factory.Create("Klu", *problem_));
         
         if (*amesos_solver_ == NULL)
         {
             AssertMsg(false, "specified solver is not available");
         }
         
-        amesos_solver_->SymbolicFactorization();
+        (*amesos_solver_)->SymbolicFactorization();
         
         break;
     case AZTECOO:
-        aztec_solver_ = make_shared<AztecOO>(*problem);
+        aztec_solver_ = make_shared<AztecOO>(*problem_);
         
         aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
         aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
         aztec_solver_->SetAztecOption(AZ_solver, AZ_gmres);
-        aztec_solver->SetAztecOption(AZ_kspace, 10);
-        aztec_solver->SetAztecOption(AZ_output, AZ_none);
+        aztec_solver_->SetAztecOption(AZ_kspace, 10);
+        aztec_solver_->SetAztecOption(AZ_output, AZ_none);
         
         break;
     default:
-        InsistMsg(false, "Solver type not implemented");
+        AssertMsg(false, "Solver type not implemented");
     }
 }

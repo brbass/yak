@@ -13,7 +13,7 @@ using std::vector;
 /*
   Mesh designed for use with radial basis functions
 */
-class RBF_Mesh : public Spatial_Discretization
+class RBF_Mesh : public virtual Spatial_Discretization
 {
 public:
 
@@ -45,6 +45,12 @@ public:
         return number_of_points_;
     }
 
+    // Number of points not on the boundary
+    virtual int number_of_internal_points()
+    {
+        return number_of_internal_points_;
+    }
+    
     // Number of points on the boundary
     virtual int number_of_boundary_points()
     {

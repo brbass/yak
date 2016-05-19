@@ -51,7 +51,7 @@ public:
     shared_ptr<RBF_Sweep_1D> parse_rbf();
 
     // Parse the Local RBF Sweeper
-    shared_ptr<Local_RBF_Sweep_1D> parse_rbf();
+    shared_ptr<Local_RBF_Sweep_1D> parse_rbf_local();
     
     // Parse the Discrete_To_Moment operator
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();

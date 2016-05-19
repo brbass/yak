@@ -184,7 +184,7 @@ apply(vector<double> &x)
     vector<double> const internal_source = si_.source_data_->internal_source();
     
     shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);
-    Insist(Linv);
+    Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
     

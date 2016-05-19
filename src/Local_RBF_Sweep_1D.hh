@@ -3,6 +3,16 @@
 
 #include <memory>
 
+#include <Amesos.h>
+#include <AztecOO.h>
+// #include <AztecOO_Version.h>
+#include <mpi.h>
+#include <Epetra_MpiComm.h>
+#include <Epetra_Map.h>
+#include <Epetra_CrsMatrix.h>
+#include <Epetra_Vector.h>
+#include <Epetra_LinearProblem.h>
+
 #include "Local_RBF_Mesh.hh"
 #include "Ordinate_Sweep_Operator.hh"
 
@@ -52,7 +62,7 @@ private:
                             vector<double> const &x);
 
     int max_iterations_ = 5000;
-    int tolerance_ = 1e-6;
+    double tolerance_ = 1e-6;
     Solver_Type solver_type_;
     
     shared_ptr<Epetra_Comm> comm_;

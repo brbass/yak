@@ -65,6 +65,11 @@ public:
         return number_of_boundary_elements_;
     }
 
+    virtual int number_of_internal_points()
+    {
+        return number_of_internal_elements_;
+    }
+    
     // Number of nodes per element
     virtual int number_of_nodes()
     {
@@ -118,6 +123,7 @@ private:
     int number_of_elements_;
     int number_of_nodes_;
     int number_of_points_;
+    int number_of_internal_elements_;
     int number_of_boundary_elements_;
     
     vector<bool> boundary_nodes_;

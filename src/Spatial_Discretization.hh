@@ -32,6 +32,9 @@ public:
     // Number of spatial points to solve for in the problem
     virtual int number_of_points() = 0;
 
+    // Number of spatial points not on the boundary
+    virtual int number_of_internal_points() = 0;
+    
     // Number of spatial points on the boundary
     virtual int number_of_boundary_points() = 0;
 

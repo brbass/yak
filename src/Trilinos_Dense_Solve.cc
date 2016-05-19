@@ -9,7 +9,7 @@
 
 #include <Amesos.h>
 #include <AztecOO.h>
-#include <AztecOO_Version.h>
+// #include <AztecOO_Version.h>
 #ifdef EPETRA_MPI
 #  include <mpi.h>
 #  include <Epetra_MpiComm.h>
@@ -138,7 +138,7 @@ aztec_dense_solve(vector<double> &a_data,
     int const index_base = 0;
     int const num_elements = number_of_elements;
     int const max_iterations = 10000;
-    int const tolerance = 1.0E-6;
+    double const tolerance = 1.0E-6;
     
     vector<int> const num_entries_per_row(number_of_elements, number_of_elements);
     vector<int> column_indices(number_of_elements);
