@@ -4,12 +4,17 @@
 #include "Energy_Discretization.hh"
 #include "Parser.hh"
 
+/*
+  Create an Energy_Discretization object from XML input file
+*/
 class Energy_Discretization_Parser : public Parser<Energy_Discretization>
 {
 public:
-    
+
+    // Constructor
     Energy_Discretization_Parser(pugi::xml_node &input_file);
-    
+
+    // Return pointer to Energy_Discretization object
     virtual shared_ptr<Energy_Discretization> get_ptr()
     {
         return energy_;

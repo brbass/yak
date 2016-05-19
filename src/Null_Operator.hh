@@ -7,10 +7,14 @@
 
 using std::vector;
 
+/*
+  Zeroes out any vector given it
+*/
 class Null_Operator : public Vector_Operator
 {
 public:
- 
+
+    // Constructor
     Null_Operator(int size);
     
 private:

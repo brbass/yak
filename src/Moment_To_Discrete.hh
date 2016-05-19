@@ -12,10 +12,14 @@
 using std::shared_ptr;
 using std::vector;
 
+/*
+  Converts moments of the angular flux to the discrete angular flux
+*/
 class Moment_To_Discrete: public Vector_Operator
 {
 public:
-    
+
+    // Constructor
     Moment_To_Discrete(shared_ptr<Spatial_Discretization> spatial_discretization,
                        shared_ptr<Angular_Discretization> angular_discretization,
                        shared_ptr<Energy_Discretization> energy_discretization);
@@ -23,10 +27,13 @@ public:
 private:
 
     virtual void apply(vector<double> &x);
-    
+
+    // Output size
     int get_row_size(shared_ptr<Spatial_Discretization> spatial_discretization,
                      shared_ptr<Angular_Discretization> angular_discretization,
                      shared_ptr<Energy_Discretization> energy_discretization);
+
+    // Input size
     int get_column_size(shared_ptr<Spatial_Discretization> spatial_discretization,
                         shared_ptr<Angular_Discretization> angular_discretization,
                         shared_ptr<Energy_Discretization> energy_discretization);

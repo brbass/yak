@@ -8,6 +8,11 @@
 
 using std::shared_ptr;
 
+/*
+  Inverse operator for RBF sweep
+  
+  Creates and solves the matrix directly
+*/
 class RBF_Sweep_1D : public Ordinate_Sweep_Operator
 {
 public:

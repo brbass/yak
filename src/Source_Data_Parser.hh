@@ -4,15 +4,20 @@
 #include "Parser.hh"
 #include "Source_Data.hh"
 
+/*
+  Create a Source_Data object from XML file
+*/
 class Source_Data_Parser : public Parser<Source_Data>
 {
 public:
-    
+
+    // Constructor
     Source_Data_Parser(pugi::xml_node &input_file,
                        shared_ptr<Spatial_Discretization> spatial,
                        shared_ptr<Angular_Discretization> angular,
                        shared_ptr<Energy_Discretization> energy);
-    
+
+    // Return pointer to object
     virtual shared_ptr<Source_Data> get_ptr()
     {
         return source_;

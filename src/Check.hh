@@ -3,6 +3,10 @@
 
 #include <string>
 
+/*
+  Checks conditions at runtime
+  Throws runtime error if condition isn't met
+*/
 namespace ch_ns
 {
     using std::string;

@@ -51,9 +51,6 @@ Krylov_Iteration(int max_iterations,
 {
 }
 
-/*
-  Apply (I-DLinvMS)Phi=DLinvQ
-*/
 void Krylov_Iteration::
 solve_steady_state(vector<double> &x)
 {
@@ -130,10 +127,6 @@ solve_steady_state(vector<double> &x)
     
     x.resize(phi_size()); // remove augments
 }
-
-/*
-  Check convergence of pointwise relative error in scalar flux
-*/
 
 bool Krylov_Iteration::
 check_phi_convergence(vector<double> const &x, 
