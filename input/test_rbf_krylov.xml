@@ -19,7 +19,7 @@
     <type>rbf</type>
     <local>0</local>
     <dimension>1</dimension>
-    <number_of_points>32</number_of_points>
+    <number_of_points>152</number_of_points>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
     <basis_type>gaussian</basis_type>
@@ -27,12 +27,12 @@
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>10</number_of_points>
+        <number_of_points>50</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_points>20</number_of_points>
+        <number_of_points>100</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>

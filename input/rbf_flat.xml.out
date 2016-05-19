@@ -18,7 +18,7 @@
 	</nuclear_data>
 	<source_data>
 		<alpha data_order="boundary_cell">1 1 </alpha>
-		<internal_source data_order="node-group-ordinate-cell">0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </internal_source>
+		<internal_source data_order="node-group-moment-cell">1 1 1 1 1 1 </internal_source>
 		<boundary_source data_order="group-ordinate-boundary_cell">0 0 0 0 </boundary_source>
 	</source_data>
 	<rbf_mesh>

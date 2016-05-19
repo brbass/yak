@@ -21,16 +21,16 @@ Local_RBF_Mesh(int dimension,
              basis_type,
              material,
              positions,
-             shape_parameter)
+             shape_parameter),
+    number_of_neighbors_(number_of_neighbors)
 {
-    Check(number_of_neighbors <= number_of_points);
+    Check(0 < number_of_neighbors <= number_of_points);
     
     // Find nearest neighbors
     
     for (int i = 0; i < number_of_points_; ++i)
     {
         vector<int> local_neighbors;
-        vector<double> local_distance;
         get_neighbors(i,
                       local_neighbors);
         neighbors_.push_back(local_neighbors);
@@ -89,7 +89,7 @@ convert_to_phi(int point,
     solver->SetVectors(x, b);
     solver->Solve();
     
-    data.assign(solver->X(), solver->X() + number_of_neighbors_);
+    // data.assign(solver->X(), solver->X() + number_of_neighbors_);
 }
 
 /*

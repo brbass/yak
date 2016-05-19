@@ -10,15 +10,16 @@
     <solver_print>1</solver_print>
     
     <sweeper>
-      <type>rbf</type>
+      <type>rbf_local</type>
     </sweeper>
   </solution_method>
   
   <spatial_discretization>
     <type>rbf</type>
-    <local>0</local>
+    <local>1</local>
     <dimension>1</dimension>
-    <number_of_points>6</number_of_points>
+    <number_of_points>22</number_of_points>
+    <number_of_neighbors>12</number_of_neighbors>
     <shape_multiplier>0.75</shape_multiplier>
     <geometry>slab</geometry>
     <basis_type>gaussian</basis_type>
@@ -26,7 +27,7 @@
     <regions>
       <number_of_regions>1</number_of_regions>
       <region>
-        <number_of_points>4</number_of_points>
+        <number_of_points>20</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>

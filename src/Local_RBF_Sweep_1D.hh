@@ -40,7 +40,7 @@ public:
                        shared_ptr<Energy_Discretization> energy_discretization,
                        shared_ptr<Nuclear_Data> nuclear_data,
                        shared_ptr<Source_Data> source_data,
-                       Solver_Type solver_type = AZTECOO);
+                       Solver_Type solver_type = AMESOS);
 
 protected:
 

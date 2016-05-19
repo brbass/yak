@@ -69,8 +69,8 @@ sweep_slab(vector<double> &x)
             for (int b = 0; b < number_of_boundary_points; ++b)
             {
                 int i = boundary_points[b];
-                    
-                if (boundary_normal[b] * ordinates[o] < 1)
+                
+                if (boundary_normal[b] * ordinates[o] < 0)
                 {
                     add_boundary_point(b, i, o, g, x);
                 }
@@ -85,7 +85,7 @@ sweep_slab(vector<double> &x)
 
                 add_internal_point(i, o, g, x);
             }
-            
+
             // Perform matrix solve
             switch(solver_type_)
             {
@@ -221,6 +221,9 @@ add_internal_point(int i,
         data[n] = ordinates[o] * basis_rbf->dbasis(d, equation_position)
             + sigma_t[k_sig] * basis_rbf->basis(equation_position);
     }
+
+    rbf_mesh_->convert_to_phi(i,
+                              data);
     
     mat_->ReplaceGlobalValues(i,
                               number_of_neighbors,
