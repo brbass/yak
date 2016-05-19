@@ -25,7 +25,8 @@ RBF_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
                             nuclear_data,
                             source_data)
 {
-    rbf_mesh_ = dynamic_pointer_cast<RBF_Mesh>(spatial_discretization);
+    rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
+    
     Insist(rbf_mesh_);
 }
 

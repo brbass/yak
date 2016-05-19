@@ -94,6 +94,11 @@ public:
         return material_;
     }
 
+    virtual vector<double> const &boundary_normal() const
+    {
+        return boundary_normal_;
+    }
+    
     // Basis function for a certain point
     shared_ptr<RBF> const basis_function(int point) const
     {
@@ -118,6 +123,7 @@ protected:
     vector<int> boundary_points_;
     vector<int> internal_points_;
     vector<int> material_;
+    vector<double> boundary_normal_;
     vector<double> point_positions_;
     vector<double> shape_parameter_;
     

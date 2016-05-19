@@ -30,9 +30,7 @@ Trilinos_Dense_Solve()
 {
 }
 
-// dense matrix solution methods
-
-// iterative matrix solution: faster than GSL for n>300
+// Iterative matrix solution: faster than GSL for n>300
 void Trilinos_Dense_Solve::
 epetra_solve(vector<double> &a_data,
              vector<double> &b_data,
@@ -74,7 +72,7 @@ epetra_solve(vector<double> &a_data,
     x_data.assign(solver.X(), solver.X() + number_of_elements);
 }
 
-// direct matrix solution: faster than epetra for n<170
+// Direct matrix solution: faster than epetra for n<170
 void Trilinos_Dense_Solve::
 amesos_dense_solve(vector<double> &a_data,
                    vector<double> &b_data,
@@ -126,7 +124,7 @@ amesos_dense_solve(vector<double> &a_data,
     solver->Solve();
 }
 
-// does not work consistently for dense matrices
+// Does not work consistently for dense matrices
 void Trilinos_Dense_Solve::
 aztec_dense_solve(vector<double> &a_data,
                   vector<double> &b_data,

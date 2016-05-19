@@ -20,6 +20,12 @@ public:
                    vector<double> const &positions,
                    vector<double> const &shape_parameter);
 
+    // Number of neighbors for each point
+    int number_of_neighbors() const
+    {
+        return number_of_neighbors_;
+    }
+
     // Get list of nearest neighbors to a point, sorted by distance
     vector<int> const &neighbors(int i) const
     {

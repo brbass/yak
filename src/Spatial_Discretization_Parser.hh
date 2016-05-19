@@ -1,8 +1,9 @@
 #ifndef Spatial_Discretization_Parser_hh
 #define Spatial_Discretization_Parser_hh
 
-#include "Parser.hh"
 #include "Finite_Element_Mesh.hh"
+#include "Local_RBF_Mesh.hh"
+#include "Parser.hh"
 #include "RBF_Mesh.hh"
 #include "Spatial_Discretization.hh"
 

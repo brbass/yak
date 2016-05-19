@@ -5,6 +5,7 @@
 #include "Discrete_To_Moment.hh"
 #include "Fission.hh"
 #include "Krylov_Iteration.hh"
+#include "Local_RBF_Sweep_1D.hh"
 #include "Moment_To_Discrete.hh"
 #include "Ordinate_Sweep_Operator.hh"
 #include "Parser.hh"
@@ -46,9 +47,12 @@ public:
     // Parse the DFEM sweeper
     shared_ptr<DFEM_Sweep_1D> parse_dfem();
 
-    // Parse the RBF_Sweeper
+    // Parse the RBF Sweeper
     shared_ptr<RBF_Sweep_1D> parse_rbf();
 
+    // Parse the Local RBF Sweeper
+    shared_ptr<Local_RBF_Sweep_1D> parse_rbf();
+    
     // Parse the Discrete_To_Moment operator
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();
 
