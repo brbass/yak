@@ -51,9 +51,6 @@ Krylov_Iteration(int max_iterations,
 {
 }
 
-/*
-  Apply (I-DLinvMS)Phi=DLinvQ
-*/
 void Krylov_Iteration::
 solve_steady_state(vector<double> &x)
 {
@@ -131,10 +128,6 @@ solve_steady_state(vector<double> &x)
     x.resize(phi_size()); // remove augments
 }
 
-/*
-  Check convergence of pointwise relative error in scalar flux
-*/
-
 bool Krylov_Iteration::
 check_phi_convergence(vector<double> const &x, 
                       vector<double> const &x_old)
@@ -211,6 +204,7 @@ apply(vector<double> &x)
     vector<double> const internal_source = ki_.source_data_->internal_source();
     
     shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(ki_.sweeper_);
+    Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);
     
@@ -252,8 +246,8 @@ Flux_Iterator(Krylov_Iteration const &ki):
 void Krylov_Iteration::Flux_Iterator::
 apply(vector<double> &x)
 {
-    
     shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(ki_.sweeper_);
+    Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);
     shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.scattering_);

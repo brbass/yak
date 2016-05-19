@@ -119,6 +119,7 @@ get_rbf(pugi::xml_node &spatial)
 {
     int dimension = child_value<int>(spatial, "dimension");
     int number_of_points = child_value<int>(spatial, "number_of_points");
+    int local = child_value<int>(spatial, "local");
     double shape_multiplier = child_value<double>(spatial, "shape_multiplier");
     string geometry_str = child_value<string>(spatial, "geometry");
     string basis_str = child_value<string>(spatial, "basis_type");
@@ -206,12 +207,28 @@ get_rbf(pugi::xml_node &spatial)
         }
     }
     Assert(point == number_of_points);
-    
-    return make_shared<RBF_Mesh>(dimension,
-                                 number_of_points,
-                                 geometry,
-                                 basis_type,
-                                 material,
-                                 positions,
-                                 shape_parameter);
+
+    if (local)
+    {
+        int number_of_neighbors = child_value<int>(spatial, "number_of_neighbors");
+        
+        return make_shared<Local_RBF_Mesh>(dimension,
+                                           number_of_points,
+                                           number_of_neighbors,
+                                           geometry,
+                                           basis_type,
+                                           material,
+                                           positions,
+                                           shape_parameter);
+    }
+    else
+    {
+        return make_shared<RBF_Mesh>(dimension,
+                                     number_of_points,
+                                     geometry,
+                                     basis_type,
+                                     material,
+                                     positions,
+                                     shape_parameter);
+    }
 }

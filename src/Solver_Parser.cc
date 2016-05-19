@@ -110,6 +110,10 @@ parse_sweeper()
     {
         return parse_rbf();
     }
+    else if (sweeper_type == "rbf_local")
+    {
+        return parse_rbf_local();
+    }
     else
     {
         AssertMsg(false, "sweeper type " + sweeper_type + " not found");
@@ -136,6 +140,16 @@ parse_rbf()
                                      energy_,
                                      nuclear_,
                                      source_);
+}
+
+shared_ptr<Local_RBF_Sweep_1D> Solver_Parser::
+parse_rbf_local()
+{
+    return make_shared<Local_RBF_Sweep_1D>(spatial_,
+                                           angular_,
+                                           energy_,
+                                           nuclear_,
+                                           source_);
 }
 
 shared_ptr<Discrete_To_Moment> Solver_Parser::

@@ -7,13 +7,18 @@
 
 using std::vector;
 
+/*
+  Pure virtual class to represent a vector operator
+*/
 class Vector_Operator
 {
 public:
 
+    // Constructor
     Vector_Operator(int row_size,
                     int column_size);
 
+    // Apply the operator
     vector<double> &operator()(vector<double> &x)
     {
         Check(x.size() == column_size_);
@@ -24,15 +29,20 @@ public:
         
         return x;
     }
-    
+
+    // Output size
     virtual int row_size()
     {
         return row_size_;
     }
+
+    // Input size
     virtual int column_size()
     {
         return column_size_;
     }
+
+    // Are the input and output size the same?
     virtual bool square()
     {
         return (row_size_ == column_size_);

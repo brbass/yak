@@ -28,6 +28,8 @@ RBF_Mesh(int dimension,
     boundary_points_.push_back(0);
     boundary_points_.push_back(number_of_points_ - 1);
     boundary_nodes_.assign(2, true);
+    boundary_normal_.push_back(-1);
+    boundary_normal_.push_back(1);
     
     for (int i = 1; i < number_of_points_ - 1; ++i)
     {
@@ -64,9 +66,14 @@ RBF_Mesh(int dimension,
 void RBF_Mesh::
 check_class_invariants() const
 {
+    Assert(boundary_nodes_.size() == number_of_boundary_points_);
     Assert(boundary_points_.size() == 2);
     Assert(internal_points_.size() == number_of_points_ - 2);
     Assert(material_.size() == number_of_points_);
+    Assert(boundary_normal_.size() == number_of_boundary_points_ * dimension_);
+    Assert(point_positions_.size() == number_of_points_ * dimension_);
+    Assert(shape_parameter_.size() == number_of_points_ * dimension_);
+    Assert(basis_functions_.size() == number_of_points_);
 }
 
 void RBF_Mesh::

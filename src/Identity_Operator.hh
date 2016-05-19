@@ -7,14 +7,18 @@
 
 using std::vector;
 
+/*
+  Return the given vector
+*/
 class Identity_Operator : public Vector_Operator
 {
 public:
- 
+
+    // Constructor
     Identity_Operator(int size);
     
 private:
-    
+
     virtual void apply(vector<double> &x);
 };
 

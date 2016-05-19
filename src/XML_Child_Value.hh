@@ -15,8 +15,11 @@
 using std::string;
 using std::vector;
 
-// helper functions
+/*
+  Functions to make using the XML parser more intuitive
+*/
 
+// Convert a string to a vector
 template<class T> void 
 string_to_vector(string const &data_string,
                  vector<T> &data)
@@ -26,6 +29,7 @@ string_to_vector(string const &data_string,
     data = vector<T>{std::istream_iterator<T>(iss), std::istream_iterator<double>()};
 }
 
+// Convert a vector to a string
 template<class T> void
 vector_to_string(string &data_string,
                  vector<T> const &data)
@@ -36,8 +40,7 @@ vector_to_string(string &data_string,
     data_string = oss.str();
 }
 
-// child value
-
+// Get a child value of the node
 template<typename T> T 
 child_value(pugi::xml_node &node, 
             string description,
@@ -74,8 +77,7 @@ child_value<double> (pugi::xml_node &node,
     return stof(child_value<string>(node, description, required));
 }
 
-// child vector
-
+// Get a vector of values from the node
 template<typename T> vector<T> 
 child_vector(pugi::xml_node &node,
              string description, 
@@ -92,8 +94,7 @@ child_vector(pugi::xml_node &node,
     return value;
 }
 
-// append child
-
+// Append a child to the XML file
 template<typename T> void
 append_child(pugi::xml_node &node,
              T data,

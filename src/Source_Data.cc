@@ -145,6 +145,8 @@ total_source() const
         }
         break;
     }
+
+    return total_source;
 }
 
 // void Source_Data::

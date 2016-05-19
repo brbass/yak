@@ -25,6 +25,8 @@ DFEM_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
                             source_data)
 {
     finite_element_mesh_ = dynamic_pointer_cast<Finite_Element_Mesh>(spatial_discretization);
+
+    Assert(finite_element_mesh_);
 }
 
 void DFEM_Sweep_1D::

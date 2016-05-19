@@ -4,12 +4,17 @@
 #include "Parser.hh"
 #include "Angular_Discretization.hh"
 
+/* 
+   Create an object of type Angular_Discretization from xml input file
+*/
 class Angular_Discretization_Parser : public Parser<Angular_Discretization>
 {
 public:
-    
+
+    // Creator
     Angular_Discretization_Parser(pugi::xml_node &input_file);
-    
+
+    // Return pointer to created object
     virtual shared_ptr<Angular_Discretization> get_ptr()
     {
         return angular_;

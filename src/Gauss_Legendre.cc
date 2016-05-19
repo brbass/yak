@@ -28,8 +28,8 @@ void gauss_legendre_vec(int n, std::vector<double> &ordinates, std::vector<doubl
             weights[o] = w[n/2 - o - 1];
         }
     
-        delete x;
-        delete w;
+        delete[] x;
+        delete[] w;
     }
     else
     {

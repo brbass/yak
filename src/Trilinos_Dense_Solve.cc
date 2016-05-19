@@ -9,7 +9,7 @@
 
 #include <Amesos.h>
 #include <AztecOO.h>
-#include <AztecOO_Version.h>
+// #include <AztecOO_Version.h>
 #ifdef EPETRA_MPI
 #  include <mpi.h>
 #  include <Epetra_MpiComm.h>
@@ -30,9 +30,7 @@ Trilinos_Dense_Solve()
 {
 }
 
-// dense matrix solution methods
-
-// iterative matrix solution: faster than GSL for n>300
+// Iterative matrix solution: faster than GSL for n>300
 void Trilinos_Dense_Solve::
 epetra_solve(vector<double> &a_data,
              vector<double> &b_data,
@@ -74,7 +72,7 @@ epetra_solve(vector<double> &a_data,
     x_data.assign(solver.X(), solver.X() + number_of_elements);
 }
 
-// direct matrix solution: faster than epetra for n<170
+// Direct matrix solution: faster than epetra for n<170
 void Trilinos_Dense_Solve::
 amesos_dense_solve(vector<double> &a_data,
                    vector<double> &b_data,
@@ -126,7 +124,7 @@ amesos_dense_solve(vector<double> &a_data,
     solver->Solve();
 }
 
-// does not work consistently for dense matrices
+// Does not work consistently for dense matrices
 void Trilinos_Dense_Solve::
 aztec_dense_solve(vector<double> &a_data,
                   vector<double> &b_data,
@@ -140,7 +138,7 @@ aztec_dense_solve(vector<double> &a_data,
     int const index_base = 0;
     int const num_elements = number_of_elements;
     int const max_iterations = 10000;
-    int const tolerance = 1.0E-6;
+    double const tolerance = 1.0E-6;
     
     vector<int> const num_entries_per_row(number_of_elements, number_of_elements);
     vector<int> column_indices(number_of_elements);

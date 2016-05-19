@@ -6,24 +6,34 @@
 
 using std::vector;
 
+/* 
+   Simple multigroup representation of energy
+*/
 class Energy_Discretization
 {
 public:
 
+    // Constructors
     Energy_Discretization(int number_of_groups,
                           vector<double> const &energy_bounds);
     Energy_Discretization(int number_of_groups);
 
+    // Number of energy groups
     int number_of_groups()
     {
         return number_of_groups_;
     }
+
+    // Bounds of energy groups
     vector<double> const &energy_bounds() const
     {
         return energy_bounds_;
     }
+
+    // Check class invariants
     void check_class_invariants() const;
-    
+
+    // Output data to XML file
     void output(pugi::xml_node &output_node) const;
     
 private:
