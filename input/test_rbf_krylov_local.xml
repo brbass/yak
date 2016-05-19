@@ -11,15 +11,16 @@
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>rbf</type>
+      <type>rbf_local</type>
     </sweeper>
   </solution_method>
   
   <spatial_discretization>
     <type>rbf</type>
-    <local>0</local>
+    <local>1</local>
     <dimension>1</dimension>
     <number_of_points>32</number_of_points>
+    <number_of_neighbors>10</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
     <basis_type>gaussian</basis_type>
