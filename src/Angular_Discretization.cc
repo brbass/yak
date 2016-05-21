@@ -16,6 +16,13 @@ Angular_Discretization(int dimension,
     number_of_scattering_moments_(number_of_scattering_moments),
     number_of_ordinates_(number_of_ordinates)
 {
+    initialize_moment_data();
+}
+
+void Angular_Discretization::
+initialize_moment_data()
+{
+
     switch(dimension_)
     {
     case 1:
@@ -25,7 +32,7 @@ Angular_Discretization(int dimension,
         int m = 0;
         int sum = 0;
         
-        for (int l = 0; l < number_of_scattering_moments; ++l)
+        for (int l = 0; l < number_of_scattering_moments_; ++l)
         {
             l_indices_.push_back(l);
             m_indices_.push_back(m);
@@ -39,8 +46,10 @@ Angular_Discretization(int dimension,
     }
     case 2:
     {
+        angular_normalization_ = 4 * M_PI;
+
         int sum = 0;
-        for (int l = 0; l < number_of_scattering_moments; ++l)
+        for (int l = 0; l < number_of_scattering_moments_; ++l)
         {
             for (int m = 0; m <= l; ++m)
             {
@@ -57,8 +66,10 @@ Angular_Discretization(int dimension,
     }
     case 3:
     {
+        angular_normalization_ = 4 * M_PI;
+
         int sum = 0;
-        for (int l = 0; l < number_of_scattering_moments; ++l)
+        for (int l = 0; l < number_of_scattering_moments_; ++l)
         {
             for (int m = -l; m <= l; ++m)
             {
@@ -98,10 +109,11 @@ moment(int mom,
         
         int o_x = 0 + dimension_ * ord;
         int o_y = 1 + dimension_ * ord;
-        double mu = ordinates()[o_x];
-        double phi = acos(ordinates()[o_y] / sqrt(1 - mu * mu));
+        double x = ordinates()[o_x];
+        double y = ordinates()[o_y];
+        double z = sqrt(1 - x * x - y * y);
         
-        return Math_Functions::spherical_harmonic(l, m, mu, phi);
+        return Math_Functions::spherical_harmonic(l, m, x, y, z);
     }
     case 3:
     {
@@ -110,10 +122,12 @@ moment(int mom,
         
         int o_x = 0 + dimension_ * ord;
         int o_y = 1 + dimension_ * ord;
-        double mu = ordinates()[o_x];
-        double phi = acos(ordinates()[o_y] / sqrt(1 - mu * mu));
+        int o_z = 2 + dimension_ * ord;
+        double x = ordinates()[o_x];
+        double y = ordinates()[o_y];
+        double z = ordinates()[o_z];
         
-        return Math_Functions::spherical_harmonic(l, m, mu, phi);
+        return Math_Functions::spherical_harmonic(l, m, x, y, z);
     }
     default:
         AssertMsg(false, "dimension not found");

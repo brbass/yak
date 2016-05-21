@@ -58,6 +58,7 @@ public:
     virtual double moment(int mom,
                           int ord);
     
+    // Return base index of spherical harmonics function
     virtual vector<double> &scattering_indices() const
     {
         return l_indices_;
@@ -70,11 +71,14 @@ protected:
     
     int dimension_;
     int number_of_scattering_moments_;
+    int number_of_moments_;
     int number_of_ordinates_;
     double angular_normalization_;
 
 private:
 
+    virtual void initialize_moment_data();
+    
     vector<int> l_indices_;
     vector<int> m_indices_;
 };

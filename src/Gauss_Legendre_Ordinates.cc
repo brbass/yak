@@ -12,7 +12,7 @@ Gauss_Legendre_Ordinates(int dimension,
                            number_of_moments,
                            number_of_ordinates)
 {
-    Quadrature_Rules::gauss_legendre(number_of_ordinates, ordinates_, weights_);
+    Quadrature_Rule::gauss_legendre(number_of_ordinates, ordinates_, weights_);
     
     check_class_invariants();
 }

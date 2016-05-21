@@ -19,7 +19,8 @@ namespace Math_Functions
         // return val;
     }
 
-    double legendre_polynomial(int l, double &x)
+    double legendre_polynomial(int l,
+                               double const &x)
     {
         if (l == 0)
         {
@@ -51,7 +52,8 @@ namespace Math_Functions
         // return pl;
     }
 
-    double legendre_polynomial(int l, int m, double &x)
+    double legendre_polynomial(int l, int m,
+                               double const &x)
     {
         if (m == l)
         {
@@ -68,7 +70,10 @@ namespace Math_Functions
         }
     }
 
-    double spherical_harmonic(int l, int m, double &mu, double &phi)
+    double spherical_harmonic(int l,
+                              int m,
+                              double const &mu,
+                              double const &phi)
     {
         double val = (m == 0) ? 1 : 0;
 
@@ -77,5 +82,58 @@ namespace Math_Functions
         double t = (m >= 0) ? cos(m * phi) : sin(abs(m) * phi);
     
         return val * legendre_polynomial(l, abs(m), mu) * t;
+    }
+
+    // See file sphere_lebedev_rule.cpp for original conversion code
+    void xyz_to_spherical(double const &x,
+                          double const &y,
+                          double const &z,
+                          double &mu,
+                          double &phi)
+    {
+        double val = sqrt(x * x + y * y);
+        
+        if (val < 0)
+        {
+            phi = acos(x / val);
+        }
+        else
+        {
+            phi = acos(x);
+        }
+        
+        if (y < 0)
+        {
+            phi = -phi;
+        }
+
+        mu = z;
+    }
+
+    void spherical_to_xyz(double const &mu,
+                          double const &phi,
+                          double &x,
+                          double &y,
+                          double &z)
+    {
+        double val = sqrt(1 - mu * mu);
+        
+        x = cos(phi) * val;
+        y = sin(phi) * val;
+        z = mu;
+    }
+
+    double spherical_harmonic(int l,
+                              int m,
+                              double const &x,
+                              double const &y,
+                              double const &z)
+    {
+        double mu;
+        double phi;
+
+        xyz_to_spherical(x, y, z, mu, phi);
+        
+        return spherical_harmonic(l, m, mu, phi);
     }
 }

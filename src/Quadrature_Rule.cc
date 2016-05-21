@@ -1,4 +1,4 @@
-#include "Quadrature_Rules.hh"
+#include "Quadrature_Rule.hh"
 
 #include <iostream>
 #include <memory>
@@ -9,7 +9,7 @@
 
 #include "Check.hh"
 
-namespace Quadrature_Rules
+namespace Quadrature_Rule
 {
     void gauss_legendre(int n,
                         vector<double> &ordinates,
