@@ -51,11 +51,6 @@ apply(vector<double> &x)
 void Scattering_Operator::
 apply_incoherent(vector<double> &x)
 {
-    int number_of_cells = spatial_discretization_->number_of_cells();
-    int number_of_nodes = spatial_discretization_->number_of_nodes();
-    int number_of_groups = energy_discretization_->number_of_groups();
-    int number_of_moments = angular_discretization_->number_of_ordinates();
-
     vector<double> y(x);
     
     apply_full(y);

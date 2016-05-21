@@ -15,7 +15,7 @@ public:
 
     // Constructor
     Angular_Discretization(int dimension,
-                           int number_of_moments,
+                           int number_of_scattering_moments,
                            int number_of_ordinates);
 
     // Number of spatial dimensions
@@ -30,6 +30,12 @@ public:
         return number_of_moments_;
     }
 
+    // Number of scattering moments
+    virtual int number_of_scattering_moments()
+    {
+        return number_of_scattering_moments_;
+    }
+    
     // Number of discrete ordinates
     virtual int number_of_ordinates()
     {
@@ -52,16 +58,25 @@ public:
     virtual double moment(int mom,
                           int ord);
     
-    // Output data to XML file
+    virtual vector<double> &scattering_indices() const
+    {
+        return l_indices_;
+    }
+
+// Output data to XML file
     virtual void output(pugi::xml_node &output_node) const = 0;
 
 protected:
     
     int dimension_;
-    int number_of_moments_;
+    int number_of_scattering_moments_;
     int number_of_ordinates_;
     double angular_normalization_;
-    
+
+private:
+
+    vector<int> l_indices_;
+    vector<int> m_indices_;
 };
 
 #endif

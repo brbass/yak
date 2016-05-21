@@ -24,7 +24,7 @@ public:
     {
         return ordinates_;
     }
-
+    
     // Return Gauss-Legendre weights
     virtual vector<double> const &weights() const
     {

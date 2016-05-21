@@ -33,11 +33,11 @@ apply_full(vector<double> &x)
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    double angular_normalization = angular_discretization_->angular_normalization();
     vector<double> const nu = nuclear_data_->nu();
     vector<double> const sigma_f = nuclear_data_->sigma_f();
     vector<double> const chi = nuclear_data_->chi();
     
+    // Calculate fission source
     vector<double> z(number_of_cells * number_of_nodes, 0); // fission source
     
     {
@@ -62,9 +62,8 @@ apply_full(vector<double> &x)
             }
         }
     }
-    
-    x.assign(x.size(), 0);
-    
+
+    // Assign flux back to the appropriate group and zeroth moment
     {
         int m = 0;
         for (int i = 0; i < number_of_cells; ++i)
@@ -84,6 +83,23 @@ apply_full(vector<double> &x)
             }
         }
     }
+
+    // Zero out other moments
+    for (int i = 0; i < number_of_cells; +=i)
+    {
+        for (int m = 1; m < number_of_moments; ++m)
+        {
+            for (int g = 0; g < number_of_groups; ++g)
+            {
+                for (int n = 0; n < number_of_nodes; ++n)
+                {
+                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+
+                    x[k_phi] = 0;
+                }
+            }
+        }
+    }
 }
 
 void Fission::
@@ -94,13 +110,11 @@ apply_coherent(vector<double> &x)
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    double angular_normalization = angular_discretization_->angular_normalization();
     vector<double> const nu = nuclear_data_->nu();
     vector<double> const sigma_f = nuclear_data_->sigma_f();
     vector<double> const chi = nuclear_data_->chi();
     
-    vector<double> y(x);
-    
+    // Apply within-group fission to zeroth moment
     {
         int m = 0;
         for (int i = 0; i < number_of_cells; ++i)
@@ -109,13 +123,30 @@ apply_coherent(vector<double> &x)
             {
                 int k_sig = g + number_of_groups * i;
                 
-                double cs = chi[k_sig] / angular_normalization * nu[k_sig] * sigma_f[k_sig];
+                double cs = chi[k_sig] * nu[k_sig] * sigma_f[k_sig];
                 
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
                     
-                    x[k_phi] = cs * y[k_phi];
+                    x[k_phi] = cs * x[k_phi];
+                }
+            }
+        }
+    }
+
+    // Zero out other moments
+    for (int i = 0; i < number_of_cells; +=i)
+    {
+        for (int m = 1; m < number_of_moments; ++m)
+        {
+            for (int g = 0; g < number_of_groups; ++g)
+            {
+                for (int n = 0; n < number_of_nodes; ++n)
+                {
+                    int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+
+                    x[k_phi] = 0;
                 }
             }
         }

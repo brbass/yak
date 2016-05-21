@@ -17,7 +17,7 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
 
     int number_of_materials = child_value<int>(materials, "number_of_materials");
     int number_of_cells = spatial_->number_of_cells();
-    int number_of_moments = angular_->number_of_moments();
+    int number_of_moments = angular_->number_of_scattering_moments();
     int number_of_groups = energy_->number_of_groups();
     
     // parse the data for each material

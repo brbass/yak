@@ -34,7 +34,9 @@ apply_full(vector<double> &x)
     int number_of_nodes = spatial_discretization_->number_of_nodes();
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
+    int number_of_scattering_moments = angular_discretization_->number_of_scattering_moments();
     vector<double> const sigma_s = nuclear_data_->sigma_s();
+    vector<double> const scattering_indices = angular_discretization_->scattering_indices();
     
     for (int i = 0; i < number_of_cells; ++i)
     {
@@ -48,8 +50,10 @@ apply_full(vector<double> &x)
                     
                     for (int gf = 0; gf < number_of_groups; ++gf)
                     {
+                        int l = scattering_indices[m];
+                        
                         int k_phi_from = n + number_of_nodes * (gf + number_of_groups * (m + number_of_moments * i));
-                        int k_sigma = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * i));
+                        int k_sigma = gf + number_of_groups * (gt + number_of_groups * (l + number_of_scattering_moments * i));
                         
                         sum += sigma_s[k_sigma] * y[k_phi_from];
                     }
@@ -70,9 +74,9 @@ apply_coherent(vector<double> &x)
     int number_of_nodes = spatial_discretization_->number_of_nodes();
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
-    int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    double angular_normalization = angular_discretization_->angular_normalization();
+    int number_of_scattering_moments = angular_discretization_->number_of_scattering_moments();
     vector<double> const sigma_s = nuclear_data_->sigma_s();
+    vector<double> const scattering_indices = angular_discretization_->scattering_indices();
     
     for (int i = 0; i < number_of_cells; ++i)
     {
@@ -80,7 +84,8 @@ apply_coherent(vector<double> &x)
         {
             for (int g = 0; g < number_of_groups; ++g)
             {
-                int k_sigma = g + number_of_groups * (g + number_of_groups * (m + number_of_moments * i));
+                int l = scattering_indices[m];
+                int k_sigma = g + number_of_groups * (g + number_of_groups * (l + number_of_scattering_moments * i));
                 
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
