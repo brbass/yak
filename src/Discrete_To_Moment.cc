@@ -1,8 +1,6 @@
 #include "Discrete_To_Moment.hh"
 
 #include "Check.hh"
-#include "Gauss_Legendre.hh"
-#include "Legendre_Polynomial.hh"
 
 Discrete_To_Moment::
 Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,

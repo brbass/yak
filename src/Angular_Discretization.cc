@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Check.hh"
-#include "Legendre_Polynomial.hh"
+#include "Math_Functions.hh"
 
 using namespace std;
 
@@ -89,7 +89,7 @@ moment(int mom,
     {
         double mu = ordinates()[ord];
         
-        return legendre_polynomial(mom, mu);
+        return Math_Functions::legendre_polynomial(mom, mu);
     }
     case 2:
     {
@@ -101,7 +101,7 @@ moment(int mom,
         double mu = ordinates()[o_x];
         double phi = acos(ordinates()[o_y] / sqrt(1 - mu * mu));
         
-        return spherical_harmonic(l, m, mu, phi);
+        return Math_Functions::spherical_harmonic(l, m, mu, phi);
     }
     case 3:
     {
@@ -113,7 +113,7 @@ moment(int mom,
         double mu = ordinates()[o_x];
         double phi = acos(ordinates()[o_y] / sqrt(1 - mu * mu));
         
-        return spherical_harmonic(l, m, mu, phi);
+        return Math_Functions::spherical_harmonic(l, m, mu, phi);
     }
     default:
         AssertMsg(false, "dimension not found");
