@@ -22,13 +22,12 @@ Angular_Discretization(int dimension,
 void Angular_Discretization::
 initialize_moment_data()
 {
-
     switch(dimension_)
     {
     case 1:
     {
         angular_normalization_ = 2;
-
+        
         int m = 0;
         int sum = 0;
         
@@ -39,15 +38,15 @@ initialize_moment_data()
 
             sum += 1;
         }
-
+        
         number_of_moments_ = sum;
         
         break;
     }
     case 2:
     {
-        angular_normalization_ = 4 * M_PI;
-
+        angular_normalization_ = 2 * M_PI;
+        
         int sum = 0;
         for (int l = 0; l < number_of_scattering_moments_; ++l)
         {
@@ -55,7 +54,7 @@ initialize_moment_data()
             {
                 l_indices_.push_back(l);
                 m_indices_.push_back(m);
-
+                
                 sum += 1;
             }
         }
@@ -67,7 +66,7 @@ initialize_moment_data()
     case 3:
     {
         angular_normalization_ = 4 * M_PI;
-
+        
         int sum = 0;
         for (int l = 0; l < number_of_scattering_moments_; ++l)
         {
