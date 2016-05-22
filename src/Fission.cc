@@ -85,7 +85,7 @@ apply_full(vector<double> &x)
     }
 
     // Zero out other moments
-    for (int i = 0; i < number_of_cells; +=i)
+    for (int i = 0; i < number_of_cells; ++i)
     {
         for (int m = 1; m < number_of_moments; ++m)
         {
@@ -136,7 +136,7 @@ apply_coherent(vector<double> &x)
     }
 
     // Zero out other moments
-    for (int i = 0; i < number_of_cells; +=i)
+    for (int i = 0; i < number_of_cells; ++i)
     {
         for (int m = 1; m < number_of_moments; ++m)
         {

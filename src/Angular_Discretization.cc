@@ -103,8 +103,8 @@ moment(int mom,
     }
     case 2:
     {
-        int l = l_indices[mom];
-        int m = m_indices[mom];
+        int l = l_indices_[mom];
+        int m = m_indices_[mom];
         
         int o_x = 0 + dimension_ * ord;
         int o_y = 1 + dimension_ * ord;
@@ -116,8 +116,8 @@ moment(int mom,
     }
     case 3:
     {
-        int l = l_indices[mom];
-        int m = m_indices[mom];
+        int l = l_indices_[mom];
+        int m = m_indices_[mom];
         
         int o_x = 0 + dimension_ * ord;
         int o_y = 1 + dimension_ * ord;

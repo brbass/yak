@@ -36,7 +36,7 @@ apply_full(vector<double> &x)
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_scattering_moments = angular_discretization_->number_of_scattering_moments();
     vector<double> const sigma_s = nuclear_data_->sigma_s();
-    vector<double> const scattering_indices = angular_discretization_->scattering_indices();
+    vector<int> const scattering_indices = angular_discretization_->scattering_indices();
     
     for (int i = 0; i < number_of_cells; ++i)
     {
@@ -76,7 +76,7 @@ apply_coherent(vector<double> &x)
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_scattering_moments = angular_discretization_->number_of_scattering_moments();
     vector<double> const sigma_s = nuclear_data_->sigma_s();
-    vector<double> const scattering_indices = angular_discretization_->scattering_indices();
+    vector<int> const scattering_indices = angular_discretization_->scattering_indices();
     
     for (int i = 0; i < number_of_cells; ++i)
     {

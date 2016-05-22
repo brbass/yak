@@ -1,5 +1,5 @@
-#ifndef Gauss_Legendre_Ordinates_hh
-#define Gauss_Legendre_Ordinates_hh
+#ifndef Lebedev_Quadrature_hh
+#define Lebedev_Quadrature_hh
 
 #include <vector>
 
@@ -8,24 +8,24 @@
 using std::vector;
 
 /*
-  Holds Gauss Legendre quadrature
+  Holds Lebedev quadrature
 */
-class Gauss_Legendre_Ordinates : public Angular_Discretization
+class Lebedev_Quadrature : public Angular_Discretization
 {
 public:
 
     // Constructor
-    Gauss_Legendre_Ordinates(int dimension,
-                             int number_of_moments,
-                             int number_of_ordinates);
+    Lebedev_Quadrature(int dimension,
+                       int number_of_moments,
+                       int number_of_ordinates);
 
-    // Return Gauss-Legendre ordinates
+    // Return Lebedev ordinates
     virtual vector<double> const &ordinates() const
     {
         return ordinates_;
     }
     
-    // Return Gauss-Legendre weights
+    // Return Lebedev weights
     virtual vector<double> const &weights() const
     {
         return weights_;

@@ -59,7 +59,7 @@ public:
                           int ord);
     
     // Return base index of spherical harmonics function
-    virtual vector<double> &scattering_indices() const
+    virtual vector<int> const &scattering_indices() const
     {
         return l_indices_;
     }

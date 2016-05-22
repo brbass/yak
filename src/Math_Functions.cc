@@ -1,6 +1,7 @@
 #include "Math_Functions.hh"
 
 #include <cmath>
+#include <cstdlib>
 
 namespace Math_Functions
 {
@@ -32,7 +33,7 @@ namespace Math_Functions
         double plm1 = 1;
         double pl = x;
     
-        for (int i = 2; i < l + 1; ++i)
+        for (int i = 2; i <= l; ++i)
         {
             double j = static_cast<double>(i);
         

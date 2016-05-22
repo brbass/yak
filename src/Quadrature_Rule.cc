@@ -28,23 +28,27 @@ namespace Quadrature_Rule
             || (127 <= n && n <= 129)
             || (255 <= n && 257 <= n))
         {
-            legendre_set(n, &ordinates[0], &weights[0]);
+            quadrule::legendre_set(n, &ordinates[0], &weights[0]);
         }
         else
         {
-            legendre_dr_compute(n, &ordinates[0], &weights[0]);
+            quadrule::legendre_dr_compute(n, &ordinates[0], &weights[0]);
         }
     }
 
+    int lebedev_order(int n)
+    {
+        Assert(sphere_lebedev_rule::available_table(n) == 1);
+
+        return sphere_lebedev_rule::order_table(n);
+    }
+    
     void lebedev(int n,
                  int dimension,
-                 int &number_of_ordinates,
                  vector<double> &ordinates,
                  vector<double> &weights)
     {
-        Assert(available_table(n) == 1);
-
-        number_of_ordinates = order_table(n);
+        int number_of_ordinates = lebedev_order(n);
 
         ordinates.resize(number_of_ordinates * dimension);
         weights.resize(number_of_ordinates);
@@ -53,7 +57,7 @@ namespace Quadrature_Rule
         vector<double> y(number_of_ordinates);
         vector<double> z(number_of_ordinates);
 
-        ld_by_order(number_of_ordinates, &x[0], &y[0], &z[0], &weights[0]);
+        sphere_lebedev_rule::ld_by_order(number_of_ordinates, &x[0], &y[0], &z[0], &weights[0]);
 
         if (dimension == 1)
         {
