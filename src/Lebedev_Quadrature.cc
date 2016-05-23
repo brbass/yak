@@ -10,7 +10,10 @@ Lebedev_Quadrature(int dimension,
                    int rule):
     Angular_Discretization(dimension,
                            number_of_moments,
-                           Quadrature_Rule::lebedev_order(rule))
+                           Quadrature_Rule::lebedev(rule,
+                                                    dimension,
+                                                    ordinates_,
+                                                    weights_))
 {
     Quadrature_Rule::lebedev(rule,
                              dimension,

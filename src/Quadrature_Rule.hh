@@ -12,11 +12,10 @@ namespace Quadrature_Rule
     */
     void gauss_legendre(int n, vector<double> &ordinates, vector<double> &weights);
 
-    int lebedev_order(int n);
-    void lebedev(int n,
-                 int dimension,
-                 vector<double> &ordinates,
-                 vector<double> &weights);
+    int lebedev(int n,
+                int dimension,
+                vector<double> &ordinates,
+                vector<double> &weights);
 }
 #endif
 

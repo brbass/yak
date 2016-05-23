@@ -41,11 +41,11 @@ get_fem(pugi::xml_node &spatial)
         }
         else if (geometry_str == "spherical")
         {
-            geometry = Spatial_Discretization::SPHERICAL;
+            geometry = Spatial_Discretization::SPHERE;
         }
         else if (geometry_str == "cylindrical")
         {
-            geometry = Spatial_Discretization::CYLINDRICAL;
+            geometry = Spatial_Discretization::CYLINDER;
         }
         else
         {
@@ -134,11 +134,11 @@ get_rbf(pugi::xml_node &spatial)
         }
         else if (geometry_str == "spherical")
         {
-            geometry = Spatial_Discretization::SPHERICAL;
+            geometry = Spatial_Discretization::SPHERE;
         }
         else if (geometry_str == "cylindrical")
         {
-            geometry = Spatial_Discretization::CYLINDRICAL;
+            geometry = Spatial_Discretization::CYLINDER;
         }
         else
         {

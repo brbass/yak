@@ -2,6 +2,9 @@
 
 #include "Check.hh"
 
+#include <iostream>
+using namespace std;
+
 Moment_To_Discrete::
 Moment_To_Discrete(shared_ptr<Spatial_Discretization> spatial_discretization,
                    shared_ptr<Angular_Discretization> angular_discretization,

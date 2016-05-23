@@ -36,52 +36,59 @@ namespace Quadrature_Rule
         }
     }
 
-    int lebedev_order(int n)
+    int lebedev(int n,
+                int dimension,
+                vector<double> &ordinates,
+                vector<double> &weights)
     {
+        if (n < 1)
+        {
+            AssertMsg(false, "quadrature must have n >= 1");
+        }
+        if (dimension != 2 && dimension != 3)
+        {
+            AssertMsg(false, "Lebedev quadrature must have d = 2 or 3");
+        }
+        
         Assert(sphere_lebedev_rule::available_table(n) == 1);
 
-        return sphere_lebedev_rule::order_table(n);
-    }
-    
-    void lebedev(int n,
-                 int dimension,
-                 vector<double> &ordinates,
-                 vector<double> &weights)
-    {
-        int number_of_ordinates = lebedev_order(n);
-
-        ordinates.resize(number_of_ordinates * dimension);
-        weights.resize(number_of_ordinates);
+        int num = sphere_lebedev_rule::order_table(n);
+        int number_of_ordinates = num;
+        
+        ordinates.resize(0);
+        weights.resize(0);
         
         vector<double> x(number_of_ordinates);
         vector<double> y(number_of_ordinates);
         vector<double> z(number_of_ordinates);
+        vector<double> w(number_of_ordinates);
+        
+        sphere_lebedev_rule::ld_by_order(number_of_ordinates, &x[0], &y[0], &z[0], &w[0]);
 
-        sphere_lebedev_rule::ld_by_order(number_of_ordinates, &x[0], &y[0], &z[0], &weights[0]);
+        if (dimension == 2)
+        {
+            for (int o = 0; o < number_of_ordinates; ++o)
+            {
+                if (z[o] >= 0)
+                {
+                    ordinates.push_back(x[o]);
+                    ordinates.push_back(y[o]);
+                    weights.push_back(w[o]);
+                }
+            }
+            number_of_ordinates = weights.size();
+        }
+        else // (dimension == 3)
+        {
+            for (int o = 0; o < number_of_ordinates; ++o)
+            {
+                ordinates.push_back(x[o]);
+                ordinates.push_back(y[o]);
+                ordinates.push_back(z[o]);
+                weights.push_back(w[o]);
+            }
+        }
 
-        if (dimension == 1)
-        {
-            for (int o = 0; o < number_of_ordinates; ++o)
-            {
-                ordinates[o] = x[o];
-            }
-        }
-        else if (dimension == 2)
-        {
-            for (int o = 0; o < number_of_ordinates; ++o)
-            {
-                ordinates[0 + dimension * o] = x[o];
-                ordinates[1 + dimension * o] = x[o];
-            }
-        }
-        else if (dimension == 3)
-        {
-            for (int o = 0; o < number_of_ordinates; ++o)
-            {
-                ordinates[0 + dimension * o] = x[o];
-                ordinates[1 + dimension * o] = x[o];
-                ordinates[2 + dimension * o] = x[o];
-            }
-        }
+        return number_of_ordinates;
     }
 }

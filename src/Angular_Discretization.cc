@@ -39,7 +39,7 @@ initialize_moment_data()
             sum += 1;
         }
         
-        number_of_moments_ = sum;
+        number_of_moments_ = number_of_scattering_moments_;
         
         break;
     }

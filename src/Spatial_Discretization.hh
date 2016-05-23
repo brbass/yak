@@ -21,8 +21,10 @@ public:
     enum Geometry
     {
         SLAB,
-        SPHERICAL,
-        CYLINDRICAL
+        SPHERE,
+        CYLINDER,
+        RECTANGLE,
+        CUBOID
     };
 
     // Constructor
