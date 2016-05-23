@@ -11,7 +11,7 @@ namespace Math_Functions
     {
         int val = 1;
         
-        for (int i = 1; i <= n; ++i)
+        for (int i = n; i >= 1; --i)
         {
             val *= i; 
         }
@@ -21,6 +21,18 @@ namespace Math_Functions
         // return (n == 0) ? 1 : n * factorial(n - 1);
     }
     
+    int factorial2(int n)
+    {
+        int val = 1;
+        
+        for (int i = n; i >=1; i -= 2)
+        {
+            val *= i;
+        }
+
+        return val;
+    }
+
     double legendre_polynomial(int l,
                                double const &x)
     {
@@ -63,24 +75,51 @@ namespace Math_Functions
                                int m,
                                double const &x)
     {
-        if (m == l)
+        if (l == m)
         {
-            return factorial(2 * l) / (pow(2., l) * factorial(l)) * pow(1. - x * x, l / 2.);
+            return factorial2(2 * l - 1) * pow(1. - x * x, l / 2.);
         }
-        
+        else if (l == m + 1)
+        {
+            return factorial2(2 * l - 1) * x * pow(1. - x * x, (l - 1.) / 2.);
+        }
+
         double p2 = 0;
-        double p1 = factorial(2 * l) / (pow(2., l) * factorial(l)) * pow(1. - x * x, l / 2.);
-        double p = factorial(2 * l) / (pow(2., l) * factorial(l)) * x * pow(1. - x * x, (l - 1.) / 2.);
+        double p1 = factorial2(2 * m - 1) * pow(1. - x * x, m / 2.);
+        double p = x * (2 * m + 1) * p1;
         
-        for (int i = l - 2; i >= m; --i)
+        for (int i = m + 2; i <= l; ++i)
         {
             p2 = p1;
             p1 = p;
             
-            p =  (2. * (i + 1.) * x / sqrt(1 - x * x) * p1 - p2) / ((l - i) * (l + i + 1));
+            p =  (x * (2 * i - 1.) * p1 - (i + m - 1.) * p2) / (i - m);
         }
         
         return p;
+
+        // if (m == l)
+        // {
+        //     double val = (x == 0) ? 1 : pow(1. - x * x, l / 2.);
+        //     return factorial(2 * l) / (pow(2., l) * factorial(l)) * val;
+        // }
+        
+        // double val1 = (x == 0) ? 1 : pow(1. - x * x, l / 2.);
+        // double val2 = (x == 0) ? 1 : pow(1. - x * x, (l - 1.) / 2.);
+        
+        // double p2 = 0;
+        // double p1 = factorial(2 * l) / (pow(2., l) * factorial(l)) * val1;
+        // double p = factorial(2 * l) / (pow(2., l) * factorial(l)) * x * val2;
+        
+        // for (int i = l - 2; i >= m; --i)
+        // {
+        //     p2 = p1;
+        //     p1 = p;
+            
+        //     p =  (2. * (i + 1.) * x / sqrt(1 - x * x) * p1 - p2) / ((l - i) * (l + i + 1));
+        // }
+        
+        // return p;
         
         // if (m == l)
         // {

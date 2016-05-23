@@ -7,6 +7,7 @@
 #include "Energy_Discretization.hh"
 #include "Gauss_Legendre_Quadrature.hh"
 #include "Lebedev_Quadrature.hh"
+#include "Math_Functions.hh"
 #include "Moment_To_Discrete.hh"
 #include "Quadrature_Rule.hh"
 #include "Random_Number_Generator.hh"
@@ -137,6 +138,7 @@ void test_lebedev(int number_of_scattering_moments,
     vector<double> y0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_ordinates);
 
     vector<double> x(x0);
+    vector<double> y(y0);
     
     (*upM)(x);
     (*upD)(x);
