@@ -48,7 +48,7 @@ apply(vector<double> &x)
                         int k = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
                         
                         double p = angular_discretization_->moment(m, o);
-                        
+
                         sum += weights[o] * p * y[k];
                     }
                     

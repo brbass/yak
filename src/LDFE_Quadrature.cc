@@ -56,12 +56,24 @@ initialize_quadrature()
     }
     
     sort_quadrature();
-    
-    for (int i = 0; i < number_of_ordinates_; ++i)
+
+    switch(dimension_)
     {
-        ordinates_.push_back(mu_[i]);
-        ordinates_.push_back(eta_[i]);
-        ordinates_.push_back(xi_[i]);
+    case 2:
+        for (int i = 0; i < number_of_ordinates_; ++i)
+        {
+            ordinates_.push_back(mu_[i]);
+            ordinates_.push_back(eta_[i]);
+        }
+        break;
+    case 3:
+        for (int i = 0; i < number_of_ordinates_; ++i)
+        {
+            ordinates_.push_back(mu_[i]);
+            ordinates_.push_back(eta_[i]);
+            ordinates_.push_back(xi_[i]);
+        }
+        break;
     }
 }
 
@@ -190,6 +202,7 @@ initialize_1()
                 }
             }
         }
+        break;
     }
 }
 

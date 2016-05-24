@@ -36,6 +36,10 @@ void test_sph_harm()
     double x = rng.random_double();
     double y = rng.random_double();
     double z = rng.random_double();
+
+    x = 1;
+    y = 1;
+    z = 1;
     
     double sum = sqrt(x * x + y * y + z * z);
 
@@ -70,10 +74,10 @@ void test_gauss_legendre(int number_of_moments,
                          int number_of_ordinates)
 {
     int dimension = 1;
-    int number_of_cells = 2;
-    int number_of_nodes = 2;
-    int number_of_groups = 2;
-    int number_of_boundary_cells = 2;
+    int number_of_cells = 1;
+    int number_of_nodes = 1;
+    int number_of_groups = 1;
+    int number_of_boundary_cells = 1;
 
     Random_Number_Generator rng(0, 1);
     vector<double> x0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_moments);
@@ -101,11 +105,13 @@ void test_gauss_legendre(int number_of_moments,
         = make_shared<Discrete_To_Moment>(spatial_discretization,
                                           angular_discretization,
                                           energy_discretization);
-    
+
+
     vector<double> x(x0);
 
     (*upM)(x);
     (*upD)(x);
+    
     print(x0, x);
 }
 
@@ -161,6 +167,14 @@ void test_ldfe(int number_of_scattering_moments,
     int number_of_moments = angular_discretization->number_of_moments();
     
     vector<double> const ordinates = angular_discretization->ordinates();
+    vector<double> const weights = angular_discretization->weights();
+    
+    // double sum = 0;
+    // for (int i = 0; i < weights.size(); ++i)
+    // {
+    //     sum += weights[i];
+    // }
+    // cout << sum << endl;
     
     // for (int i = 0; i < number_of_ordinates; ++i)
     // {
@@ -171,13 +185,33 @@ void test_ldfe(int number_of_scattering_moments,
     //     }
     //     cout << endl;
     // }
-
+    // cout << endl;
+    
     Random_Number_Generator rng(0, 1);
     vector<double> x0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_moments);
+    for (int i = 1; i < number_of_moments; ++i)
+    {
+        x0[i] = x0[i] / 5;
+    }
+    if (dimension == 2)
+    {
+        x0[0] = 1;
+        x0[1] = 0.23;
+        x0[2] = 0.14;
+    }
+    else if (dimension == 3)
+    {
+        x0[0] = 1;
+        x0[1] = 0;
+        x0[2] = 0.23;
+        x0[3] = 0.14;
+    }
     vector<double> y0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_ordinates);
 
     vector<double> x(x0);
     vector<double> y(y0);
+
+    cout << number_of_ordinates << endl;
     
     (*upM)(x);
     (*upD)(x);
@@ -186,8 +220,8 @@ void test_ldfe(int number_of_scattering_moments,
 
 int main(int argc, char **argv)
 {
-    test_sph_harm();
-    return 0;
+    // test_sph_harm();
+    // return 0;
 
     if (argc != 4)
     {

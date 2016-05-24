@@ -111,7 +111,7 @@ moment(int mom,
         double x = ordinates()[o_x];
         double y = ordinates()[o_y];
         double z = sqrt(1 - x * x - y * y);
-        
+
         return Math_Functions::spherical_harmonic(l, m, x, y, z);
     }
     case 3:
