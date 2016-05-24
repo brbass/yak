@@ -138,7 +138,6 @@ namespace Math_Functions
         // }
     }
 
-    // Not working correctly
     double spherical_harmonic_rec(int l,
                                   int m,
                                   double const &mu,
@@ -153,7 +152,6 @@ namespace Math_Functions
         return val * legendre_polynomial(l, abs(m), mu) * t;
     }
 
-    // Not working correctly
     double spherical_harmonic_rec(int l,
                                   int m,
                                   double const &x,
@@ -212,11 +210,11 @@ namespace Math_Functions
             switch(m)
             {
             case -3:
-                return sqrt(0.625) * z * (3. * y * y - x * x);
+                return sqrt(0.625) * z * (3. * y * y - z * z);
             case -2:
                 return sqrt(15.) * x * y * z;
             case -1:
-                return sqrt(0.375) * x * (5. * x * x - 1);
+                return sqrt(0.375) * z * (5. * x * x - 1);
             case 0:
                 return 0.5 * x * (5. * x * x - 3.);
             case 1:
@@ -224,18 +222,14 @@ namespace Math_Functions
             case 2:
                 return sqrt(3.75) * x * (y * y - z * z);
             case 3:
-                return sqrt(0.625) * y * (y * y - 3 * x * x);
+                return sqrt(0.625) * y * (y * y - 3 * z * z);
             default:
                 AssertMsg(false, "Could not find moment");
                 break;
             }
         default:
-            AssertMsg(false, "Could not find moment");
-            break;
-            // return spherical_harmonic_rec(l, m, x, y, z);
+            return spherical_harmonic_rec(l, m, x, y, z);
         }
-        
-        return 0;
     }
     
     // See file sphere_lebedev_rule.cpp for original conversion code
