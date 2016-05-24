@@ -34,6 +34,7 @@ apply(vector<double> &x)
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     double angular_normalization = angular_discretization_->angular_normalization();
+    vector<int> const scattering_indices = angular_discretization_->scattering_indices();
     vector<double> const weights = angular_discretization_->weights();
     vector<double> const ordinates = angular_discretization_->ordinates();
 
@@ -50,10 +51,11 @@ apply(vector<double> &x)
                     for (int m = 0; m < number_of_moments; ++m)
                     {
                         int k = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-                        
+                        int l = scattering_indices[m];
+
                         double p = angular_discretization_->moment(m, o);
                         
-                        sum += (2 * static_cast<double>(m) + 1) / angular_normalization * p * y[k];
+                        sum += (2 * static_cast<double>(l) + 1) / angular_normalization * p * y[k];
                     }
                     
                     int k = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
