@@ -27,6 +27,39 @@ void print(vector<double> &x0, vector<double> &x)
     cout << endl;
 }
 
+void test_sph_harm()
+{
+    using namespace Math_Functions;
+    
+    Random_Number_Generator rng(-1, 1);
+
+    double x = rng.random_double();
+    double y = rng.random_double();
+    double z = rng.random_double();
+
+    x = 1;
+    y = 1;
+    z = 0.0;
+    
+    double sum = sqrt(x * x + y * y + z * z);
+
+    x /= sum;
+    y /= sum;
+    z /= sum;
+
+    for (int l = 0; l < 4; ++l)
+    {
+        for (int m = -l; m <= l; ++m)
+        {
+            cout << setw(16) << l;
+            cout << setw(16) << m;
+            cout << setw(16) << spherical_harmonic(l, m, x, y, z);
+            cout << endl;
+        }
+    }
+}
+
+
 void test_gauss_legendre(int number_of_moments,
                          int number_of_ordinates)
 {

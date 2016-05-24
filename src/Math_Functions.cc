@@ -1,5 +1,7 @@
 #include "Math_Functions.hh"
 
+#include "Check.hh"
+
 #include <cmath>
 #include <cstdlib>
 
@@ -135,33 +137,105 @@ namespace Math_Functions
         //             - legendre_polynomial(l, m + 2)) / ((l - m) * (l + m + 1));
         // }
     }
-    
-    double spherical_harmonic(int l,
-                              int m,
-                              double const &mu,
-                              double const &phi)
-    {
-        double val = (m == 0) ? 1 : 0;
+
+    // Not working correctly
+    // double spherical_harmonic_rec(int l,
+    //                               int m,
+    //                               double const &mu,
+    //                               double const &phi)
+    // {
+    //     double val = (m == 0) ? 1 : 0;
         
-        val = sqrt((2 - val) * factorial(l - abs(m)) / factorial(l + abs(m)));
+    //     val = sqrt((2 - val) * factorial(l - abs(m)) / factorial(l + abs(m)));
         
-        double t = (m >= 0) ? cos(m * phi) : sin(abs(m) * phi);
+    //     double t = (m >= 0) ? cos(m * phi) : sin(abs(m) * phi);
         
-        return val * legendre_polynomial(l, abs(m), mu) * t;
-    }
-    
+    //     return val * legendre_polynomial(l, abs(m), mu) * t;
+    // }
+
+    // Not working correctly
+    // double spherical_harmonic_rec(int l,
+    //                               int m,
+    //                               double const &x,
+    //                               double const &y,
+    //                               double const &z)
+    // {
+    //     double mu;
+    //     double phi;
+        
+    //     xyz_to_spherical(x, y, z, mu, phi);
+        
+    //     return spherical_harmonic_rec(l, m, mu, phi);
+    // }
+
     double spherical_harmonic(int l,
                               int m,
                               double const &x,
                               double const &y,
                               double const &z)
     {
-        double mu;
-        double phi;
+        switch(l)
+        {
+        case 0:
+            return 1;
+        case 1:
+            switch(m)
+            {
+            case -1:
+                return z;
+            case 0:
+                return x;
+            case 1:
+                return y;
+            default:
+                AssertMsg(false, "Could not find moment");
+                break;
+            }
+        case 2:
+            switch(m)
+            {
+            case -2:
+                return sqrt(3.) * y * z;
+            case -1:
+                return sqrt(3.) * x * z;
+            case 0:
+                return 0.5 * (3. * x * x - 1.);
+            case 1:
+                return sqrt(3.) * x * y;
+            case 2:
+                return 0.5 * sqrt(3.) * (y * y - z * z);
+            default:
+                AssertMsg(false, "Could not find moment");
+                break;
+            }
+        case 3:
+            switch(m)
+            {
+            case -3:
+                return sqrt(0.625) * z * (3. * y * y - x * x);
+            case -2:
+                return sqrt(15.) * x * y * z;
+            case -1:
+                return sqrt(0.375) * x * (5. * x * x - 1);
+            case 0:
+                return 0.5 * x * (5. * x * x - 3.);
+            case 1:
+                return sqrt(0.375) * y * (5. * x * x - 1.);
+            case 2:
+                return sqrt(3.75) * x * (y * y - z * z);
+            case 3:
+                return sqrt(0.625) * y * (y * y - 3 * x * x);
+            default:
+                AssertMsg(false, "Could not find moment");
+                break;
+            }
+        default:
+            AssertMsg(false, "Could not find moment");
+            break;
+            // return spherical_harmonic_rec(l, m, x, y, z);
+        }
         
-        xyz_to_spherical(x, y, z, mu, phi);
-        
-        return spherical_harmonic(l, m, mu, phi);
+        return 0;
     }
     
     // See file sphere_lebedev_rule.cpp for original conversion code
