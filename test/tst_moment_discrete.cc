@@ -189,23 +189,10 @@ void test_ldfe(int number_of_scattering_moments,
     
     Random_Number_Generator rng(0, 1);
     vector<double> x0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_moments);
-    for (int i = 1; i < number_of_moments; ++i)
-    {
-        x0[i] = x0[i] / 5;
-    }
-    if (dimension == 2)
-    {
-        x0[0] = 1;
-        x0[1] = 0.23;
-        x0[2] = 0.14;
-    }
-    else if (dimension == 3)
-    {
-        x0[0] = 1;
-        x0[1] = 0;
-        x0[2] = 0.23;
-        x0[3] = 0.14;
-    }
+    // for (int i = 1; i < number_of_moments; ++i)
+    // {
+    //     x0[i] = x0[i] / 5;
+    // }
     vector<double> y0 = rng.random_double_vector(number_of_cells * number_of_nodes * number_of_groups * number_of_ordinates);
 
     vector<double> x(x0);
