@@ -1,6 +1,8 @@
 #ifndef LDFE_Quadrature_hh
 #define LDFE_Quadrature_hh
 
+#include "Angular_Discretization.hh"
+
 /*
   Quadrature based on linear discontinuous finite elements
   
@@ -47,12 +49,18 @@ public:
     }
     
     // Check class invariants
-    void check_class_invariants() const;
+    virtual void check_class_invariants() const;
 
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const;
 
 private:
+
+    void initialize_quadrature();
+    void sort_quadrature();
+    void initialize_1();
+    void initialize_2();
+    void initialize_3();
     
     int rule_;
 

@@ -6,7 +6,7 @@
 #include "Discrete_To_Moment.hh"
 #include "Energy_Discretization.hh"
 #include "Gauss_Legendre_Quadrature.hh"
-#include "Lebedev_Quadrature.hh"
+#include "LDFE_Quadrature.hh"
 #include "Math_Functions.hh"
 #include "Moment_To_Discrete.hh"
 #include "Quadrature_Rule.hh"
@@ -70,9 +70,9 @@ void test_gauss_legendre(int number_of_moments,
     print(x0, x);
 }
 
-void test_lebedev(int number_of_scattering_moments,
-                  int rule,
-                  int dimension)
+void test_ldfe(int number_of_scattering_moments,
+               int rule,
+               int dimension)
 {
     int number_of_cells = 1;
     int number_of_nodes = 1;
@@ -101,10 +101,10 @@ void test_lebedev(int number_of_scattering_moments,
                                                      number_of_boundary_cells,
                                                      geometry);
 
-    shared_ptr<Angular_Discretization> angular_discretization 
-        = make_shared<Lebedev_Quadrature>(dimension,
-                                          number_of_scattering_moments,
-                                          rule);
+    shared_ptr<LDFE_Quadrature> angular_discretization 
+        = make_shared<LDFE_Quadrature>(dimension,
+                                       number_of_scattering_moments,
+                                       rule);
     shared_ptr<Energy_Discretization> energy_discretization
         = make_shared<Energy_Discretization>(number_of_groups);
     
@@ -122,7 +122,7 @@ void test_lebedev(int number_of_scattering_moments,
     int number_of_moments = angular_discretization->number_of_moments();
     
     vector<double> const ordinates = angular_discretization->ordinates();
-
+    
     // for (int i = 0; i < number_of_ordinates; ++i)
     // {
     //     cout << setw(16) << i;
@@ -164,14 +164,14 @@ int main(int argc, char **argv)
                             number_of_ordinates);
         break;
     case 2:
-        test_lebedev(number_of_moments,
-                     number_of_ordinates,
-                     dimension);
+        test_ldfe(number_of_moments,
+                  number_of_ordinates,
+                  dimension);
         break;
     case 3:
-        test_lebedev(number_of_moments,
-                     number_of_ordinates,
-                     dimension);
+        test_ldfe(number_of_moments,
+                  number_of_ordinates,
+                  dimension);
         break;
     default:
         cerr << "dimension must be 1, 2, or 3" << endl;
