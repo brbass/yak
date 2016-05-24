@@ -139,34 +139,34 @@ namespace Math_Functions
     }
 
     // Not working correctly
-    // double spherical_harmonic_rec(int l,
-    //                               int m,
-    //                               double const &mu,
-    //                               double const &phi)
-    // {
-    //     double val = (m == 0) ? 1 : 0;
+    double spherical_harmonic_rec(int l,
+                                  int m,
+                                  double const &mu,
+                                  double const &phi)
+    {
+        double val = (m == 0) ? 1 : 0;
         
-    //     val = sqrt((2 - val) * factorial(l - abs(m)) / factorial(l + abs(m)));
+        val = sqrt((2 - val) * factorial(l - abs(m)) / factorial(l + abs(m)));
         
-    //     double t = (m >= 0) ? cos(m * phi) : sin(abs(m) * phi);
+        double t = (m >= 0) ? cos(m * phi) : sin(abs(m) * phi);
         
-    //     return val * legendre_polynomial(l, abs(m), mu) * t;
-    // }
+        return val * legendre_polynomial(l, abs(m), mu) * t;
+    }
 
     // Not working correctly
-    // double spherical_harmonic_rec(int l,
-    //                               int m,
-    //                               double const &x,
-    //                               double const &y,
-    //                               double const &z)
-    // {
-    //     double mu;
-    //     double phi;
+    double spherical_harmonic_rec(int l,
+                                  int m,
+                                  double const &x,
+                                  double const &y,
+                                  double const &z)
+    {
+        double mu;
+        double phi;
         
-    //     xyz_to_spherical(x, y, z, mu, phi);
+        xyz_to_spherical(x, y, z, mu, phi);
         
-    //     return spherical_harmonic_rec(l, m, mu, phi);
-    // }
+        return spherical_harmonic_rec(l, m, mu, phi);
+    }
 
     double spherical_harmonic(int l,
                               int m,
@@ -245,23 +245,23 @@ namespace Math_Functions
                           double &mu,
                           double &phi)
     {
-        double val = sqrt(x * x + y * y);
+        double val = sqrt(y * y + z * z);
         
         if (val < 0)
         {
-            phi = acos(x / val);
+            phi = acos(y / val);
         }
         else
         {
-            phi = acos(x);
+            phi = acos(y);
         }
         
-        if (y < 0)
+        if (z < 0)
         {
             phi = -phi;
         }
         
-        mu = z;
+        mu = x;
     }
     
     void spherical_to_xyz(double const &mu,
@@ -272,9 +272,9 @@ namespace Math_Functions
     {
         double val = sqrt(1 - mu * mu);
         
-        x = cos(phi) * val;
-        y = sin(phi) * val;
-        z = mu;
+        x = mu;
+        y = cos(phi) * val;
+        z = sin(phi) * val;
     }
 
 }

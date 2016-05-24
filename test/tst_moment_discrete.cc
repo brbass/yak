@@ -36,10 +36,10 @@ void test_sph_harm()
     double x = rng.random_double();
     double y = rng.random_double();
     double z = rng.random_double();
-
-    x = 1;
-    y = 1;
-    z = 0.0;
+    
+    x = 1.0;
+    y = 1.0;
+    z = 1.0;
     
     double sum = sqrt(x * x + y * y + z * z);
 
@@ -54,6 +54,7 @@ void test_sph_harm()
             cout << setw(16) << l;
             cout << setw(16) << m;
             cout << setw(16) << spherical_harmonic(l, m, x, y, z);
+            cout << setw(16) << spherical_harmonic_rec(l, m, x, y, z);
             cout << endl;
         }
     }
@@ -180,6 +181,9 @@ void test_ldfe(int number_of_scattering_moments,
 
 int main(int argc, char **argv)
 {
+    test_sph_harm();
+    return 0;
+
     if (argc != 4)
     {
         cerr << "usage: tst_moment_discrete [num_moments num_ordinates dimension]" << endl;

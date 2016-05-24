@@ -16,16 +16,16 @@ namespace Math_Functions
                                double const &x);
 
     // Returns real spherical harmonic function
-    // double spherical_harmonic_rec(int l,
-    //                               int m,
-    //                               double const &mu,
-    //                               double const &phi);
+    double spherical_harmonic_rec(int l,
+                                  int m,
+                                  double const &mu,
+                                  double const &phi);
 
-    // double spherical_harmonic_rec(int l,
-    //                               int m,
-    //                               double const &x,
-    //                               double const &y,
-    //                               double const &z);
+    double spherical_harmonic_rec(int l,
+                                  int m,
+                                  double const &x,
+                                  double const &y,
+                                  double const &z);
 
     double spherical_harmonic(int l,
                               int m,
