@@ -37,15 +37,20 @@ void test_sph_harm()
     double y = rng.random_double();
     double z = rng.random_double();
     
-    x = 1.0;
-    y = 1.0;
-    z = 1.0;
-    
     double sum = sqrt(x * x + y * y + z * z);
 
     x /= sum;
     y /= sum;
     z /= sum;
+
+    double mu, phi;
+
+    cout << setw(16) << x << setw(16) << y << setw(16) << z << endl;
+    
+    Math_Functions::xyz_to_spherical(x, y, z, mu, phi);
+    Math_Functions::spherical_to_xyz(mu, phi, x, y, z);
+    
+    cout << setw(16) << x << setw(16) << y << setw(16) << z << endl << endl;
 
     for (int l = 0; l < 4; ++l)
     {

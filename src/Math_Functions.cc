@@ -247,7 +247,7 @@ namespace Math_Functions
     {
         double val = sqrt(y * y + z * z);
         
-        if (val < 0)
+        if (val > 0)
         {
             phi = acos(y / val);
         }
