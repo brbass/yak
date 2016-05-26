@@ -67,7 +67,7 @@ Local_RBF_Mesh(int dimension,
         shared_ptr<Epetra_SerialDenseSolver> solver = make_shared<Epetra_SerialDenseSolver>();
         
         solver->SetMatrix(*mat);
-        Assert(!solver->Factor());
+        solver->Factor();
         
         matrices_.push_back(mat);
         solvers_.push_back(solver);
@@ -91,7 +91,7 @@ convert_to_phi(int point,
     Epetra_SerialDenseVector b(View, &data[0], number_of_neighbors_);
     
     solver->SetVectors(x, b);
-    Assert(solver->Solve());
+    solver->Solve();
     
     // data.assign(solver->X(), solver->X() + number_of_neighbors_);
 }
