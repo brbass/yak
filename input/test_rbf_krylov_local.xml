@@ -19,7 +19,7 @@
     <type>rbf</type>
     <local>1</local>
     <dimension>1</dimension>
-    <number_of_points>1502</number_of_points>
+    <number_of_points>12002</number_of_points>
     <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
@@ -28,12 +28,12 @@
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>500</number_of_points>
+        <number_of_points>4000</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_points>1000</number_of_points>
+        <number_of_points>8000</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>

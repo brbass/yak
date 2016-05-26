@@ -1,7 +1,6 @@
 #include "Local_RBF_Sweep_1D.hh"
 
 #include "Check.hh"
-#include "Dense_Solve.hh"
 
 using namespace std;
 
@@ -260,6 +259,7 @@ initialize_trilinos()
         mat_->InsertGlobalValues(i, number_of_neighbors, &ones[0], &neighbors[0]);
     }
     mat_->FillComplete();
+    mat_->OptimizeStorage();
     
     problem_ = make_shared<Epetra_LinearProblem>(mat_.get(),
                                                  lhs_.get(),
@@ -269,6 +269,8 @@ initialize_trilinos()
     {
     case AMESOS:
         Amesos factory;
+        // Serial: Klu, Lapack, Umfpack
+        // Parallel: Mumps, Superludist
         amesos_solver_ = make_shared<Amesos_BaseSolver*>(factory.Create("Klu", *problem_));
         
         if (*amesos_solver_ == NULL)

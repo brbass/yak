@@ -43,6 +43,8 @@ Local_RBF_Mesh(int dimension,
         vector<int> const local_neighbors = neighbors(i);
         
         shared_ptr<Epetra_SerialDenseMatrix> mat = make_shared<Epetra_SerialDenseMatrix>(number_of_neighbors_, number_of_neighbors_);
+        // shared_ptr<Epetra_SerialSymDenseMatrix> mat = make_shared<Epetra_SerialSymDenseMatrix>();
+        // mat->Shape(number_of_neighbors_);
         
         for (int j = 0; j < number_of_neighbors_; ++j)
         {
@@ -61,10 +63,11 @@ Local_RBF_Mesh(int dimension,
             }
         }
 
+        // shared_ptr<Epetra_SerialSpdDenseSolver> solver = make_shared<Epetra_SerialSpdDenseSolver>();
         shared_ptr<Epetra_SerialDenseSolver> solver = make_shared<Epetra_SerialDenseSolver>();
         
         solver->SetMatrix(*mat);
-        solver->Factor();
+        Assert(!solver->Factor());
         
         matrices_.push_back(mat);
         solvers_.push_back(solver);
@@ -82,12 +85,13 @@ convert_to_phi(int point,
     Check(data.size() == number_of_neighbors_);
     
     shared_ptr<Epetra_SerialDenseSolver> solver = solvers_[point];
+    // shared_ptr<Epetra_SerialSpdDenseSolver> solver = solvers_[point];
     
     Epetra_SerialDenseVector x(number_of_neighbors_);
     Epetra_SerialDenseVector b(View, &data[0], number_of_neighbors_);
     
     solver->SetVectors(x, b);
-    solver->Solve();
+    Assert(solver->Solve());
     
     // data.assign(solver->X(), solver->X() + number_of_neighbors_);
 }

@@ -3,9 +3,11 @@
 
 #include "RBF_Mesh.hh"
 
+// #include <Epetra_SerialSymDenseMatrix.h>
+// #include <Epetra_SerialSpdDenseSolver.h>
 #include <Epetra_SerialDenseMatrix.h>
-#include <Epetra_SerialDenseVector.h>
 #include <Epetra_SerialDenseSolver.h>
+#include <Epetra_SerialDenseVector.h>
 
 /*
   Mesh designed for use with radial basis functions which have sparse neighbor relationships
@@ -50,6 +52,8 @@ protected:
     int number_of_neighbors_;
     vector<vector<int> > neighbors_;
     // vector<vector<double> > neighbor_distance_;
+    // vector<shared_ptr<Epetra_SerialSymDenseMatrix> > matrices_;
+    // vector<shared_ptr<Epetra_SerialSpdDenseSolver> > solvers_;
     vector<shared_ptr<Epetra_SerialDenseMatrix> > matrices_;
     vector<shared_ptr<Epetra_SerialDenseSolver> > solvers_;
 };

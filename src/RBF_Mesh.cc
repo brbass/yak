@@ -4,6 +4,8 @@
 
 #include "Check.hh"
 #include "Gaussian_RBF.hh"
+#include "Multiquadric_RBF.hh"
+#include "Inverse_Multiquadric_RBF.hh"
 #include "XML_Child_Value.hh"
 
 using namespace std;
@@ -50,6 +52,20 @@ RBF_Mesh(int dimension,
             rbf = make_shared<Gaussian_RBF>(dimension,
                                             position,
                                             shape);
+            break;
+        }
+        case MULTIQUADRIC:
+        {
+            rbf = make_shared<Multiquadric_RBF>(dimension,
+                                                position,
+                                                shape);
+            break;
+        }
+        case INVERSE_MULTIQUADRIC:
+        {
+            rbf = make_shared<Inverse_Multiquadric_RBF>(dimension,
+                                                        position,
+                                                        shape);
             break;
         }
         default:

@@ -154,6 +154,14 @@ get_rbf(pugi::xml_node &spatial)
     {
         basis_type = RBF_Mesh::GAUSSIAN;
     }
+    else if (basis_str == "multiquadric")
+    {
+        basis_type = RBF_Mesh::MULTIQUADRIC;
+    }
+    else if (basis_str == "inverse_multiquadric")
+    {
+        basis_type = RBF_Mesh::INVERSE_MULTIQUADRIC;
+    }
     else
     {
         AssertMsg(false, "basis_type \"" + basis_str + "\" not found");

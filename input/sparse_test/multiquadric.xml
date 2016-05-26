@@ -11,28 +11,29 @@
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>rbf</type>
+      <type>rbf_local</type>
     </sweeper>
   </solution_method>
   
   <spatial_discretization>
     <type>rbf</type>
-    <local>0</local>
+    <local>1</local>
     <dimension>1</dimension>
-    <number_of_points>602</number_of_points>
+    <number_of_points>1202</number_of_points>
+    <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
-    <basis_type>gaussian</basis_type>
+    <basis_type>multiquadric</basis_type>
     
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>200</number_of_points>
+        <number_of_points>400</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_points>400</number_of_points>
+        <number_of_points>800</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>

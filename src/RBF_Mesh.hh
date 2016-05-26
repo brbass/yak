@@ -23,10 +23,10 @@ public:
         GAUSSIAN,
         MULTIQUADRIC,
         INVERSE_MULTIQUADRIC,
-        WENDLAND30,
-        WENDLAND31,
-        WENDLAND32,
-        WENDLAND33,
+        // WENDLAND30,
+        // WENDLAND31,
+        // WENDLAND32,
+        // WENDLAND33,
         FALSE
     };
 
