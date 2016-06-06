@@ -7,7 +7,7 @@
 #include "Multiquadric_RBF.hh"
 #include "Inverse_Multiquadric_RBF.hh"
 #include "Wendland_RBF.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -138,11 +138,11 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node rbf = output_node.append_child("rbf_mesh");
     
-    append_child(rbf, dimension_, "dimension");
-    append_child(rbf, number_of_points_, "number_of_points");
-    append_child(rbf, boundary_points_, "boundary_points", "point");
-    append_child(rbf, internal_points_, "internal_points", "point");
-    append_child(rbf, material_, "material", "point");
-    append_child(rbf, point_positions_, "point_positions", "dimension-point");
-    append_child(rbf, shape_parameter_, "shape_parameter", "dimension-point");
+    XML_Functions::append_child(rbf, dimension_, "dimension");
+    XML_Functions::append_child(rbf, number_of_points_, "number_of_points");
+    XML_Functions::append_child(rbf, boundary_points_, "boundary_points", "point");
+    XML_Functions::append_child(rbf, internal_points_, "internal_points", "point");
+    XML_Functions::append_child(rbf, material_, "material", "point");
+    XML_Functions::append_child(rbf, point_positions_, "point_positions", "dimension-point");
+    XML_Functions::append_child(rbf, shape_parameter_, "shape_parameter", "dimension-point");
 }

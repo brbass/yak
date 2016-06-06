@@ -15,7 +15,7 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
     pugi::xml_node nuclear_node = input_file.child("nuclear_data");
     pugi::xml_node materials = nuclear_node.child("materials");
 
-    int number_of_materials = child_value<int>(materials, "number_of_materials");
+    int number_of_materials = XML_Functions::child_value<int>(materials, "number_of_materials");
     int number_of_cells = spatial_->number_of_cells();
     int number_of_moments = angular_->number_of_scattering_moments();
     int number_of_groups = energy_->number_of_groups();
@@ -30,13 +30,13 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
     
     for (pugi::xml_node material = materials.child("material"); material; material = material.next_sibling("material"))
     {
-        int a = child_value<int>(material, "material_number");
+        int a = XML_Functions::child_value<int>(material, "material_number");
         
-        vector<double> sigma_t_a = child_vector<double>(material, "sigma_t", number_of_groups);
-        vector<double> sigma_s_a = child_vector<double>(material, "sigma_s", number_of_groups * number_of_groups * number_of_moments);
-        vector<double> nu_a = child_vector<double>(material, "nu", number_of_groups);
-        vector<double> sigma_f_a = child_vector<double>(material, "sigma_f", number_of_groups);
-        vector<double> chi_a = child_vector<double>(material, "chi", number_of_groups);
+        vector<double> sigma_t_a = XML_Functions::child_vector<double>(material, "sigma_t", number_of_groups);
+        vector<double> sigma_s_a = XML_Functions::child_vector<double>(material, "sigma_s", number_of_groups * number_of_groups * number_of_moments);
+        vector<double> nu_a = XML_Functions::child_vector<double>(material, "nu", number_of_groups);
+        vector<double> sigma_f_a = XML_Functions::child_vector<double>(material, "sigma_f", number_of_groups);
+        vector<double> chi_a = XML_Functions::child_vector<double>(material, "chi", number_of_groups);
         
         for (int g = 0; g < number_of_groups; ++g)
         {

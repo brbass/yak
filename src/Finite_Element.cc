@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -30,8 +30,8 @@ check_class_invariants() const
 void Finite_Element::
 output(pugi::xml_node &element_node) const
 {
-    append_child(element_node, dimension_, "dimension");
-    append_child(element_node, number_of_nodes_, "number_of_nodes"); 
-    append_child(element_node, length_, "length", "dimension");
-    append_child(element_node, node_positions_, "node_positions", "node");
+    XML_Functions::append_child(element_node, dimension_, "dimension");
+    XML_Functions::append_child(element_node, number_of_nodes_, "number_of_nodes"); 
+    XML_Functions::append_child(element_node, length_, "length", "dimension");
+    XML_Functions::append_child(element_node, node_positions_, "node_positions", "node");
 }

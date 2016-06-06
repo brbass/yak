@@ -7,7 +7,7 @@ Transport_Problem_Parser(pugi::xml_node &input_file,
                          shared_ptr<Solver> solver):
     Parser(input_file)
 {
-    string problem_type_str = child_value<string>(input_file_, "problem_type");
+    string problem_type_str = XML_Functions::child_value<string>(input_file_, "problem_type");
     
     Transport_Problem::Problem_Type problem_type;
     

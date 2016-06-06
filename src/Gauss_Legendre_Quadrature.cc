@@ -2,7 +2,7 @@
 
 #include "Check.hh"
 #include "Quadrature_Rule.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 Gauss_Legendre_Quadrature::
 Gauss_Legendre_Quadrature(int dimension,
@@ -29,10 +29,10 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node gauss = output_node.append_child("gauss_legendre_ordinates");
     
-    append_child(gauss, dimension_, "dimension");
-    append_child(gauss, number_of_moments_, "number_of_moments");
-    append_child(gauss, number_of_ordinates_, "number_of_ordinates");
-    append_child(gauss, ordinates_, "ordinates", "ordinate");
-    append_child(gauss, weights_, "weights", "ordinate");
+    XML_Functions::append_child(gauss, dimension_, "dimension");
+    XML_Functions::append_child(gauss, number_of_moments_, "number_of_moments");
+    XML_Functions::append_child(gauss, number_of_ordinates_, "number_of_ordinates");
+    XML_Functions::append_child(gauss, ordinates_, "ordinates", "ordinate");
+    XML_Functions::append_child(gauss, weights_, "weights", "ordinate");
 }
 

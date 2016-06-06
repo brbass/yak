@@ -15,7 +15,7 @@
 #include "Check.hh"
 #include "Epetra_Operator_Interface.hh"
 #include "Ordinate_Sweep_Operator.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -191,10 +191,10 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node source = output_node.append_child("krylov_iteration");
     
-    append_child(source, max_iterations_, "max_iterations");
-    append_child(source, source_iterations_, "source_iterations");
-    append_child(source, total_iterations_, "total_iterations");
-    append_child(source, tolerance_, "tolerance");
+    XML_Functions::append_child(source, max_iterations_, "max_iterations");
+    XML_Functions::append_child(source, source_iterations_, "source_iterations");
+    XML_Functions::append_child(source, total_iterations_, "total_iterations");
+    XML_Functions::append_child(source, tolerance_, "tolerance");
     
     nuclear_data_->output(output_node);
     source_data_->output(output_node);

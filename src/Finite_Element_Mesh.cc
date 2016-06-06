@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -92,15 +92,15 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node finite = output_node.append_child("finite_element_mesh");
     
-    append_child(finite, number_of_elements_, "number_of_elements");
-    append_child(finite, number_of_nodes_, "number_of_nodes");
-    append_child(finite, number_of_points_, "number_of_points");
-    append_child(finite, number_of_boundary_elements_, "number_of_boundary_elements");
-    append_child(finite, boundary_nodes_, "boundary_nodes", "element-node");
-    append_child(finite, boundary_elements_, "boundary_elements", "element");
-    append_child(finite, internal_elements_, "internal_elements", "element");
-    append_child(finite, material_, "material", "element");
-    append_child(finite, node_positions_, "node_positions", "element-node");
+    XML_Functions::append_child(finite, number_of_elements_, "number_of_elements");
+    XML_Functions::append_child(finite, number_of_nodes_, "number_of_nodes");
+    XML_Functions::append_child(finite, number_of_points_, "number_of_points");
+    XML_Functions::append_child(finite, number_of_boundary_elements_, "number_of_boundary_elements");
+    XML_Functions::append_child(finite, boundary_nodes_, "boundary_nodes", "element-node");
+    XML_Functions::append_child(finite, boundary_elements_, "boundary_elements", "element");
+    XML_Functions::append_child(finite, internal_elements_, "internal_elements", "element");
+    XML_Functions::append_child(finite, material_, "material", "element");
+    XML_Functions::append_child(finite, node_positions_, "node_positions", "element-node");
     
     for (int i = 0; i < number_of_elements_; ++i)
     {

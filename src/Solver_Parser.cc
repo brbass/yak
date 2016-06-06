@@ -20,7 +20,7 @@ Solver_Parser(pugi::xml_node &input_file,
 {
     pugi::xml_node solver_node = input_file.child("solution_method");
     
-    string solver_type = child_value<string>(solver_node, "type");
+    string solver_type = XML_Functions::child_value<string>(solver_node, "type");
     
     if (solver_type == "source_iteration")
     {
@@ -41,9 +41,9 @@ parse_source_iteration()
 {
     pugi::xml_node solver_node = input_file_.child("solution_method");
     
-    int max_iterations = child_value<int>(solver_node, "max_iterations");
-    int solver_print = child_value<int>(solver_node, "solver_print");
-    double tolerance = child_value<double>(solver_node, "tolerance");
+    int max_iterations = XML_Functions::child_value<int>(solver_node, "max_iterations");
+    int solver_print = XML_Functions::child_value<int>(solver_node, "solver_print");
+    double tolerance = XML_Functions::child_value<double>(solver_node, "tolerance");
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
     shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
@@ -70,10 +70,10 @@ parse_krylov_iteration()
 {
     pugi::xml_node solver_node = input_file_.child("solution_method");
     
-    int max_iterations = child_value<int>(solver_node, "max_iterations");
-    int kspace = child_value<int>(solver_node, "kspace");
-    int solver_print = child_value<int>(solver_node, "solver_print");
-    double tolerance = child_value<double>(solver_node, "tolerance");
+    int max_iterations = XML_Functions::child_value<int>(solver_node, "max_iterations");
+    int kspace = XML_Functions::child_value<int>(solver_node, "kspace");
+    int solver_print = XML_Functions::child_value<int>(solver_node, "solver_print");
+    double tolerance = XML_Functions::child_value<double>(solver_node, "tolerance");
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
     shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
@@ -102,7 +102,7 @@ parse_sweeper()
     pugi::xml_node solver = input_file_.child("solution_method");
     pugi::xml_node sweeper = solver.child("sweeper");
     
-    string sweeper_type = child_value<string>(sweeper, "type");
+    string sweeper_type = XML_Functions::child_value<string>(sweeper, "type");
     
     if (sweeper_type == "dfem")
     {

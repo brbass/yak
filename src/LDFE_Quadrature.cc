@@ -7,7 +7,7 @@
 using namespace std;
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 namespace // anonymous
 {
@@ -96,16 +96,16 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node ldfe = output_node.append_child("ldfe_ordinates");
     
-    append_child(ldfe, dimension_, "dimension");
-    append_child(ldfe, rule_, "rule");
-    append_child(ldfe, number_of_moments_, "number_of_moments");
-    append_child(ldfe, number_of_ordinates_, "number_of_ordinates");
-    append_child(ldfe, ordinates_, "ordinates", "dimension-ordinate");
-    append_child(ldfe, weights_, "weights", "ordinate");
-    append_child(ldfe, mu_, "mu", "ordinate");
-    append_child(ldfe, eta_, "eta", "ordinate");
-    append_child(ldfe, xi_, "xi", "ordinate");
-    append_child(ldfe, weights_, "weights", "ordinate");
+    XML_Functions::append_child(ldfe, dimension_, "dimension");
+    XML_Functions::append_child(ldfe, rule_, "rule");
+    XML_Functions::append_child(ldfe, number_of_moments_, "number_of_moments");
+    XML_Functions::append_child(ldfe, number_of_ordinates_, "number_of_ordinates");
+    XML_Functions::append_child(ldfe, ordinates_, "ordinates", "dimension-ordinate");
+    XML_Functions::append_child(ldfe, weights_, "weights", "ordinate");
+    XML_Functions::append_child(ldfe, mu_, "mu", "ordinate");
+    XML_Functions::append_child(ldfe, eta_, "eta", "ordinate");
+    XML_Functions::append_child(ldfe, xi_, "xi", "ordinate");
+    XML_Functions::append_child(ldfe, weights_, "weights", "ordinate");
 }
 
 int LDFE_Quadrature::

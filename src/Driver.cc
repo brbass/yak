@@ -11,7 +11,7 @@
 #include "Spatial_Discretization_Parser.hh"
 #include "Transport_Problem_Parser.hh"
 #include "Vector_Operator.hh"
-#include "XML_Child_Value.hh"
+// #include "XML_Functions.hh"
 
 Driver::
 Driver(string xml_in):
@@ -75,8 +75,6 @@ run_problem()
     shared_ptr<Solver> solver = solver_parser.get_ptr();
     
     // level 4 class
-    
-    string transport_type = child_value<string>(input_file, "problem_type");
     
     Transport_Problem_Parser transport_parser(input_file,
                                               solver);

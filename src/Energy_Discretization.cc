@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -35,6 +35,6 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node energy = output_node.append_child("energy_discretization");
     
-    append_child(energy, number_of_groups_, "number_of_groups");
-    append_child(energy, energy_bounds_, "energy_bounds", "group_bound");
+    XML_Functions::append_child(energy, number_of_groups_, "number_of_groups");
+    XML_Functions::append_child(energy, energy_bounds_, "energy_bounds", "group_bound");
 }

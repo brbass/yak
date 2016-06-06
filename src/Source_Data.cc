@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -236,7 +236,7 @@ output(pugi::xml_node &output_node) const
         break;
     }
 
-    append_child(source, alpha_, "alpha", "boundary_cell");
-    append_child(source, internal_source_, "internal_source", internal_order);
-    append_child(source, boundary_source_, "boundary_source", boundary_order);
+    XML_Functions::append_child(source, alpha_, "alpha", "boundary_cell");
+    XML_Functions::append_child(source, internal_source_, "internal_source", internal_order);
+    XML_Functions::append_child(source, boundary_source_, "boundary_source", boundary_order);
 }

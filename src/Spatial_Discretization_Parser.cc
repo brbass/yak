@@ -8,7 +8,7 @@ Spatial_Discretization_Parser(pugi::xml_node &input_file):
 {
     pugi::xml_node spatial = input_file.child("spatial_discretization");
     
-    string spatial_type = child_value<string>(spatial, "type");
+    string spatial_type = XML_Functions::child_value<string>(spatial, "type");
     
     if (spatial_type == "finite_element")
     {
@@ -27,10 +27,10 @@ Spatial_Discretization_Parser(pugi::xml_node &input_file):
 shared_ptr<Finite_Element_Mesh> Spatial_Discretization_Parser::
 get_fem(pugi::xml_node &spatial)
 {
-    int dimension = child_value<int>(spatial, "dimension");
-    int number_of_elements = child_value<int>(spatial, "number_of_elements");
-    int number_of_nodes = child_value<int>(spatial, "number_of_nodes");
-    string geometry_str = child_value<string>(spatial, "geometry");
+    int dimension = XML_Functions::child_value<int>(spatial, "dimension");
+    int number_of_elements = XML_Functions::child_value<int>(spatial, "number_of_elements");
+    int number_of_nodes = XML_Functions::child_value<int>(spatial, "number_of_nodes");
+    string geometry_str = XML_Functions::child_value<string>(spatial, "geometry");
     Spatial_Discretization::Geometry geometry;
     
     if (dimension == 1)
@@ -59,7 +59,7 @@ get_fem(pugi::xml_node &spatial)
     
     pugi::xml_node regions = spatial.child("regions");
 
-    int number_of_regions = child_value<int>(regions, "number_of_regions");
+    int number_of_regions = XML_Functions::child_value<int>(regions, "number_of_regions");
     
     vector<int> material(number_of_elements);
     vector<double> node_positions(number_of_elements * number_of_nodes);
@@ -69,9 +69,9 @@ get_fem(pugi::xml_node &spatial)
     
     for (pugi::xml_node region = regions.child("region"); region; region = region.next_sibling("region"))
     {
-        int region_cells = child_value<int>(region, "number_of_elements");
-        int region_material = child_value<int>(region, "material");
-        double region_length = child_value<double>(region, "length");
+        int region_cells = XML_Functions::child_value<int>(region, "number_of_elements");
+        int region_material = XML_Functions::child_value<int>(region, "material");
+        double region_length = XML_Functions::child_value<double>(region, "length");
         double dx = region_length / region_cells;
         double dn = dx / (number_of_nodes - 1);
         
@@ -93,7 +93,7 @@ get_fem(pugi::xml_node &spatial)
     }
     Assert(cell == number_of_elements);
 
-    string element_type_str = child_value<string>(spatial, "element_type");
+    string element_type_str = XML_Functions::child_value<string>(spatial, "element_type");
     Finite_Element_Mesh::Element_Type element_type;
 
     if (element_type_str == "cfem")
@@ -117,12 +117,12 @@ get_fem(pugi::xml_node &spatial)
 shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
 get_rbf(pugi::xml_node &spatial)
 {
-    int dimension = child_value<int>(spatial, "dimension");
-    int number_of_points = child_value<int>(spatial, "number_of_points");
-    int local = child_value<int>(spatial, "local");
-    double shape_multiplier = child_value<double>(spatial, "shape_multiplier");
-    string geometry_str = child_value<string>(spatial, "geometry");
-    string basis_str = child_value<string>(spatial, "basis_type");
+    int dimension = XML_Functions::child_value<int>(spatial, "dimension");
+    int number_of_points = XML_Functions::child_value<int>(spatial, "number_of_points");
+    int local = XML_Functions::child_value<int>(spatial, "local");
+    double shape_multiplier = XML_Functions::child_value<double>(spatial, "shape_multiplier");
+    string geometry_str = XML_Functions::child_value<string>(spatial, "geometry");
+    string basis_str = XML_Functions::child_value<string>(spatial, "basis_type");
     Spatial_Discretization::Geometry geometry;
     RBF_Mesh::Basis_Type basis_type;
     
@@ -185,7 +185,7 @@ get_rbf(pugi::xml_node &spatial)
 
     pugi::xml_node regions = spatial.child("regions");
 
-    int number_of_regions = child_value<int>(regions, "number_of_regions");
+    int number_of_regions = XML_Functions::child_value<int>(regions, "number_of_regions");
 
     vector<int> material(number_of_points);
     vector<double> positions(number_of_points);
@@ -196,9 +196,9 @@ get_rbf(pugi::xml_node &spatial)
     
     for (pugi::xml_node region = regions.child("region"); region; region = region.next_sibling("region"))
     {
-        int region_points = child_value<int>(region, "number_of_points");
-        int region_material = child_value<int>(region, "material");
-        double region_length = child_value<double>(region, "length");
+        int region_points = XML_Functions::child_value<int>(region, "number_of_points");
+        int region_material = XML_Functions::child_value<int>(region, "material");
+        double region_length = XML_Functions::child_value<double>(region, "length");
         double dx = region_length / region_points;
         
         if (point == 0)
@@ -234,7 +234,7 @@ get_rbf(pugi::xml_node &spatial)
 
     if (local)
     {
-        int number_of_neighbors = child_value<int>(spatial, "number_of_neighbors");
+        int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
         
         return make_shared<Local_RBF_Mesh>(dimension,
                                            number_of_points,

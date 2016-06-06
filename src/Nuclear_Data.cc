@@ -1,7 +1,7 @@
 #include "Nuclear_Data.hh"
 
 #include "Check.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 Nuclear_Data::
 Nuclear_Data(shared_ptr<Spatial_Discretization> spatial_discretization,
@@ -43,9 +43,9 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node nuclear = output_node.append_child("nuclear_data");
     
-    append_child(nuclear, sigma_t_, "sigma_t", "group-cell");
-    append_child(nuclear, sigma_s_, "sigma_s", "group_from-group_to-moment-cell");
-    append_child(nuclear, nu_, "nu", "group-cell");
-    append_child(nuclear, sigma_f_, "sigma_f", "group-cell");
-    append_child(nuclear, chi_, "chi", "group-cell");
+    XML_Functions::append_child(nuclear, sigma_t_, "sigma_t", "group-cell");
+    XML_Functions::append_child(nuclear, sigma_s_, "sigma_s", "group_from-group_to-moment-cell");
+    XML_Functions::append_child(nuclear, nu_, "nu", "group-cell");
+    XML_Functions::append_child(nuclear, sigma_f_, "sigma_f", "group-cell");
+    XML_Functions::append_child(nuclear, chi_, "chi", "group-cell");
 }

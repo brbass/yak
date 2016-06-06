@@ -1,7 +1,7 @@
 #include "Transport_Problem.hh"
 
 #include "Timer.hh"
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 Transport_Problem::
 Transport_Problem(Problem_Type problem_type,
@@ -41,13 +41,13 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node solution = output_node.append_child("solution");
 
-    append_child(solution, time_, "time");
+    XML_Functions::append_child(solution, time_, "time");
     if (problem_type_ == K_EIGENVALUE)
     {
-        append_child(solution, k_eigenvalue_, "k_eigenvalue");
+        XML_Functions::append_child(solution, k_eigenvalue_, "k_eigenvalue");
     }
-    append_child(solution, phi_, "phi", "node-group-moment-cell");
-    // append_child(solution, psi_, "psi");
+    XML_Functions::append_child(solution, phi_, "phi", "node-group-moment-cell");
+    // XML_Functions::append_child(solution, psi_, "psi");
     
     solver_->output(output_node);
 }

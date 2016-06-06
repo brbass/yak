@@ -16,7 +16,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     pugi::xml_node nuclear_node = input_file.child("nuclear_data");
     pugi::xml_node materials = nuclear_node.child("materials");
     
-    int number_of_materials = child_value<int>(materials, "number_of_materials");
+    int number_of_materials = XML_Functions::child_value<int>(materials, "number_of_materials");
     int number_of_cells = spatial_->number_of_cells();
     int number_of_nodes = spatial_->number_of_nodes();
     int number_of_boundary_cells = spatial_->number_of_boundary_cells();
@@ -25,8 +25,8 @@ Source_Data_Parser(pugi::xml_node &input_file,
     int number_of_groups = energy_->number_of_groups();
     vector<bool> const boundary_nodes = spatial_->boundary_nodes();
     
-    string internal_type_str = child_value<string>(source_node, "internal_source_type");
-    string boundary_type_str = child_value<string>(source_node, "boundary_source_type");
+    string internal_type_str = XML_Functions::child_value<string>(source_node, "internal_source_type");
+    string boundary_type_str = XML_Functions::child_value<string>(source_node, "boundary_source_type");
     
     Source_Data::Source_Type internal_type;
     Source_Data::Source_Type boundary_type;
@@ -43,9 +43,9 @@ Source_Data_Parser(pugi::xml_node &input_file,
         
         for (pugi::xml_node material = materials.child("material"); material; material = material.next_sibling("material"))
         {
-            int a = child_value<int>(material, "material_number");
+            int a = XML_Functions::child_value<int>(material, "material_number");
             
-            vector<double> internal_a = child_vector<double>(material, "internal_source", number_of_groups);
+            vector<double> internal_a = XML_Functions::child_vector<double>(material, "internal_source", number_of_groups);
             
             for (int g = 0; g < number_of_groups; ++g)
             {
@@ -89,9 +89,9 @@ Source_Data_Parser(pugi::xml_node &input_file,
         
         for (pugi::xml_node material = materials.child("material"); material; material = material.next_sibling("material"))
         {
-            int a = child_value<int>(material, "material_number");
+            int a = XML_Functions::child_value<int>(material, "material_number");
             
-            vector<double> internal_a = child_vector<double>(material, "internal_source", number_of_groups);
+            vector<double> internal_a = XML_Functions::child_vector<double>(material, "internal_source", number_of_groups);
             
             for (int g = 0; g < number_of_groups; ++g)
             {
@@ -139,7 +139,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
         
         double angular_normalization = angular_->angular_normalization();
         
-        vector<double> boundary_m = child_vector<double>(source_node, "boundary_source", number_of_boundary_cells * number_of_groups);
+        vector<double> boundary_m = XML_Functions::child_vector<double>(source_node, "boundary_source", number_of_boundary_cells * number_of_groups);
         
         boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
         
@@ -170,7 +170,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
         AssertMsg(false, "source type \"" + boundary_type_str + "\" not found");
     }
     
-    vector<double> alpha = child_vector<double>(source_node, "alpha", number_of_boundary_cells);
+    vector<double> alpha = XML_Functions::child_vector<double>(source_node, "alpha", number_of_boundary_cells);
     
     source_ = make_shared<Source_Data>(internal_type,
                                        boundary_type,

@@ -11,9 +11,9 @@ Angular_Discretization_Parser(pugi::xml_node &input_file):
 {
     pugi::xml_node angular = input_file.child("angular_discretization");
     
-    int dimension = child_value<int>(angular, "dimension");
-    int number_of_moments = child_value<int>(angular, "number_of_moments");
-    int number_of_ordinates = child_value<int>(angular, "number_of_ordinates");
+    int dimension = XML_Functions::child_value<int>(angular, "dimension");
+    int number_of_moments = XML_Functions::child_value<int>(angular, "number_of_moments");
+    int number_of_ordinates = XML_Functions::child_value<int>(angular, "number_of_ordinates");
 
     if (dimension == 1)
     {

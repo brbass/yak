@@ -5,7 +5,7 @@
 
 #include "pugixml.hpp"
 
-#include "XML_Child_Value.hh"
+#include "XML_Functions.hh"
 
 using std::shared_ptr;
 
