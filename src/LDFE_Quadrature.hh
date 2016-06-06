@@ -54,10 +54,13 @@ public:
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const;
 
+    // Get reflected directions
+    virtual int reflect_ordinate(int o,
+                                 vector<double> const &normal) const;
+
 private:
 
     void initialize_quadrature();
-    void sort_quadrature();
     void initialize_1();
     void initialize_2();
     void initialize_3();

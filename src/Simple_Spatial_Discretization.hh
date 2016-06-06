@@ -66,6 +66,11 @@ public:
         return material_;
     }
 
+    virtual vector<double> const &boundary_normal() const
+    {
+        return boundary_normal_;
+    }
+    
     virtual void output(pugi::xml_node &output_node) const
     {
     }
@@ -80,6 +85,7 @@ private:
     vector<int> boundary_cells_;
     vector<int> internal_cells_;
     vector<int> material_;
+    vector<double> boundary_normal_;
 };
 
 #endif

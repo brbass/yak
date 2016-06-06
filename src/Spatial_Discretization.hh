@@ -73,6 +73,9 @@ public:
     // Material number for each cell
     virtual vector<int> const &material() const = 0;
 
+    // Surface normal values
+    virtual vector<double> const &boundary_normal() const = 0;
+    
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const = 0;
     

@@ -100,6 +100,11 @@ public:
         return material_;
     }
 
+    virtual vector<double> const &boundary_normal() const
+    {
+        return surface_normal_;
+    }
+    
     // Type of finite element
     Element_Type element_type()
     {
@@ -131,6 +136,7 @@ private:
     vector<int> internal_elements_;
     vector<int> material_;
     vector<double> node_positions_;
+    vector<double> surface_normal_;
     
     Element_Type element_type_;
     

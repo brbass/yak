@@ -64,9 +64,12 @@ public:
         return l_indices_;
     }
 
-// Output data to XML file
+    // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const = 0;
 
+    virtual int reflect_ordinate(int o,
+                                 vector<double> const &normal) const = 0;
+    
 protected:
     
     int dimension_;

@@ -104,7 +104,7 @@ public:
     {
         return boundary_normal_;
     }
-    
+
     // Basis function for a certain point
     shared_ptr<RBF> const basis_function(int point) const
     {

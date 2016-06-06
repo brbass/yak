@@ -69,6 +69,10 @@ Finite_Element_Mesh(int dimension,
     {
         internal_elements_.push_back(i);
     }
+
+    surface_normal_.resize(2);
+    surface_normal_[0] = -1;
+    surface_normal_[1] = 1;
     
     check_class_invariants();
 }
@@ -80,6 +84,7 @@ check_class_invariants() const
     Assert(boundary_elements_.size() == number_of_boundary_elements_);
     Assert(boundary_nodes_.size() == number_of_boundary_elements_ * number_of_nodes_);
     Assert(internal_elements_.size() == number_of_elements_ - number_of_boundary_elements_);
+    Assert(surface_normal_.size() == number_of_boundary_elements_ * dimension_);
 }
 
 void Finite_Element_Mesh::

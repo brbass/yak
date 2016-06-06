@@ -16,10 +16,13 @@ Simple_Spatial_Discretization(int dimension,
     boundary_cells_.resize(number_of_boundary_cells, 0);
     internal_cells_.resize(number_of_cells - number_of_boundary_cells, 0);
     material_.assign(number_of_cells, 0);
-
+    boundary_normal_.assign(number_of_boundary_cells * dimension, 0);
+    
     for (int i = 0; i < number_of_boundary_cells; ++i)
     {
         boundary_cells_[i] = i;
+        
+        boundary_normal_[0 + dimension * i] = 1;
     }
     for (int i = number_of_boundary_cells; i < number_of_cells; ++i)
     {

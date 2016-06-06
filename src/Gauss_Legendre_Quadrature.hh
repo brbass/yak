@@ -36,6 +36,12 @@ public:
 
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const;
+
+    virtual int reflect_ordinate(int o,
+                                 vector<double> const &/*normal*/) const
+    {
+        return number_of_ordinates_ - o - 1;
+    }
     
 private:
 

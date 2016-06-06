@@ -1,5 +1,11 @@
 #include "LDFE_Quadrature.hh"
 
+#include <cmath>
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
 #include "Check.hh"
 #include "XML_Child_Value.hh"
 
@@ -55,8 +61,6 @@ initialize_quadrature()
         break;
     }
     
-    sort_quadrature();
-
     switch(dimension_)
     {
     case 2:
@@ -104,49 +108,85 @@ output(pugi::xml_node &output_node) const
     append_child(ldfe, weights_, "weights", "ordinate");
 }
 
-void LDFE_Quadrature::
-sort_quadrature()
+int LDFE_Quadrature::
+reflect_ordinate(int o,
+                 vector<double> const &normal) const
 {
-    vector<int> indices(number_of_ordinates_);
-    
-    for (int i = 0; i < number_of_ordinates_; ++i)
+    switch(dimension_)
     {
-        indices[i] = i;
-    }
+    case 2:
+        if (abs(normal[0]) == 1)
+        {
+            if (mu_[o] > 0)
+            {
+                return o - 2;
+            }
+            else
+            {
+                return o + 2;
+            }
+        }
+        else if (abs(normal[1]) == 1)
+        {
+            if (eta_[o] > 0)
+            {
+                return o - 1;
+            }
+            else
+            {
+                return o + 1;
+            }
+        }
+        else 
+        {
+            AssertMsg(false, "surface must be in x, y or z plane");
+            
+            return o;
+        }
+    case 3:
+        if (abs(normal[0]) == 1)
+        {
+            if (mu_[o] > 0)
+            {
+                return o - 4;
+            }
+            else
+            {
+                return o + 4;
+            }
+        }
+        else if (abs(normal[1]) == 1)
+        {
+            if (eta_[o] > 0)
+            {
+                return o - 2;
+            }
+            else
+            {
+                return o + 2;
+            }
+        }
+        else if (abs(normal[2]) == 1)
+        {
+            if (xi_[o] > 0)
+            {
+                return o - 1;
+            }
+            else
+            {
+                return o + 1;
+            }
+        }
+        else 
+        {
+            AssertMsg(false, "surface must be in x, y or z plane");
+            
+            return o;
+        }
+    default:
+        AssertMsg(false, "dimension not found");
 
-    // Sort by mu, eta and then xi
-    sort(indices.begin(),
-         indices.end(),
-         [&](int i, int j)
-         {
-             if (mu_[i] == mu_[j])
-             {
-                 if (eta_[i] == eta_[j])
-                 {
-                     return xi_[i] < xi_[j];
-                 }
-                 else
-                 {
-                     return eta_[i] < eta_[j];
-                 }
-             }
-             else 
-             {
-                 return mu_[i] < mu_[j];
-             }
-         });
-
-    vector<double> mu(mu_);
-    vector<double> eta(eta_);
-    vector<double> xi(xi_);
-    vector<double> weights(weights_);
-    
-    for (int i = 0; i < number_of_ordinates_; ++i)
-    {
-        mu_[i] = mu[indices[i]];
-        eta_[i] = eta[indices[i]];
-        xi_[i] = xi[indices[i]];
-        weights_[i] = weights[indices[i]];
+        return o;
     }
 }
 

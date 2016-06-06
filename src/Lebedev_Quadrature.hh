@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Angular_Discretization.hh"
+#include "Check.hh"
 
 using std::vector;
 
@@ -36,6 +37,15 @@ public:
 
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const;
+
+    // Not yet implemented
+    virtual int reflect_ordinate(int o,
+                                 vector<double> const &n) const
+    {
+        AssertMsg(false, "not yet implemented");
+        
+        return o;
+    }
     
 private:
 
