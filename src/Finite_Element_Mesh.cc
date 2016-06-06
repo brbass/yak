@@ -23,7 +23,8 @@ Finite_Element_Mesh(int dimension,
     number_of_internal_elements_(number_of_elements - 2),
     number_of_boundary_elements_(2),
     element_type_(element_type),
-    material_(material)
+    material_(material),
+    node_positions_(node_positions)
 {
     Assert(dimension == 1);
     
@@ -94,6 +95,7 @@ output(pugi::xml_node &output_node) const
     append_child(finite, boundary_elements_, "boundary_elements", "element");
     append_child(finite, internal_elements_, "internal_elements", "element");
     append_child(finite, material_, "material", "element");
+    append_child(finite, node_positions_, "node_positions", "element-node");
     
     for (int i = 0; i < number_of_elements_; ++i)
     {

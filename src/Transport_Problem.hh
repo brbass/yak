@@ -37,7 +37,8 @@ private:
     
     Problem_Type problem_type_;
     shared_ptr<Solver> solver_;
-    
+
+    double time_;
     double k_eigenvalue_;
     vector<double> phi_;
     vector<double> psi_;

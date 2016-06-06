@@ -189,7 +189,7 @@ solve_time_dependent(vector<double> &x)
 void Krylov_Iteration::
 output(pugi::xml_node &output_node) const
 {
-    pugi::xml_node source = output_node.append_child("source_iteration");
+    pugi::xml_node source = output_node.append_child("krylov_iteration");
     
     append_child(source, max_iterations_, "max_iterations");
     append_child(source, source_iterations_, "source_iterations");

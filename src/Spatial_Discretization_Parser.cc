@@ -162,6 +162,22 @@ get_rbf(pugi::xml_node &spatial)
     {
         basis_type = RBF_Mesh::INVERSE_MULTIQUADRIC;
     }
+    else if (basis_str == "wendland30")
+    {
+        basis_type = RBF_Mesh::WENDLAND30;
+    }
+    else if (basis_str == "wendland31")
+    {
+        basis_type = RBF_Mesh::WENDLAND31;
+    }
+    else if (basis_str == "wendland32")
+    {
+        basis_type = RBF_Mesh::WENDLAND32;
+    }
+    else if (basis_str == "wendland33")
+    {
+        basis_type = RBF_Mesh::WENDLAND33;
+    }
     else
     {
         AssertMsg(false, "basis_type \"" + basis_str + "\" not found");

@@ -6,7 +6,7 @@
   <solution_method>
     <type>krylov_iteration</type>
     <max_iterations>5000</max_iterations>
-    <kspace>10</kspace>
+    <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
     

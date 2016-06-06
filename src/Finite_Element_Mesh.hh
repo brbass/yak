@@ -130,7 +130,8 @@ private:
     vector<int> boundary_elements_;
     vector<int> internal_elements_;
     vector<int> material_;
-
+    vector<double> node_positions_;
+    
     Element_Type element_type_;
     
     vector<Finite_Element> elements_;

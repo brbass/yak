@@ -6,6 +6,7 @@
 #include "Gaussian_RBF.hh"
 #include "Multiquadric_RBF.hh"
 #include "Inverse_Multiquadric_RBF.hh"
+#include "Wendland_RBF.hh"
 #include "XML_Child_Value.hh"
 
 using namespace std;
@@ -68,6 +69,46 @@ RBF_Mesh(int dimension,
                                                         shape);
             break;
         }
+        case WENDLAND30:
+        {
+            int order = 0;
+            
+            rbf = make_shared<Wendland_RBF>(dimension,
+                                            order,
+                                            position,
+                                            shape);
+            break;
+        }
+        case WENDLAND31:
+        {
+            int order = 1;
+            
+            rbf = make_shared<Wendland_RBF>(dimension,
+                                            order,
+                                            position,
+                                            shape);
+            break;
+        }
+        case WENDLAND32:
+        {
+            int order = 2;
+            
+            rbf = make_shared<Wendland_RBF>(dimension,
+                                            order,
+                                            position,
+                                            shape);
+            break;
+        }
+        case WENDLAND33:
+        {
+            int order = 3;
+            
+            rbf = make_shared<Wendland_RBF>(dimension,
+                                            order,
+                                            position,
+                                            shape);
+            break;
+        }
         default:
             AssertMsg(false, "no such type of basis function");
             break;
@@ -75,7 +116,7 @@ RBF_Mesh(int dimension,
 
         basis_functions_.push_back(rbf);
     }
-
+    
     check_class_invariants();
 }
 
