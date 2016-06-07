@@ -37,7 +37,7 @@ apply(vector<double> &x)
 {
     switch(spatial_discretization_->geometry())
     {
-    case Spatial_Discretization::SLAB:
+    case Spatial_Discretization::Geometry::SLAB:
         sweep_slab(x);
         break;
     default:
@@ -88,12 +88,12 @@ sweep_slab(vector<double> &x)
             // Perform matrix solve
             switch(solver_type_)
             {
-            case AMESOS:
+            case Solver_Type::AMESOS:
                 (*amesos_solver_)->NumericFactorization();
                 (*amesos_solver_)->Solve();
         
                 break;
-            case AZTECOO:
+            case Solver_Type::AZTECOO:
             {
                 aztec_solver_->Iterate(max_iterations_, tolerance_);
                 
@@ -267,7 +267,7 @@ initialize_trilinos()
     
     switch(solver_type_)
     {
-    case AMESOS:
+    case Solver_Type::AMESOS:
         Amesos factory;
         // Serial: Klu, Lapack, Umfpack
         // Parallel: Mumps, Superludist
@@ -281,7 +281,7 @@ initialize_trilinos()
         (*amesos_solver_)->SymbolicFactorization();
         
         break;
-    case AZTECOO:
+    case Solver_Type::AZTECOO:
         aztec_solver_ = make_shared<AztecOO>(*problem_);
         
         aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);

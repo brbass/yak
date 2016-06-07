@@ -18,7 +18,7 @@ class Spatial_Discretization
 public:
 
     // Geometry of problem
-    enum Geometry
+    enum class Geometry
     {
         SLAB,
         SPHERE,

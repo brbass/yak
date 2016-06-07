@@ -223,7 +223,7 @@ apply(vector<double> &x)
     
     Linv->include_boundary_source(true);
     
-    if(ki_.source_data_->internal_source_type() == Source_Data::FULL)
+    if(ki_.source_data_->internal_source_type() == Source_Data::Source_Type::FULL)
     {
         vector<double> q(internal_source);
         q.resize(q.size() + ki_.number_of_augments());

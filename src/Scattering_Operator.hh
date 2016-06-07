@@ -21,7 +21,7 @@ class Scattering_Operator : public Vector_Operator
 public:
 
     // Types of scattering
-    enum Scattering_Type
+    enum class Scattering_Type
     {
         COHERENT,
         INCOHERENT,
@@ -33,7 +33,7 @@ public:
                         shared_ptr<Angular_Discretization> angular_discretization,
                         shared_ptr<Energy_Discretization> energy_discretization,
                         shared_ptr<Nuclear_Data> nuclear_data,
-                        Scattering_Type scattering_type = FULL);
+                        Scattering_Type scattering_type = Scattering_Type::FULL);
     
 protected:
 

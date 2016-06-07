@@ -35,7 +35,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
 
     if (internal_type_str == "isotropic_full")
     {
-        internal_type = Source_Data::FULL;
+        internal_type = Source_Data::Source_Type::FULL;
         
         double angular_normalization = angular_->angular_normalization();
         
@@ -81,7 +81,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     }
     else if (internal_type_str == "isotropic")
     {
-        internal_type = Source_Data::MOMENT;
+        internal_type = Source_Data::Source_Type::MOMENT;
         
         // double angular_normalization = angular_->angular_normalization();
         
@@ -135,7 +135,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
 
     if (boundary_type_str == "cellwise_isotropic")
     {
-        boundary_type = Source_Data::FULL;
+        boundary_type = Source_Data::Source_Type::FULL;
         
         double angular_normalization = angular_->angular_normalization();
         

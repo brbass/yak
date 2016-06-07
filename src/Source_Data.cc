@@ -49,19 +49,19 @@ check_class_invariants() const
     Assert(alpha_.size() == number_of_boundary_cells);
     switch(internal_source_type_)
     {
-    case FULL:
+    case Source_Type::FULL:
         Assert(internal_source_.size() == number_of_cells * number_of_nodes * number_of_ordinates * number_of_groups);
         break;
-    case MOMENT:
+    case Source_Type::MOMENT:
         Assert(internal_source_.size() == number_of_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
     }
     switch(boundary_source_type_)
     {
-    case FULL:
+    case Source_Type::FULL:
         Assert(boundary_source_.size() == number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups);
         break;
-    case MOMENT:
+    case Source_Type::MOMENT:
         Assert(boundary_source_.size() == number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
     }
@@ -96,8 +96,8 @@ total_source() const
 
     switch(internal_source_type_)
     {
-    case FULL:
-        Assert(boundary_source_type_ == FULL);
+    case Source_Type::FULL:
+        Assert(boundary_source_type_ == Source_Type::FULL);
 
         for (int b = 0; b < number_of_boundary_cells; ++b)
         {
@@ -120,8 +120,8 @@ total_source() const
             }
         }
         break;
-    case MOMENT:
-        Assert(boundary_source_type_ == MOMENT);
+    case Source_Type::MOMENT:
+        Assert(boundary_source_type_ == Source_Type::MOMENT);
 
         for (int b = 0; b < number_of_boundary_cells; ++b)
         {
@@ -219,19 +219,19 @@ output(pugi::xml_node &output_node) const
     string boundary_order;
     switch(internal_source_type_)
     {
-    case FULL:
+    case Source_Type::FULL:
         internal_order = "node-group-ordinate-cell";
         break;
-    case MOMENT:
+    case Source_Type::MOMENT:
         internal_order = "node-group-moment-cell";
         break;
     }
     switch(boundary_source_type_)
     {
-    case FULL:
+    case Source_Type::FULL:
         boundary_order = "group-ordinate-boundary_cell";
         break;
-    case MOMENT:
+    case Source_Type::MOMENT:
         boundary_order = "group-moment-boundary_cell";
         break;
     }

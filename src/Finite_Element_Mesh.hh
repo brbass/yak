@@ -20,7 +20,7 @@ class Finite_Element_Mesh : public Spatial_Discretization
 public:
 
     // Discontinuous or continuous finite element
-    enum Element_Type
+    enum class Element_Type
     {
         DFEM,
         CFEM

@@ -18,7 +18,7 @@ class RBF_Mesh : public virtual Spatial_Discretization
 public:
 
     // Type of basis function
-    enum Basis_Type
+    enum class Basis_Type
     {
         GAUSSIAN,
         MULTIQUADRIC,

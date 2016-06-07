@@ -48,28 +48,28 @@ RBF_Mesh(int dimension,
         
         switch(basis_type)
         {
-        case GAUSSIAN:
+        case Basis_Type::GAUSSIAN:
         {
             rbf = make_shared<Gaussian_RBF>(dimension,
                                             position,
                                             shape);
             break;
         }
-        case MULTIQUADRIC:
+        case Basis_Type::MULTIQUADRIC:
         {
             rbf = make_shared<Multiquadric_RBF>(dimension,
                                                 position,
                                                 shape);
             break;
         }
-        case INVERSE_MULTIQUADRIC:
+        case Basis_Type::INVERSE_MULTIQUADRIC:
         {
             rbf = make_shared<Inverse_Multiquadric_RBF>(dimension,
                                                         position,
                                                         shape);
             break;
         }
-        case WENDLAND30:
+        case Basis_Type::WENDLAND30:
         {
             int order = 0;
             
@@ -79,7 +79,7 @@ RBF_Mesh(int dimension,
                                             shape);
             break;
         }
-        case WENDLAND31:
+        case Basis_Type::WENDLAND31:
         {
             int order = 1;
             
@@ -89,7 +89,7 @@ RBF_Mesh(int dimension,
                                             shape);
             break;
         }
-        case WENDLAND32:
+        case Basis_Type::WENDLAND32:
         {
             int order = 2;
             
@@ -99,7 +99,7 @@ RBF_Mesh(int dimension,
                                             shape);
             break;
         }
-        case WENDLAND33:
+        case Basis_Type::WENDLAND33:
         {
             int order = 3;
             

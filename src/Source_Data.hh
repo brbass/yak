@@ -19,7 +19,7 @@ class Source_Data
 public:
 
     // Angular representation of source
-    enum Source_Type
+    enum class Source_Type
     {
         FULL,
         MOMENT

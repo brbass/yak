@@ -37,15 +37,15 @@ get_fem(pugi::xml_node &spatial)
     {
         if (geometry_str == "slab")
         {
-            geometry = Spatial_Discretization::SLAB;
+            geometry = Spatial_Discretization::Geometry::SLAB;
         }
         else if (geometry_str == "spherical")
         {
-            geometry = Spatial_Discretization::SPHERE;
+            geometry = Spatial_Discretization::Geometry::SPHERE;
         }
         else if (geometry_str == "cylindrical")
         {
-            geometry = Spatial_Discretization::CYLINDER;
+            geometry = Spatial_Discretization::Geometry::CYLINDER;
         }
         else
         {
@@ -98,11 +98,11 @@ get_fem(pugi::xml_node &spatial)
 
     if (element_type_str == "cfem")
     {
-        element_type = Finite_Element_Mesh::CFEM;
+        element_type = Finite_Element_Mesh::Element_Type::CFEM;
     }
     else
     {
-        element_type = Finite_Element_Mesh::DFEM;
+        element_type = Finite_Element_Mesh::Element_Type::DFEM;
     }
 
     return make_shared<Finite_Element_Mesh>(dimension,
@@ -130,15 +130,15 @@ get_rbf(pugi::xml_node &spatial)
     {
         if (geometry_str == "slab")
         {
-            geometry = Spatial_Discretization::SLAB;
+            geometry = Spatial_Discretization::Geometry::SLAB;
         }
         else if (geometry_str == "spherical")
         {
-            geometry = Spatial_Discretization::SPHERE;
+            geometry = Spatial_Discretization::Geometry::SPHERE;
         }
         else if (geometry_str == "cylindrical")
         {
-            geometry = Spatial_Discretization::CYLINDER;
+            geometry = Spatial_Discretization::Geometry::CYLINDER;
         }
         else
         {
@@ -152,31 +152,31 @@ get_rbf(pugi::xml_node &spatial)
     
     if (basis_str == "gaussian")
     {
-        basis_type = RBF_Mesh::GAUSSIAN;
+        basis_type = RBF_Mesh::Basis_Type::GAUSSIAN;
     }
     else if (basis_str == "multiquadric")
     {
-        basis_type = RBF_Mesh::MULTIQUADRIC;
+        basis_type = RBF_Mesh::Basis_Type::MULTIQUADRIC;
     }
     else if (basis_str == "inverse_multiquadric")
     {
-        basis_type = RBF_Mesh::INVERSE_MULTIQUADRIC;
+        basis_type = RBF_Mesh::Basis_Type::INVERSE_MULTIQUADRIC;
     }
     else if (basis_str == "wendland30")
     {
-        basis_type = RBF_Mesh::WENDLAND30;
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND30;
     }
     else if (basis_str == "wendland31")
     {
-        basis_type = RBF_Mesh::WENDLAND31;
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND31;
     }
     else if (basis_str == "wendland32")
     {
-        basis_type = RBF_Mesh::WENDLAND32;
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND32;
     }
     else if (basis_str == "wendland33")
     {
-        basis_type = RBF_Mesh::WENDLAND33;
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND33;
     }
     else
     {

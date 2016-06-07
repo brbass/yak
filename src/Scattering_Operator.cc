@@ -36,13 +36,13 @@ apply(vector<double> &x)
 {
     switch(scattering_type_)
     {
-    case FULL:
+    case Scattering_Type::FULL:
         apply_full(x);
         break;
-    case COHERENT:
+    case Scattering_Type::COHERENT:
         apply_coherent(x);
         break;
-    case INCOHERENT:
+    case Scattering_Type::INCOHERENT:
         apply_incoherent(x);
         break;
     }

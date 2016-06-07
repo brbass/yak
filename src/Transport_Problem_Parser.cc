@@ -13,15 +13,15 @@ Transport_Problem_Parser(pugi::xml_node &input_file,
     
     if (problem_type_str == "steady_state")
     {
-        problem_type = Transport_Problem::STEADY_STATE;
+        problem_type = Transport_Problem::Problem_Type::STEADY_STATE;
     }
     else if (problem_type_str == "k_eigenvalue")
     {
-        problem_type = Transport_Problem::K_EIGENVALUE;
+        problem_type = Transport_Problem::Problem_Type::K_EIGENVALUE;
     }
     else if (problem_type_str == "time_dependent")
     {
-        problem_type = Transport_Problem::TIME_DEPENDENT;
+        problem_type = Transport_Problem::Problem_Type::TIME_DEPENDENT;
     }
     else
     {

@@ -16,7 +16,7 @@ class Transport_Problem
 public:
 
     // Type of solution
-    enum Problem_Type
+    enum class Problem_Type
     {
         STEADY_STATE,
         K_EIGENVALUE,

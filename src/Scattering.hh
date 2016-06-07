@@ -26,7 +26,7 @@ public:
                shared_ptr<Angular_Discretization> angular_discretization,
                shared_ptr<Energy_Discretization> energy_discretization,
                shared_ptr<Nuclear_Data> nuclear_data,
-               Scattering_Type scattering_type = FULL);
+               Scattering_Type scattering_type = Scattering_Type::FULL);
     
 private: 
 

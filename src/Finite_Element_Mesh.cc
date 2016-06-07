@@ -30,10 +30,10 @@ Finite_Element_Mesh(int dimension,
     
     switch(element_type_)
     {
-    case CFEM:
+    case Element_Type::CFEM:
         number_of_points_ = number_of_elements_ + 1;
         break;
-    case DFEM:
+    case Element_Type::DFEM:
         number_of_points_ = number_of_elements_ * number_of_nodes_;
     }
     

@@ -28,7 +28,7 @@ class Local_RBF_Sweep_1D : public Ordinate_Sweep_Operator
 public:
 
     // Type of matrix solver
-    enum Solver_Type
+    enum class Solver_Type
     {
         AMESOS,
         AZTECOO
@@ -40,7 +40,7 @@ public:
                        shared_ptr<Energy_Discretization> energy_discretization,
                        shared_ptr<Nuclear_Data> nuclear_data,
                        shared_ptr<Source_Data> source_data,
-                       Solver_Type solver_type = AMESOS);
+                       Solver_Type solver_type = Solver_Type::AMESOS);
 
 protected:
 

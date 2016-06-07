@@ -34,7 +34,7 @@ apply(vector<double> &x)
 {
     switch(spatial_discretization_->geometry())
     {
-    case Spatial_Discretization::SLAB:
+    case Spatial_Discretization::Geometry::SLAB:
         sweep_slab(x);
         break;
     default:
