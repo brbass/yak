@@ -1,13 +1,13 @@
-#ifndef Line_hh
-#define Line_hh
+#ifndef Circle_hh
+#define Circle_hh
 
-class Line : public Surface
+class Circle : public Surface
 {
 public:
-    
-    Line(vector<double> const &origin,
-         vector<double> const &direction);
-    
+
+    Circle(double radius,
+           vector<double> const &origin);
+
     virtual Relation relation(vector<double> &particle_position) const;
     virtual bool intersection(vector<double> const &particle_position,
                               vector<double> const &particle_direction,
@@ -15,9 +15,10 @@ public:
                               vector<double> &intersection) const;
     
 private:
-    
+
+    double radius_;
     vector<double> origin_;
-    vector<double> direction_;
 };
 
 #endif
+           
