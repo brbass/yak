@@ -14,9 +14,10 @@ public:
                               vector<double> const &particle_direction,
                               double &distance,
                               vector<double> &position) const;
-    
+    virtual bool normal_direction(vector<double> const &position,
+                                  vector<double> &normal) const;
 private:
-
+    
     double radius_;
     vector<double> origin_;
 };

@@ -2,6 +2,12 @@
 
 namespace // anonymous
 {
+    double dot(vector<double> const &x,
+               vector<double> const &y)
+    {
+        return x[0] * y[0] + x[1] * y[1];
+    }
+    
     double cross(vector<double> const &x,
                  vector<double> const &y)
     {
@@ -12,10 +18,13 @@ namespace // anonymous
 Line::
 Line(Surface_Type surface_type,
      vector<double> const &origin,
-     vector<double> const &direction):
-    Surface(surface_type),
+     vector<double> const &direction,
+     vector<double> const &normal):
+    Surface(2, // dimension
+            surface_type),
     origin_(origin),
-    direction_(direction)
+    direction_(direction),
+    normal_(normal)
 {
     
 }
@@ -23,72 +32,27 @@ Line(Surface_Type surface_type,
 Relation Line::
 relation(vector<double> &particle_position) const
 {
-    if (direction_[0] == 0) // line perpendicular to x axis
+    vector<double> distance(dimension_);
+    
+    for (int i = 0; i < dimension_; ++i)
     {
-        if (particle_position_[0] > origin_[0])
-        {
-            return Relation::POSITIVE;
-        }
-        else if (particle_position_[0] < origin_[0])
-        {
-            return Relation::NEGATIVE;
-        }
-        else
-        {
-            return Relation::EQUAL;
-        }
-    }
-    else if (direction_[1] == 0) // line perpendicular to y axis
-    {
-        if (particle_position_[1] > origin_[1])
-        {
-            return Relation::POSITIVE;
-        }
-        else if (particle_position_[1] < origin_[1])
-        {
-            return Relation::NEGATIVE;
-        }
-        else
-        {
-            return Relation::EQUAL;
-        }
+        distance[i] = particle_position[i] - origin_[i];
     }
     
-    vector<double> pos_direction = {1, 0};
-    vector<double> neg_direction = {-1, 0};
-    double distance;
-    vector<double> position;
-    
-    // Check if higher on x axis
-    if(intersection(particle_position,
-                    pos_direction,
-                    distance,
-                    position))
+    double k = dot(normal_, distance);
+
+    if (k > 0)
     {
         return Relation::POSITIVE;
     }
-    else if (distance == 0)
-    {
-        return Relation::EQUAL;
-    }
-
-    // Check if lower on x axis
-    if (intersection(particle_position,
-                     neg_direction,
-                     distance,
-                     position))
+    else if (k < 0)
     {
         return Relation::NEGATIVE;
     }
-    else if (distance == 0)
+    else
     {
         return Relation::EQUAL;
     }
-    
-    // Error
-    AssertMsg(false, "relation not found");
-    
-    return Relation::ERROR;
 }
 
 bool Line::
@@ -127,5 +91,22 @@ intersection(vector<double> const &particle_position,
         position[i] = particle_position[i] + particle_direction[i] * t;
     }
 
+    return true;
+}
+
+bool Line::
+normal_direction(vector<double> const &position,
+                 vector<double> &normal)
+{
+    // Check whether point lies on line
+    if (abs((position[1] - origin_[1]) * direction_[0]
+            - (position[0] - origin_[0]) * direction_[1])
+        > tolerance_)
+    {
+        return false;
+    }
+    
+    normal = normal_;
+    
     return true;
 }

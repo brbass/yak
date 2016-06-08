@@ -21,7 +21,8 @@ Circle::
 Circle(Surface_Type surface_type,
        double radius,
        vector<double> const &origin):
-    Surface(surface_type),
+    Surface(2, // dimension
+            surface_type),
     radius_(radius),
     origin_(origin)
 {
@@ -99,5 +100,26 @@ intersection(vector<double> const &particle_position,
         position[i] = particle_position[i] + particle_direction[i] * t;
     }
     
+    return true;
+}
+
+bool Circle::
+normal_direction(vector<double> const &position,
+                 vector<double> &normal) const
+{
+    // Check if point lies on circle
+    if (abs(pow(position[0] - origin_[0], 2) + pow(position[1] - origin_[1], 2)
+            - radius_ * radius_) > tolerance_)
+    {
+        return false;
+    }
+
+    normal.resize(dimension_);
+
+    for (int i = 0; i < dimension_; ++i)
+    {
+        normal[i] = position[i] - origin_[i];
+    }
+
     return true;
 }

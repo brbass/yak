@@ -10,9 +10,8 @@ public:
         POSITIVE,
         NEGATIVE,
         EQUAL,
-        INSIDE = NEGATIVE,
         OUTSIDE = POSITIVE,
-        ERROR
+        INSIDE = NEGATIVE
     };
 
     enum class Surface_Type
@@ -21,9 +20,14 @@ public:
         REFLECTIVE_BOUNDARY,
         INTERNAL
     };
-    
-    Surface(Surface_Type surface_type);
 
+    Surface(int dimension_,
+            Surface_Type surface_type);
+
+    virtual int dimension()
+    {
+        return dimension_;
+    }
     virtual Surface_Type surface_type()
     {
         return surface_type_;
@@ -33,9 +37,13 @@ public:
                               vector<double> const &particle_direction,
                               double &distance,
                               vector<double> &position) const = 0;
+    virtual bool normal_direction(vector<double> const &position,
+                                  vector<double> &normal) const = 0;
     
 private:
-    
+
+    int dimension_;
+    double tolerance_;
     Surface_Type surface_type_;
 }
 
