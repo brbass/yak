@@ -106,7 +106,7 @@ public:
     }
 
     // Basis function for a certain point
-    shared_ptr<RBF> const basis_function(int point) const
+    shared_ptr<RBF> const &basis_function(int point) const
     {
         return basis_functions_[point];
     }
