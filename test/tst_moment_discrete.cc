@@ -88,7 +88,7 @@ void test_gauss_legendre(int number_of_moments,
                                                      number_of_cells,
                                                      number_of_nodes,
                                                      number_of_boundary_cells,
-                                                     Spatial_Discretization::SLAB);
+                                                     Spatial_Discretization::Geometry::SLAB);
     shared_ptr<Angular_Discretization> angular_discretization 
         = make_shared<Gauss_Legendre_Quadrature>(dimension,
                                                  number_of_moments,
@@ -129,13 +129,13 @@ void test_ldfe(int number_of_scattering_moments,
     switch(dimension)
     {
     case 1:
-        geometry = Spatial_Discretization::SLAB;
+        geometry = Spatial_Discretization::Geometry::SLAB;
         break;
     case 2:
-        geometry = Spatial_Discretization::RECTANGLE;
+        geometry = Spatial_Discretization::Geometry::RECTANGLE;
         break;
     case 3:
-        geometry = Spatial_Discretization::CUBOID;
+        geometry = Spatial_Discretization::Geometry::CUBOID;
         break;
     }
     

@@ -1,7 +1,13 @@
 #ifndef Region_hh
 #define Region_hh
 
+#include <memory>
+#include <vector>
+
 #include "Surface.hh"
+
+using std::shared_ptr;
+using std::vector;
 
 /* 
    Describes a solid geometry region
@@ -29,8 +35,8 @@ public:
     void initialize(int material,
                     vector<Surface::Relation> const &surface_relations,
                     vector<shared_ptr<Surface> > const &surfaces,
-                    vector<Region::Relation> const &region_relations,
-                    vector<shared_ptr<Region> > const &regions);
+                    vector<Region::Relation> const &region_relations = vector<Region::Relation>(),
+                    vector<shared_ptr<Region> > const &regions = vector<shared_ptr<Region> >());
     
     int material() const
     {
@@ -50,7 +56,7 @@ public:
     }
     shared_ptr<Region> const &region(int r) const
     {
-        return region_[r];
+        return regions_[r];
     }
     
     Relation relation(vector<double> const &point,
@@ -64,6 +70,6 @@ private:
     vector<shared_ptr<Surface> > surfaces_;
     vector<Region::Relation> region_relations_;
     vector<shared_ptr<Region> > regions_;
-}
+};
 
 #endif

@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<input>
+  <solid_geometry>
+    <surfaces>
+      <surface>
+        <number>0</number>
+        <type>line</type>
+        <axis>0</axis>
+        <position>-2</position>
+      </surface>
+      <surface> 
+        <number>1</number>
+        <type>line</type>
+        <axis>0</axis>
+        <position>2</position>
+      </surface>
+      <surface> 
+        <number>2</number>
+        <type>line</type>
+        <axis>1</axis>
+        <position>-2</position>
+      </surface>
+      <surface> 
+        <number>3</number>
+        <type>line</type>
+        <axis>1</axis>
+        <position>2</position>
+      </surface>
+      <surface>
+        <number>4</number>
+        <type>circle</type>
+        <radius>1</radius>
+        <position>0 0</position>
+      </surface>
+    </surfaces>
+
+    <regions>
+      <region>
+        <number>0</number>
+        <material>0</material>
+        <surface_relation>
+          <surface>0</surface>
+          <relation>positive</relation>
+        </surface_relation>
+        <surface_relation>
+          <surface>1</surface>
+          <relation>negative</relation>
+        </surface_relation>
+        <surface_relation>
+          <surface>2</surface>
+          <relation>positive</relation>
+        </surface_relation>
+        <surface_relation>
+          <surface>3</surface>
+          <relation>negative</relation>
+        </surface_relation>
+        <surface_relation>
+          <surface>4</surface>
+          <relation>outside</relation>
+        </surface_relation>
+      </region>
+      <region>
+        <number>1</number>
+        <material>1</material>
+        <surface_relation>
+          <surface>4</surface>
+          <relation>inside</relation>
+        </surface_relation>
+      </region>
+    </regions>
+  </solid_geometry>
+</input>
+

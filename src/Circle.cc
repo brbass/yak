@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+using namespace std;
+
 namespace // anonymous
 {
     double dot(vector<double> const &x,
@@ -28,8 +30,8 @@ Circle(Surface_Type surface_type,
 {
 }
 
-Relation Circle::
-relation(vector<double> &particle_position) const
+Circle::Relation Circle::
+relation(vector<double> const &particle_position) const
 {
     double x = particle_position[0] - origin_[0];
     double y = particle_position[1] - origin_[1];

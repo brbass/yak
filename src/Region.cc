@@ -1,5 +1,7 @@
 #include "Region.hh"
 
+#include "Check.hh"
+
 Region::
 Region():
     material_(-1), // material will be >=0 once region is initialized
@@ -22,9 +24,9 @@ initialize(int material,
 
 Region::Relation Region::
 relation(vector<double> const &point,
-         int recursion_level)
+         int recursion_level) const
 {
-    if (recursion_level_ > max_recursion_)
+    if (recursion_level > max_recursion_)
     {
         AssertMsg(false, "recursion limit reached");
     }
@@ -37,7 +39,7 @@ relation(vector<double> const &point,
         
         if (surface_relation != surface_relations_[i])
         {
-            return Region::OUTSIDE;
+            return Region::Relation::OUTSIDE;
         }
     }
     
@@ -50,9 +52,9 @@ relation(vector<double> const &point,
         
         if (surface_relation != surface_relations_[i])
         {
-            return Region::OUTSIDE;
+            return Region::Relation::OUTSIDE;
         }
     }
     
-    return Region::INSIDE;
+    return Region::Relation::INSIDE;
 }

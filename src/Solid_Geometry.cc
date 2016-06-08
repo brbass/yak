@@ -1,6 +1,6 @@
 #include "Solid_Geometry.hh"
 
-#include <numeric_limits>
+#include <limits>
 
 using namespace std;
 
@@ -8,6 +8,7 @@ Solid_Geometry::
 Solid_Geometry(int dimension,
                vector<shared_ptr<Surface> > const &surfaces,
                vector<shared_ptr<Region> > const &regions):
+    dimension_(dimension),
     surfaces_(surfaces),
     regions_(regions)
 {
@@ -46,12 +47,12 @@ next_intersection(vector<double> const &particle_position,
         double current_distance;
         vector<double> current_position;
         
-        if(intersection(particle_position,
-                        particle_direction,
-                        current_distance,
-                        current_position))
+        if(surfaces_[i]->intersection(particle_position,
+                                      particle_direction,
+                                      current_distance,
+                                      current_position))
         {
-            if (current_distance < best_distance)
+            if (current_distance < distance)
             {
                 best_surface = i;
                 distance = current_distance;

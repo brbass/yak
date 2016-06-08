@@ -1,6 +1,10 @@
 #ifndef Surface_hh
 #define Surface_hh
 
+#include <vector>
+
+using std::vector;
+
 class Surface
 {
 public:
@@ -32,7 +36,7 @@ public:
     {
         return surface_type_;
     }
-    virtual Relation relation(vector<double> const &position) = 0;
+    virtual Relation relation(vector<double> const &particle_position) const = 0;
     virtual bool intersection(vector<double> const &particle_position,
                               vector<double> const &particle_direction,
                               double &distance,
@@ -40,11 +44,11 @@ public:
     virtual bool normal_direction(vector<double> const &position,
                                   vector<double> &normal) const = 0;
     
-private:
+protected:
 
     int dimension_;
     double tolerance_;
     Surface_Type surface_type_;
-}
+};
 
 #endif

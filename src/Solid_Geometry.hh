@@ -32,7 +32,8 @@ public:
                           vector<double> &position) const;
     
 private:
-    
+
+    int dimension_;
     vector<shared_ptr<Surface> > surfaces_;
     vector<shared_ptr<Region> > regions_;
 };

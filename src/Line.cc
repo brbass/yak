@@ -1,5 +1,9 @@
 #include "Line.hh"
 
+#include <cmath>
+
+using namespace std;
+
 namespace // anonymous
 {
     double dot(vector<double> const &x,
@@ -29,8 +33,8 @@ Line(Surface_Type surface_type,
     
 }
 
-Relation Line::
-relation(vector<double> &particle_position) const
+Line::Relation Line::
+relation(vector<double> const &particle_position) const
 {
     vector<double> distance(dimension_);
     
@@ -96,7 +100,7 @@ intersection(vector<double> const &particle_position,
 
 bool Line::
 normal_direction(vector<double> const &position,
-                 vector<double> &normal)
+                 vector<double> &normal) const
 {
     // Check whether point lies on line
     if (abs((position[1] - origin_[1]) * direction_[0]
