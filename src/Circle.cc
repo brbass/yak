@@ -18,8 +18,10 @@ namespace // anonymous
 }
 
 Circle::
-Circle(double radius,
+Circle(Surface_Type surface_type,
+       double radius,
        vector<double> const &origin):
+    Surface(surface_type),
     radius_(radius),
     origin_(origin)
 {

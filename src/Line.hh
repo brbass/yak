@@ -5,14 +5,16 @@ class Line : public Surface
 {
 public:
     
-    Line(vector<double> const &origin,
+    Line(bool boundary,
+         double reflection_probability,
+         vector<double> const &origin,
          vector<double> const &direction);
     
     virtual Relation relation(vector<double> &particle_position) const;
     virtual bool intersection(vector<double> const &particle_position,
                               vector<double> const &particle_direction,
                               double &distance,
-                              vector<double> &intersection) const;
+                              vector<double> &position) const;
     
 private:
     

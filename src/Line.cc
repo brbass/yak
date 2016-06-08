@@ -10,8 +10,10 @@ namespace // anonymous
 }
 
 Line::
-Line(vector<double> const &origin,
+Line(Surface_Type surface_type,
+     vector<double> const &origin,
      vector<double> const &direction):
+    Surface(surface_type),
     origin_(origin),
     direction_(direction)
 {

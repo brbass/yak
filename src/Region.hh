@@ -3,21 +3,34 @@
 
 #include "Surface.hh"
 
+/* 
+   Describes a solid geometry region
+   
+   The memory for the regions must be allocated before the data is initialized,
+   as a region can be defined in terms of other regions. Because of this, the
+   "initialize" function must be called after the constructor. This allows 
+   construction of the regions in any order without regard for interdependencies.
+*/
 class Region
 {
 public:
 
+    // Is the point inside or outside of the region
     enum class Relation
     {
         INSIDE,
         OUTSIDE
     };
-    
-    Region(int material,
-           vector<Surface::Relation> surface_relations,
-           vector<shared_ptr<Surface> > surfaces,
-           vector<Region::Relation> region_relations,
-           vector<shared_ptr<Region> > regions);
+
+    // Constructor
+    Region();
+
+    // Initialization values
+    void initialize(int material,
+                    vector<Surface::Relation> const &surface_relations,
+                    vector<shared_ptr<Surface> > const &surfaces,
+                    vector<Region::Relation> const &region_relations,
+                    vector<shared_ptr<Region> > const &regions);
     
     int material() const
     {
@@ -40,11 +53,13 @@ public:
         return region_[r];
     }
     
-    Relation relation(vector<double> &point) const;
+    Relation relation(vector<double> const &point,
+                      int recursion_level = 0) const;
     
 private:
-
+    
     int material_;
+    int max_recursion_;
     vector<Surface::Relation> surface_relations_;
     vector<shared_ptr<Surface> > surfaces_;
     vector<Region::Relation> region_relations_;
