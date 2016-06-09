@@ -216,7 +216,7 @@ void cube_with_sphere_minus_cylinder()
                                                                             surfaces,
                                                                             regions);
     
-    int num_tests = 30;
+    int num_tests = 3000;
 
     Random_Number_Generator rng(-0.9, 0.9);
 

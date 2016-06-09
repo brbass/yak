@@ -45,7 +45,8 @@ public:
     /* Constructor */
     Surface(int dimension_,
             Surface_Type surface_type,
-            double tolerance = numeric_limits<double>::epsilon());
+            double tolerance = 1e-12);
+            // double tolerance = numeric_limits<double>::epsilon());
 
     /* Number of spatial dimensions */
     virtual int dimension()
