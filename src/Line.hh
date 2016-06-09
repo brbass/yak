@@ -3,6 +3,12 @@
 
 #include "Surface.hh"
 
+/* 
+   Describes an infinite line that goes through the point "origin"
+   with normal vector "normal". The equation is
+   
+   \Omega \cdot (x - x0) = 0.
+*/
 class Line : public Surface
 {
 public:

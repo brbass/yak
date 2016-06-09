@@ -8,6 +8,13 @@ using namespace std;
 
 namespace vf3 = Vector_Functions_3D;
 
+/* 
+   Describes a sphere centered at "origin" with radius "radius".
+   The formula used is
+   
+   ||x - x0||^2 = r^2. 
+*/
+
 Sphere::
 Sphere(Surface_Type surface_type,
        double radius,
@@ -22,9 +29,10 @@ Sphere(Surface_Type surface_type,
 Sphere::Relation Sphere::
 relation(vector<double> const &particle_position) const
 {
-    vector<double> const x = vf3::subtract(particle_position, origin_);
-
-    double const r = vf3::magnitude(x);
+    vector<double> const k0 = vf3::subtract(particle_position,
+                                            origin_);
+    
+    double const r = vf3::magnitude(k0);
     
     if (r < radius_)
     {
@@ -46,29 +54,31 @@ intersection(vector<double> const &particle_position,
              double &distance,
              vector<double> &position) const
 {
-    vector<double> const center_distance = vf3::subtract(origin_, particle_position);
-    
-    double const cross_val = vf3::cross(particle_direction, center_distance);
-    double const k1 = radius_ * radius_ - cross_val * cross_val;
-    
-    if (k1 <= 0)
+    vector<double> const k0 = vf3::subtract(particle_position,
+                                            origin_);
+
+    double const l0 = vf3::magnitude_squared(k0) - radius_ * radius_;
+    double const l1 = vf3::dot(k0,
+                               particle_direction);
+    double const l2 = l1 * l1 - l0;
+
+    if (l2 <= 0)
     {
         return false;
     }
 
-    double const k2 = sqrt(k1);
-    double const k3 = vf3::dot(center_distance, particle_direction);
+    double const l3 = sqrt(l2);
     
-    double const t1 = k3 + k2;
-    double const t2 = k3 - k2;
-    
-    if (t2 > 0)
+    double const s1 = -l1 + l3;
+    double const s2 = -l1 - l3;
+
+    if (s2 > 0)
     {
-        distance = t2;
+        distance = s2;
     }
-    else if (t1 > 0)
+    else if (s1 > 0)
     {
-        distance = t1;
+        distance = s1;
     }
     else
     {
@@ -86,15 +96,17 @@ bool Sphere::
 normal_direction(vector<double> const &position,
                  vector<double> &normal) const
 {
-    // Check if point lies on circle
-    if (abs(pow(position[0] - origin_[0], 2) + pow(position[1] - origin_[1], 2)
-            - radius_ * radius_) > tolerance_)
+    // Check if point lies on sphere
+    
+    vector<double> const k0 = vf3::subtract(position,
+                                            origin_);
+    
+    if (abs(vf3::magnitude_squared(k0) - radius_ * radius_) > tolerance_)
     {
         return false;
     }
     
-    normal = vf3::subtract(position,
-                           origin_);
+    normal = vf3::normalize(k0);
     
     return true;
 }
