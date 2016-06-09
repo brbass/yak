@@ -8,13 +8,6 @@ using namespace std;
 
 namespace vf3 = Vector_Functions_3D;
 
-/* 
-   Describes a sphere centered at "origin" with radius "radius".
-   The formula used is
-   
-   ||x - x0||^2 = r^2. 
-*/
-
 Sphere::
 Sphere(Surface_Type surface_type,
        double radius,

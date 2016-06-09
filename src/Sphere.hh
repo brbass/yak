@@ -3,6 +3,12 @@
 
 #include "Surface.hh"
 
+/* 
+   Describes a sphere centered at "origin" with radius "radius".
+   The formula used is
+   
+   ||x - x0||^2 = r^2. 
+*/
 class Sphere : public Surface
 {
 public:

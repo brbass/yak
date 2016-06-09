@@ -3,6 +3,12 @@
 
 #include "Surface.hh"
 
+/*
+  Describes a circle with radius "radius" centered at the point "origin."
+  The formula used is
+  
+  ||x - x0||^2 = r^2.
+*/
 class Circle : public Surface
 {
 public:

@@ -3,6 +3,12 @@
 
 #include "Surface.hh"
 
+/* 
+   Describes an infinite plane that goes through the point "origin" 
+   and has surface normal "normal". The formula used is
+   
+   \Omega \cdot (x - x0) = 0
+*/
 class Plane : public Surface
 {
 public:

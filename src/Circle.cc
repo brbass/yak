@@ -8,13 +8,6 @@ using namespace std;
 
 namespace vf2 = Vector_Functions_2D;
 
-/*
-  Describes a circle with radius "radius" centered at the point "origin."
-  The formula used is
-  
-  ||x - x0||^2 = r^2.
-*/
-
 Circle::
 Circle(Surface_Type surface_type,
        double radius,

@@ -7,12 +7,6 @@ using namespace std;
 
 namespace vf3 = Vector_Functions_3D;
 
-/* 
-   Describes an infinite plane that goes through the point "origin" 
-   and has surface normal "normal". The formula used is
-   
-   \Omega \cdot (x - x0) = 0
-*/
 Plane::
 Plane(Surface_Type surface_type,
       vector<double> const &origin,
