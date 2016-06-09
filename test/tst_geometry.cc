@@ -12,8 +12,11 @@
 #include "Solid_Geometry.hh"
 #include "Sphere.hh"
 #include "Surface.hh"
+#include "Vector_Functions_3D.hh"
 
 using namespace std;
+
+namespace vf3 = Vector_Functions_3D;
 
 void test_square()
 {
@@ -215,7 +218,7 @@ void cube_with_sphere_minus_cylinder()
     
     int num_tests = 30;
 
-    Random_Number_Generator rng(-1.5, 1.5);
+    Random_Number_Generator rng(-0.9, 0.9);
 
     int w = 12;
     
@@ -228,27 +231,23 @@ void cube_with_sphere_minus_cylinder()
     cout << setw(w) << "Region";
     cout << setw(w) << "Surface";
     cout << setw(w) << "Distance";
-    cout << setw(w) << "x_new";
-    cout << setw(w) << "y_new";
-    cout << setw(w) << "z_new";
     cout << endl;
+    
+    vector<double> position = rng.random_double_vector(dimension);
+    vector<double> direction = rng.random_double_vector(dimension);
+    double sum = 0;
+    for (int i = 0; i < dimension; ++i)
+    {
+        sum += direction[i] * direction[i];
+    }
+    sum = sqrt(sum);
+    for (int i = 0; i < dimension; ++i)
+    {
+        direction[i] /= sum;
+    }
     
     for (int i = 0; i < num_tests; ++i)
     {
-        vector<double> position = rng.random_double_vector(dimension);
-        
-        vector<double> direction = rng.random_double_vector(dimension);
-        double sum = 0;
-        for (int i = 0; i < dimension; ++i)
-        {
-            sum += direction[i] * direction[i];
-        }
-        sum = sqrt(sum);
-        for (int i = 0; i < dimension; ++i)
-        {
-            direction[i] /= sum;
-        }
-        
         double distance;
         vector<double> new_position;
         
@@ -257,7 +256,7 @@ void cube_with_sphere_minus_cylinder()
                                                         direction,
                                                         distance,
                                                         new_position);
-        
+
         for (int i = 0; i < dimension; ++i)
         {
             cout << setw(w) << position[i];
@@ -269,11 +268,33 @@ void cube_with_sphere_minus_cylinder()
         cout << setw(w) << region;
         cout << setw(w) << surface;
         cout << setw(w) << distance;
-        for (int i = 0; i < dimension; ++i)
-        {
-            cout << setw(w) << new_position[i];
-        }
         cout << endl;
+
+        if (region == -1)
+        {
+            return;
+        }
+        
+        position = new_position;
+        
+        if (surfaces[surface]->surface_type() == Surface::Surface_Type::REFLECTIVE_BOUNDARY)
+        {
+            vector<double> new_direction;
+            
+            if (surfaces[surface]->reflected_direction(position,
+                                                       direction,
+                                                       new_direction))
+            {
+                direction = new_direction;
+            }
+            else
+            {
+                cout << "could not find surface" << endl;
+            }
+        }
+        position = vf3::add(position,
+                            vf3::multiply(direction,
+                                          1e-6));
     }
 }
 

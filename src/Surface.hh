@@ -74,6 +74,11 @@ public:
     /* Normal direction of surface at a point on the surface */
     virtual bool normal_direction(vector<double> const &position,
                                   vector<double> &normal) const = 0;
+
+    /* Reflected direction */
+    virtual bool reflected_direction(vector<double> const &position,
+                                     vector<double> const &old_direction,
+                                     vector<double> &new_direction);
     
 protected:
 
