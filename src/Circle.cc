@@ -2,22 +2,11 @@
 
 #include <cmath>
 
+#include "Vector_Functions_2D.hh"
+
 using namespace std;
 
-namespace // anonymous
-{
-    double dot(vector<double> const &x,
-               vector<double> const &y)
-    {
-        return x[0] * y[0] + x[1] * y[1];
-    }
-    
-    double cross(vector<double> const &x,
-                 vector<double> const &y)
-    {
-        return x[0] * y[1] - x[1] * y[0];
-    }
-}
+namespace vf2 = Vector_Functions_2D;
 
 Circle::
 Circle(Surface_Type surface_type,
@@ -33,10 +22,9 @@ Circle(Surface_Type surface_type,
 Circle::Relation Circle::
 relation(vector<double> const &particle_position) const
 {
-    double x = particle_position[0] - origin_[0];
-    double y = particle_position[1] - origin_[1];
-    
-    double r = sqrt(x * x + y * y);
+    vector<double> const x = vf2::subtract(particle_position, origin_);
+
+    double const r = vf2::magnitude(x);
     
     if (r < radius_)
     {
@@ -58,49 +46,38 @@ intersection(vector<double> const &particle_position,
              double &distance,
              vector<double> &position) const
 {
-    vector<double> center_distance(dimension_);
+    vector<double> const center_distance = vf2::subtract(origin_, particle_position);
     
-    for (int i = 0; i < dimension_; ++i)
-    {
-        center_distance[i] = origin_[i] - particle_position[i];
-    }
-
-    double cross_val = cross(particle_direction, center_distance);
-    double k1 = radius_ * radius_ - cross_val * cross_val;
-
+    double const cross_val = vf2::cross(particle_direction, center_distance);
+    double const k1 = radius_ * radius_ - cross_val * cross_val;
+    
     if (k1 <= 0)
     {
         return false;
     }
 
-    double k2 = sqrt(k1);
-    double k3 = dot(center_distance, particle_direction);
+    double const k2 = sqrt(k1);
+    double const k3 = vf2::dot(center_distance, particle_direction);
     
-    double t1 = k3 + k2;
-    double t2 = k3 - k2;
-    double t;
+    double const t1 = k3 + k2;
+    double const t2 = k3 - k2;
     
     if (t2 > 0)
     {
-        t = t2;
+        distance = t2;
     }
     else if (t1 > 0)
     {
-        t = t1;
+        distance = t1;
     }
     else
     {
         return false;
     }
-
-    distance = t;
     
-    position.resize(dimension_);
-    
-    for (int i = 0; i < dimension_; ++i)
-    {
-        position[i] = particle_position[i] + particle_direction[i] * t;
-    }
+    position = vf2::add(particle_position,
+                        vf2::multiply(particle_direction,
+                                      distance));
     
     return true;
 }
@@ -115,13 +92,9 @@ normal_direction(vector<double> const &position,
     {
         return false;
     }
-
-    normal.resize(dimension_);
-
-    for (int i = 0; i < dimension_; ++i)
-    {
-        normal[i] = position[i] - origin_[i];
-    }
-
+    
+    normal = vf2::subtract(position,
+                           origin_);
+    
     return true;
 }

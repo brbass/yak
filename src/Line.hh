@@ -9,7 +9,6 @@ public:
     
     Line(Surface_Type surface_type,
          vector<double> const &origin,
-         vector<double> const &direction,
          vector<double> const &normal);
     
     virtual Relation relation(vector<double> const &particle_position) const;
@@ -23,7 +22,6 @@ public:
 protected:
     
     vector<double> origin_;
-    vector<double> direction_;
     vector<double> normal_;
 };
 

@@ -47,7 +47,7 @@ namespace XML_Functions
     child_value(pugi::xml_node &node, 
                 string description,
                 bool required = true);
-
+    
     template<> inline string
     child_value<string> (pugi::xml_node &node,
                          string description,
