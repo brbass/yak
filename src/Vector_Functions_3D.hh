@@ -1,8 +1,13 @@
 #ifndef Vector_Functions_3D_hh
 #define Vector_Functions_3D_hh
 
+#include <cmath>
+#include <vector>
+
 namespace Vector_Functions_3D
 {
+    using namespace std;
+    
     template<class T> vector<T> add(vector<T> const &x,
                                     vector<T> const &y)
     {
@@ -51,7 +56,7 @@ namespace Vector_Functions_3D
         return x[0] * x[0] + x[1] * x[1] + x[2] * x[2];
     }
 
-    template<class T> T normalize(vector<T> const &x)
+    template<class T> vector<T> normalize(vector<T> const &x)
     {
         double k = sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
         

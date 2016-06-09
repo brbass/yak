@@ -1,8 +1,13 @@
 #ifndef Vector_Functions_2D_hh
 #define Vector_Functions_2D_hh
 
+#include <cmath>
+#include <vector>
+
 namespace Vector_Functions_2D
 {
+    using namespace std;
+    
     template<class T> vector<T> add(vector<T> const &x,
                                     vector<T> const &y)
     {
@@ -20,8 +25,6 @@ namespace Vector_Functions_2D
     template<class T> vector<T> multiply(vector<T> const &x,
                                          T const t)
     {
-        Check(x.size() == dim);
-
         return {x[0] * t,
                 x[1] * t};
     }
@@ -29,25 +32,17 @@ namespace Vector_Functions_2D
     template<class T> T dot(vector<T> const &x,
                             vector<T> const &y)
     {
-        Check(x.size() == dim);
-        Check(y.size() == dim);
-
         return x[0] * y[0] + x[1] * y[1];
     }
     
     template<class T> T cross(vector<T> const &x,
                               vector<T> const &y)
     {
-        Check(x.size() == dim);
-        Check(y.size() == dim);
-
         return x[0] * y[1] - x[1] * y[0];
     }
     
     template<class T> T magnitude(vector<T> const &x)
     {
-        Check(x.size() == dim);
-
         return sqrt(x[0] * x[0] + x[1] * x[1]);
     }
     
@@ -56,7 +51,7 @@ namespace Vector_Functions_2D
         return x[0] * x[0] + x[1] * x[1];
     }
 
-    template<class T> T normalize(vector<T> const &x)
+    template<class T> vector<T> normalize(vector<T> const &x)
     {
         double k = sqrt(x[0] * x[0] + x[1] * x[1]);
         

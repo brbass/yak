@@ -73,11 +73,11 @@ intersection(vector<double> const &particle_position,
     
     if (s2 > 0)
     {
-        distance = t2;
+        distance = s2;
     }
     else if (s1 > 0)
     {
-        distance = t1;
+        distance = s1;
     }
     else
     {
@@ -97,7 +97,7 @@ normal_direction(vector<double> const &position,
 {
     // Check if point lies on circle
 
-    vector<double> const k0 = vf3::subtract(position,
+    vector<double> const k0 = vf2::subtract(position,
                                             origin_);
     
     if (abs(vf2::magnitude_squared(k0) - radius_ * radius_) > tolerance_)

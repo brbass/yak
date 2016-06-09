@@ -37,8 +37,8 @@ Cylinder::Relation Cylinder::
 relation(vector<double> const &particle_position) const
 {
     vector<double> const k0 = vf3::cross(direction_,
-                                         subtract(particle_position,
-                                                  origin_));
+                                         vf3::subtract(particle_position,
+                                                       origin_));
 
     double const r = vf3::magnitude(k0);
 
@@ -71,8 +71,8 @@ intersection(vector<double> const &particle_position,
              vector<double> &position) const
 {
     vector<double> const k0 = vf3::cross(direction_,
-                                         subtract(particle_position,
-                                                  origin_));
+                                         vf3::subtract(particle_position,
+                                                       origin_));
     vector<double> const k1 = vf3::cross(direction_,
                                          particle_direction);
     
@@ -138,7 +138,7 @@ normal_direction(vector<double> const &position,
                                                          vf3::dot(direction_,
                                                                   k0)));
 
-    if (abs(mangitude_squared(n) - radius_ * radius_) > tolernace_)
+    if (abs(vf3::magnitude_squared(n) - radius_ * radius_) > tolerance_)
     {
         return false;
     }
