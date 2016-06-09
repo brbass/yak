@@ -1,28 +1,28 @@
-#include "Line.hh"
-#include "Vector_Functions_2D.hh"
+#include "Plane.hh"
+#include "Vector_Functions_3D.hh"
 
 #include <cmath>
 
 using namespace std;
 
-namespace vf2 = Vector_Functions_2D;
+namespace vf3 = Vector_Functions_3D;
 
-Line::
-Line(Surface_Type surface_type,
-     vector<double> const &origin,
-     vector<double> const &normal):
-    Surface(2, // dimension
+Plane::
+Plane(Surface_Type surface_type,
+      vector<double> const &origin,
+      vector<double> const &normal):
+    Surface(3, // dimension
             surface_type),
     origin_(origin),
     normal_(normal)
 {
 }
 
-Line::Relation Line::
+Plane::Relation Plane::
 relation(vector<double> const &particle_position) const
 {
-    double const k = vf2::dot(normal_,
-                              vf2::subtract(particle_position,
+    double const k = vf3::dot(normal_,
+                              vf3::subtract(particle_position,
                                             origin_));
     
     if (k > 0)
@@ -39,21 +39,21 @@ relation(vector<double> const &particle_position) const
     }
 }
 
-bool Line::
+bool Plane::
 intersection(vector<double> const &particle_position,
              vector<double> const &particle_direction,
              double &distance,
              vector<double> &position) const
 {
-    double direction_dot = vf2::dot(particle_direction,
+    double direction_dot = vf3::dot(particle_direction,
                                     normal_);
-
+    
     if (direction_dot == 0)
     {
         return false;
     }
     
-    distance = vf2::dot(vf2::subtract(origin_,
+    distance = vf3::dot(vf3::subtract(origin_,
                                       particle_position), normal_) / direction_dot;
 
     if (distance <= 0)
@@ -61,20 +61,20 @@ intersection(vector<double> const &particle_position,
         return false;
     }
     
-    position = vf2::add(particle_position,
-                        vf2::multiply(particle_direction,
+    position = vf3::add(particle_position,
+                        vf3::multiply(particle_direction,
                                       distance));
     
     return true;
 }
 
-bool Line::
+bool Plane::
 normal_direction(vector<double> const &position,
                  vector<double> &normal) const
 {
-    // Check whether point lies on line
-    if (vf2::dot(normal_,
-                 vf2::subtract(position, origin_))
+    // Check whether point lies on plane
+    if (vf3::dot(normal_,
+                 vf3::subtract(position, origin_))
         > tolerance_)
     {
         return false;

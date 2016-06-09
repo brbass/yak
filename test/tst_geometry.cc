@@ -51,7 +51,6 @@ void test_square()
         
         surfaces[i] = make_shared<Line>(surface_type,
                                         origin,
-                                        direction,
                                         normal);
     }
     
