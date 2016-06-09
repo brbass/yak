@@ -45,33 +45,40 @@ relation(vector<double> const &particle_position) const
     }
 }
 
-bool Plane::
+Plane::Intersection Plane::
 intersection(vector<double> const &particle_position,
              vector<double> const &particle_direction,
              double &distance,
              vector<double> &position) const
 {
-    double direction_dot = vf3::dot(particle_direction,
-                                    normal_);
+    vector<double> const k0 = vf3::subtract(origin_,
+                                            particle_position);
+    double const l0 = vf3::dot(k0,
+                               normal_);
+    double const l1 = vf3::dot(particle_direction,
+                               normal_);
     
-    if (direction_dot == 0)
+    if (l1 == 0)
     {
-        return false;
+        return Intersection::PARALLEL;
     }
-    
-    distance = vf3::dot(vf3::subtract(origin_,
-                                      particle_position), normal_) / direction_dot;
 
-    if (distance <= 0)
+    double const s = l0 / l1;
+
+    if (s > 0)
     {
-        return false;
+        distance = s;
+    }
+    else
+    {
+        return Intersection::NEGATIVE;
     }
     
     position = vf3::add(particle_position,
                         vf3::multiply(particle_direction,
                                       distance));
     
-    return true;
+    return Intersection::INTERSECTS;
 }
 
 bool Plane::

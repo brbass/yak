@@ -25,6 +25,15 @@ public:
         INTERNAL
     };
 
+    enum class Intersection
+    {
+        INTERSECTS, // has intersection
+        PARALLEL, // has no intersection, parallel to surface
+        NONE, // has no intersection, negative or positive
+        NEGATIVE, // only has negative intersection
+        TANGEANT // only intersects at one infinitesimal point
+    };
+    
     Surface(int dimension_,
             Surface_Type surface_type);
 
@@ -37,10 +46,10 @@ public:
         return surface_type_;
     }
     virtual Relation relation(vector<double> const &particle_position) const = 0;
-    virtual bool intersection(vector<double> const &particle_position,
-                              vector<double> const &particle_direction,
-                              double &distance,
-                              vector<double> &position) const = 0;
+    virtual Intersection intersection(vector<double> const &particle_position,
+                                      vector<double> const &particle_direction,
+                                      double &distance,
+                                      vector<double> &position) const = 0;
     virtual bool normal_direction(vector<double> const &position,
                                   vector<double> &normal) const = 0;
     

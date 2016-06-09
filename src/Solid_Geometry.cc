@@ -41,7 +41,7 @@ next_intersection(vector<double> const &particle_position,
     int best_surface = -1;
     distance = numeric_limits<double>::max();
     position.resize(dimension_);
-
+    
     for (int i = 0; i < surfaces_.size(); ++i)
     {
         double current_distance;
@@ -50,7 +50,8 @@ next_intersection(vector<double> const &particle_position,
         if(surfaces_[i]->intersection(particle_position,
                                       particle_direction,
                                       current_distance,
-                                      current_position))
+                                      current_position)
+           == Surface::Intersection::INTERSECTS)
         {
             if (current_distance < distance)
             {

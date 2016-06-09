@@ -47,7 +47,7 @@ relation(vector<double> const &particle_position) const
     }
 }
 
-bool Circle::
+Circle::Intersection Circle::
 intersection(vector<double> const &particle_position,
              vector<double> const &particle_direction,
              double &distance,
@@ -59,17 +59,18 @@ intersection(vector<double> const &particle_position,
     double const l0 = vf2::magnitude_squared(k0) - radius_ * radius_;
     double const l1 = vf2::dot(k0,
                                particle_direction);
-    double const l2 = l1 * l1 - l0;
+    double const l2 = vf2::magnitude_squared(particle_direction);
+    double const l3 = l1 * l1 - l0 * l2;
 
-    if (l2 <= 0)
+    if (l3 < 0)
     {
-        return false;
+        return Intersection::NONE;
     }
 
-    double const l3 = sqrt(l2);
+    double const l4 = sqrt(l3);
     
-    double const s1 = l1 + l3;
-    double const s2 = l1 - l3;
+    double const s1 = (-l1 + l4) / l2;
+    double const s2 = (-l1 - l4) / l2;
     
     if (s2 > 0)
     {
@@ -81,14 +82,21 @@ intersection(vector<double> const &particle_position,
     }
     else
     {
-        return false;
+        return Intersection::NEGATIVE;
     }
     
     position = vf2::add(particle_position,
                         vf2::multiply(particle_direction,
                                       distance));
     
-    return true;
+    if (l2 == 0)
+    {
+        return Intersection::TANGEANT;
+    }
+    else
+    {
+        return Intersection::INTERSECTS;
+    }
 }
 
 bool Circle::

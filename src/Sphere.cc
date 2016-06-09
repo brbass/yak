@@ -48,7 +48,7 @@ relation(vector<double> const &particle_position) const
     }
 }
 
-bool Sphere::
+Sphere::Intersection Sphere::
 intersection(vector<double> const &particle_position,
              vector<double> const &particle_direction,
              double &distance,
@@ -62,11 +62,11 @@ intersection(vector<double> const &particle_position,
                                particle_direction);
     double const l2 = l1 * l1 - l0;
 
-    if (l2 <= 0)
+    if (l2 < 0)
     {
-        return false;
+        return Intersection::NONE; // no intersection for line
     }
-
+    
     double const l3 = sqrt(l2);
     
     double const s1 = -l1 + l3;
@@ -82,14 +82,21 @@ intersection(vector<double> const &particle_position,
     }
     else
     {
-        return false;
+        return Intersection::NEGATIVE; // intersection behind current point
     }
     
     position = vf3::add(particle_position,
                         vf3::multiply(particle_direction,
                                       distance));
     
-    return true;
+    if (l2 == 0)
+    {
+        return Intersection::TANGEANT;
+    }
+    else
+    {
+        return Intersection::INTERSECTS;
+    }
 }
 
 bool Sphere::

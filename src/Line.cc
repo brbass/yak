@@ -39,33 +39,40 @@ relation(vector<double> const &particle_position) const
     }
 }
 
-bool Line::
+Line::Intersection Line::
 intersection(vector<double> const &particle_position,
              vector<double> const &particle_direction,
              double &distance,
              vector<double> &position) const
 {
-    double direction_dot = vf2::dot(particle_direction,
-                                    normal_);
-
-    if (direction_dot == 0)
-    {
-        return false;
-    }
+    vector<double> const k0 = vf2::subtract(origin_,
+                                            particle_position);
+    double const l0 = vf2::dot(k0,
+                               normal_);
+    double const l1 = vf2::dot(particle_direction,
+                               normal_);
     
-    distance = vf2::dot(vf2::subtract(origin_,
-                                      particle_position), normal_) / direction_dot;
-
-    if (distance <= 0)
+    if (l1 == 0)
     {
-        return false;
+        return Intersection::PARALLEL;
+    }
+
+    double const s = l0 / l1;
+
+    if (s > 0)
+    {
+        distance = s;
+    }
+    else
+    {
+        return Intersection::NEGATIVE;
     }
     
     position = vf2::add(particle_position,
                         vf2::multiply(particle_direction,
                                       distance));
     
-    return true;
+    return Intersection::INTERSECTS;
 }
 
 bool Line::
