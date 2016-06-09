@@ -33,6 +33,24 @@ find_region(vector<double> const &particle_position)
 }
 
 int Solid_Geometry::
+find_surface(vector<double> const &particle_position)
+{
+    Surface::Relation relation;
+    
+    for (int i = 0; i < surfaces_.size(); ++i)
+    {
+        relation = surfaces_[i]->relation(particle_position);
+        
+        if (relation == Surface::Relation::EQUAL)
+        {
+            return i;
+        }
+    }
+    
+    return -1; // particle not on a surface
+}
+
+int Solid_Geometry::
 next_intersection(vector<double> const &particle_position,
                   vector<double> const &particle_direction,
                   double &distance,

@@ -1,8 +1,10 @@
 #ifndef Surface_hh
 #define Surface_hh
 
+#include <limits>
 #include <vector>
 
+using std::numeric_limits;
 using std::vector;
 
 /*
@@ -21,7 +23,7 @@ public:
         OUTSIDE = POSITIVE,
         INSIDE = NEGATIVE
     };
-
+    
     /* Type of surface */
     enum class Surface_Type
     {
@@ -42,7 +44,8 @@ public:
 
     /* Constructor */
     Surface(int dimension_,
-            Surface_Type surface_type);
+            Surface_Type surface_type,
+            double tolerance = numeric_limits<double>::epsilon());
 
     /* Number of spatial dimensions */
     virtual int dimension()
@@ -75,8 +78,8 @@ public:
 protected:
 
     int dimension_;
-    double tolerance_;
     Surface_Type surface_type_;
+    double tolerance_;
 };
 
 #endif

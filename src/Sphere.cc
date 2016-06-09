@@ -27,17 +27,17 @@ relation(vector<double> const &particle_position) const
     
     double const r = vf3::magnitude(k0);
     
+    if (r <= tolerance_)
+    {
+        return Relation::EQUAL;
+    }
     if (r < radius_)
     {
         return Relation::INSIDE;
     }
-    else if (r > radius_)
+    else // if (r > radius_)
     {
         return Relation::OUTSIDE;
-    }
-    else // r == radius_
-    {
-        return Relation::EQUAL;
     }
 }
 
@@ -64,7 +64,7 @@ intersection(vector<double> const &particle_position,
     
     double const s1 = -l1 + l3;
     double const s2 = -l1 - l3;
-
+    
     if (s2 > 0)
     {
         distance = s2;
@@ -82,7 +82,7 @@ intersection(vector<double> const &particle_position,
                         vf3::multiply(particle_direction,
                                       distance));
     
-    if (l2 == 0)
+    if (l2 <= tolerance_)
     {
         return Intersection::TANGEANT;
     }

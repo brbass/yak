@@ -25,6 +25,8 @@ public:
     }
 
     int find_region(vector<double> const &particle_position);
+
+    int find_surface(vector<double> const &particle_position);
     
     int next_intersection(vector<double> const &particle_position,
                           vector<double> const &particle_direction,

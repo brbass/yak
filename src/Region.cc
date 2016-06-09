@@ -20,6 +20,16 @@ initialize(int material,
     surface_relations_ = surface_relations;
     surfaces_ = surfaces;
     regions_ = regions;
+
+    for (int i = 0; i < surfaces_.size(); ++i)
+    {
+        Assert(surfaces_[i]);
+    }
+
+    for (int i = 0; i < regions_.size(); ++i)
+    {
+        Assert(regions_[i]);
+    }
 }
 
 Region::Relation Region::

@@ -24,18 +24,18 @@ relation(vector<double> const &particle_position) const
     double const k = vf3::dot(normal_,
                               vf3::subtract(particle_position,
                                             origin_));
-    
-    if (k > 0)
+
+    if (abs(k) <= tolerance_)
+    {
+        return Relation::EQUAL;
+    }
+    else if (k > 0)
     {
         return Relation::POSITIVE;
     }
-    else if (k < 0)
+    else // if (k < 0)
     {
         return Relation::NEGATIVE;
-    }
-    else
-    {
-        return Relation::EQUAL;
     }
 }
 
@@ -52,7 +52,7 @@ intersection(vector<double> const &particle_position,
     double const l1 = vf3::dot(particle_direction,
                                normal_);
     
-    if (l1 == 0)
+    if (abs(l1) <= tolerance_)
     {
         return Intersection::PARALLEL;
     }

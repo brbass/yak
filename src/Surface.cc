@@ -2,9 +2,10 @@
 
 Surface::
 Surface(int dimension,
-        Surface_Type surface_type):
+        Surface_Type surface_type,
+        double tolerance):
     dimension_(dimension),
-    tolerance_(1e-12),
-    surface_type_(surface_type)
+    surface_type_(surface_type),
+    tolerance_(tolerance)
 {
 };
