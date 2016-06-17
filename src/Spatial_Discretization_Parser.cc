@@ -16,7 +16,11 @@ Spatial_Discretization_Parser(pugi::xml_node &input_file):
     }
     else if (spatial_type == "rbf")
     {
-        spatial_ = get_rbf(spatial);
+        spatial_ = get_rbf_1d(spatial);
+    }
+    else if (spatial_type == "rbf_solid")
+    {
+        spatial_ = get_rbf_solid(spatial);
     }
     else 
     {
@@ -115,7 +119,7 @@ get_fem(pugi::xml_node &spatial)
 }
 
 shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
-get_rbf(pugi::xml_node &spatial)
+get_rbf_1d(pugi::xml_node &spatial)
 {
     int dimension = XML_Functions::child_value<int>(spatial, "dimension");
     int number_of_points = XML_Functions::child_value<int>(spatial, "number_of_points");
@@ -232,27 +236,108 @@ get_rbf(pugi::xml_node &spatial)
     }
     Assert(point == number_of_points);
 
+    int number_of_boundary_points = 2;
+    int number_of_internal_points = number_of_points - 2;
+    vector<int> boundary_points;
+    boundary_points.push_back(0);
+    boundary_points.push_back(number_of_points - 1);
+    
+    vector<int> internal_points(number_of_internal_points);
+    for (int i = 1; i < number_of_points - 1; ++i)
+    {
+        internal_points[i - 1].push_back(i);
+    }
+    vector<double> boundary_normal = {-1, 1};
+    
     if (local)
     {
         int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
         
         return make_shared<Local_RBF_Mesh>(dimension,
                                            number_of_points,
+                                           number_of_boundary_points,
+                                           number_of_internal_points,
                                            number_of_neighbors,
                                            geometry,
                                            basis_type,
                                            material,
+                                           boundary_points,
+                                           internal_points,
                                            positions,
-                                           shape_parameter);
+                                           shape_parameter,
+                                           boundary_normal);
     }
     else
     {
         return make_shared<RBF_Mesh>(dimension,
                                      number_of_points,
+                                     number_of_boundary_points,
+                                     number_of_internal_points,
                                      geometry,
                                      basis_type,
                                      material,
+                                     boundary_points,
+                                     internal_points,
                                      positions,
-                                     shape_parameter);
+                                     shape_parameter,
+                                     boundary_normal);
+    }
+}
+
+shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
+get_rbf_solid(pugi::xml_node &spatial)
+{
+    Solid_Geometry_Parser solid_geometry_parser(spatial);
+
+    shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
+    
+    
+}
+
+void Spatial_Discretization_Parser::
+get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
+                 pugi::xml_node &spatial,
+                 int &number_of_points,
+                 int &number_of_boundary_points,
+                 int &number_of_internal_points,
+                 vector<int> &material,
+                 vector<int> &boundary_points,
+                 vector<int> &internal_points,
+                 vector<double> &positions,
+                 vector<double> &boundary_normal)
+{
+    int dimension = solid_geometry->dimension();
+    int number_of_points = ;
+    int number_of_boundary_points = ;
+    int number_of_internal_points = ;
+    
+    material.resize(number_of_points);
+    boundary_points.resize(number_of_boundary_points);
+    internal_points.resize(number_of_internal_points);
+    positions.resize(number_of_points * dimension);
+    boundary_normal.resize(number_of_boundary_points * dimension);
+    
+    // Get parameters for bounding sphere
+    
+    double bounding_radius = child_value<double>(spatial, "bounding_radius");
+    vector<double> bounding_origin = child_value<double>(spatial, "bounding_origin");
+
+    int current_boundary_point = 0;
+    while (current_boundary_point < number_of_boundary_points)
+    {
+        
+    }
+    switch(dimension)
+    {
+    case 2:
+    {
+        
+    }
+    case 3:
+    {
+        
+    }
+    default:
+        AssertMsg(false, "dimension not found");
     }
 }

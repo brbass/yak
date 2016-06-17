@@ -19,13 +19,18 @@ public:
     // Constructor
     Local_RBF_Mesh(int dimension,
                    int number_of_points,
+                   int number_of_boundary_points,
+                   int number_of_internal_points,
                    int number_of_neighbors,
                    Geometry geometry,
                    Basis_Type basis_type,
                    vector<int> const &material,
+                   vector<int> const &boundary_points,
+                   vector<int> const &internal_points,
                    vector<double> const &positions,
-                   vector<double> const &shape_parameter);
-
+                   vector<double> const &shape_parameter,
+                   vector<double> const &boundary_normal);
+    
     // Number of neighbors for each point
     int number_of_neighbors() const
     {

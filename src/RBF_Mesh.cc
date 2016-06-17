@@ -14,36 +14,37 @@ using namespace std;
 RBF_Mesh::
 RBF_Mesh(int dimension,
          int number_of_points,
+         int number_of_boundary_points,
+         int number_of_internal_points,
          Geometry geometry,
          Basis_Type basis_type,
          vector<int> const &material,
+         vector<int> const &boundary_points,
+         vector<int> const &internal_points,
          vector<double> const &positions,
-         vector<double> const &shape_parameter):
+         vector<double> const &shape_parameter,
+         vector<double> const &boundary_normal):
     Spatial_Discretization(dimension,
                            geometry),
     number_of_points_(number_of_points),
-    number_of_boundary_points_(2),
-    number_of_internal_points_(number_of_points - 2),
+    number_of_boundary_points_(number_of_boundary_points),
+    number_of_internal_points_(number_of_internal_points),
     material_(material),
+    boundary_points_(boundary_points),
+    internal_points_(internal_points),
     point_positions_(positions),
     shape_parameter_(shape_parameter)
 {
-    boundary_points_.push_back(0);
-    boundary_points_.push_back(number_of_points_ - 1);
-    boundary_nodes_.assign(2, true);
-    boundary_normal_.push_back(-1);
-    boundary_normal_.push_back(1);
-    
-    for (int i = 1; i < number_of_points_ - 1; ++i)
-    {
-        internal_points_.push_back(i);
-    }
-    
     for (int i = 0; i < number_of_points_; ++i)
     {
-        vector<double> position = {positions[i]};
-        vector<double> shape = {shape_parameter[i]};
-        
+        vector<double> position(dimension);
+        vector<double> shape(dimension);
+        for (int d = 0; d < dimension; ++d)
+        {
+            position[d] = positions[d];
+            shape[d] = shape_parameter[d];
+        }
+
         shared_ptr<RBF> rbf;
         
         switch(basis_type)
@@ -123,9 +124,10 @@ RBF_Mesh(int dimension,
 void RBF_Mesh::
 check_class_invariants() const
 {
+    Assert(number_of_boundary_points + number_of_internal_points_ == number_of_points_);
     Assert(boundary_nodes_.size() == number_of_boundary_points_);
-    Assert(boundary_points_.size() == 2);
-    Assert(internal_points_.size() == number_of_points_ - 2);
+    Assert(boundary_points_.size() == number_of_boundary_points_);
+    Assert(internal_points_.size() == number_of_internal_points_);
     Assert(material_.size() == number_of_points_);
     Assert(boundary_normal_.size() == number_of_boundary_points_ * dimension_);
     Assert(point_positions_.size() == number_of_points_ * dimension_);

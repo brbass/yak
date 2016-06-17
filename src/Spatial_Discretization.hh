@@ -23,8 +23,7 @@ public:
         SLAB,
         SPHERE,
         CYLINDER,
-        RECTANGLE,
-        CUBOID
+        CARTESIAN
     };
 
     // Constructor

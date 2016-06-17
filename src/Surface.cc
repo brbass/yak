@@ -55,3 +55,4 @@ reflected_direction(vector<double> const &position,
         return false;
     }
 }
+

@@ -7,21 +7,31 @@ using namespace std;
 Local_RBF_Mesh::
 Local_RBF_Mesh(int dimension,
                int number_of_points,
+               int number_of_boundary_points,
+               int number_of_internal_points,
                int number_of_neighbors,
                Geometry geometry,
                Basis_Type basis_type,
                vector<int> const &material,
+               vector<int> const &boundary_points,
+               vector<int> const &internal_points,
                vector<double> const &positions,
-               vector<double> const &shape_parameter):
+               vector<double> const &shape_parameter,
+               vector<double> const &boundary_normal):
     Spatial_Discretization(dimension,
                            geometry),
     RBF_Mesh(dimension,
              number_of_points,
+             number_of_boundary_points,
+             number_of_internal_points,
              geometry,
              basis_type,
              material,
+             boundary_points,
+             internal_points,
              positions,
-             shape_parameter),
+             shape_parameter,
+             boundary_normal),
     number_of_neighbors_(number_of_neighbors)
 {
     Check(0 < number_of_neighbors <= number_of_points);
@@ -37,7 +47,7 @@ Local_RBF_Mesh(int dimension,
     }
     
     // Initialize Trilinos
-
+    
     for (int i = 0; i < number_of_points_; ++i)
     {
         vector<int> const local_neighbors = neighbors(i);
