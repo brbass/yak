@@ -16,7 +16,7 @@ Solid_Geometry(int dimension,
 }
 
 int Solid_Geometry::
-find_region(vector<double> const &particle_position)
+find_region(vector<double> const &particle_position) const
 {
     Region::Relation relation;
     
@@ -34,7 +34,7 @@ find_region(vector<double> const &particle_position)
 }
 
 int Solid_Geometry::
-find_surface(vector<double> const &particle_position)
+find_surface(vector<double> const &particle_position) const
 {
     Surface::Relation relation;
     
@@ -191,12 +191,12 @@ void Solid_Geometry::
 new_position(double distance,
              vector<double> const &particle_position,
              vector<double> const &particle_direction,
-             vector<double> &new_position)
+             vector<double> &new_position) const
 {
     new_position.resize(dimension_);
 
     for (int i = 0; i < dimension_; ++i)
     {
-        new_position[i] = particle_position[i] + direction[i] * distance;
+        new_position[i] = particle_position[i] + particle_direction[i] * distance;
     }
 }

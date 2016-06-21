@@ -13,8 +13,8 @@ public:
 
     enum Geometry_Errors
     {
-        NO_REGION = -1;
-        NO_SURFACE = -2;
+        NO_REGION = -1,
+        NO_SURFACE = -2
     };
     
     Solid_Geometry(int dimension,
@@ -25,10 +25,10 @@ public:
     {
         return dimension_;
     }
-    double tolerance() const
-    {
-        return tolerance_;
-    }
+    // double tolerance() const
+    // {
+    //     return tolerance_;
+    // }
     double delta_distance() const
     {
         return delta_distance_;
@@ -43,9 +43,9 @@ public:
         return regions_[r];
     }
     
-    int find_region(vector<double> const &particle_position);
+    int find_region(vector<double> const &particle_position) const;
 
-    int find_surface(vector<double> const &particle_position);
+    int find_surface(vector<double> const &particle_position) const;
     
     int next_intersection(vector<double> const &particle_position,
                           vector<double> const &particle_direction,
@@ -65,7 +65,7 @@ public:
     void new_position(double distance,
                       vector<double> const &particle_position,
                       vector<double> const &particle_direction,
-                      vector<double> &new_position);
+                      vector<double> &new_position) const;
     
 private:
 

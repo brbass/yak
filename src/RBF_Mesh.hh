@@ -121,9 +121,12 @@ public:
 
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const;
+
+    // virtual void get_neighbors(int point,
+    //                            vector<int> &local_neighbors);
     
 protected:
-    
+
     int number_of_points_;
     int number_of_boundary_points_;
     int number_of_internal_points_;
@@ -139,6 +142,43 @@ protected:
     vector<double> shape_parameter_;
     
     vector<shared_ptr<RBF> > basis_functions_;
+
+    // shared_ptr<KD_Adaptor> kd_adaptor_;
+    // shared_ptr<KDTreeSingleIndexAdaptor<L2_Adaptor<double, KD_Adaptor> > > 
+    
+    // class KD_Adaptor
+    // {
+    // public:
+        
+    //     KD_Adaptor(RBF_Mesh const &rbf_mesh);
+
+    //     inline int kdtree_get_point_count() const
+    //     {
+    //         return rbf_mesh_.number_of_points();
+    //     }
+
+    //     inline double kdtree_get_pt(const int idx, int dim) const
+    //     {
+    //         return rbf_mesh_.basis_functions_[idx]->position()[dim];
+    //     }
+
+    //     inline double kdtree_distance(const double *p1, const int idx_p2, int size)
+    //     {
+    //         vector<double> const p1_vec(p1, p1 + size);
+        
+    //         return rbf_mesh_.basis_functions_[idx]->get_distance_squared(p1_vec);
+    //     }
+        
+    //     template <class BBOX>
+    //     bool kdtree_get_bbox(BBOX &/*bb*/) const
+    //     {
+    //         return false;
+    //     }
+        
+    // private:
+        
+    //     RBF_Mesh const &rbf_mesh_;
+    // }
 };
 
 #endif

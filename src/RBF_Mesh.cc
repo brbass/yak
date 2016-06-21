@@ -124,7 +124,7 @@ RBF_Mesh(int dimension,
 void RBF_Mesh::
 check_class_invariants() const
 {
-    Assert(number_of_boundary_points + number_of_internal_points_ == number_of_points_);
+    Assert(number_of_boundary_points_ + number_of_internal_points_ == number_of_points_);
     Assert(boundary_nodes_.size() == number_of_boundary_points_);
     Assert(boundary_points_.size() == number_of_boundary_points_);
     Assert(internal_points_.size() == number_of_internal_points_);
@@ -148,3 +148,11 @@ output(pugi::xml_node &output_node) const
     XML_Functions::append_child(rbf, point_positions_, "point_positions", "dimension-point");
     XML_Functions::append_child(rbf, shape_parameter_, "shape_parameter", "dimension-point");
 }
+
+// void RBF_Mesh::
+// get_neighbors(int point,
+//               int number_of_neighbors,
+//               vector<int> &local_neighbors)
+// {
+//     KD_Adaptor
+// }

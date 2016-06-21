@@ -1,5 +1,7 @@
 #include "Spatial_Discretization_Parser.hh"
 
+#include "Solid_Geometry.hh"
+
 using namespace std;
 
 Spatial_Discretization_Parser::
@@ -245,7 +247,7 @@ get_rbf_1d(pugi::xml_node &spatial)
     vector<int> internal_points(number_of_internal_points);
     for (int i = 1; i < number_of_points - 1; ++i)
     {
-        internal_points[i - 1].push_back(i);
+        internal_points[i - 1] = i;
     }
     vector<double> boundary_normal = {-1, 1};
     
@@ -287,9 +289,9 @@ get_rbf_1d(pugi::xml_node &spatial)
 shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
 get_rbf_solid(pugi::xml_node &spatial)
 {
-    Solid_Geometry_Parser solid_geometry_parser(spatial);
+    // Solid_Geometry_Parser solid_geometry_parser(spatial);
 
-    shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
+    // shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
     
     
 }
@@ -307,9 +309,9 @@ get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
                  vector<double> &boundary_normal)
 {
     int dimension = solid_geometry->dimension();
-    int number_of_points = ;
-    int number_of_boundary_points = ;
-    int number_of_internal_points = ;
+    number_of_points = XML_Functions::child_value<int>(spatial, "number_of_points");
+    number_of_boundary_points = XML_Functions::child_value<int>(spatial, "number_of_boundary_points");
+    number_of_internal_points = XML_Functions::child_value<int>(spatial, "number_of_internal_points");
     
     material.resize(number_of_points);
     boundary_points.resize(number_of_boundary_points);
@@ -319,8 +321,8 @@ get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
     
     // Get parameters for bounding sphere
     
-    double bounding_radius = child_value<double>(spatial, "bounding_radius");
-    vector<double> bounding_origin = child_value<double>(spatial, "bounding_origin");
+    double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
+    vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
 
     int current_boundary_point = 0;
     while (current_boundary_point < number_of_boundary_points)
