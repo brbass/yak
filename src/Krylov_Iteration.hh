@@ -6,11 +6,6 @@
 #include "Solver.hh"
 #include "Vector_Operator.hh"
 
-class Angular_Discretization;
-class Energy_Discretization;
-class Nuclear_Data;
-class Source_Data;
-
 using std::shared_ptr;
 
 /*

@@ -6,11 +6,6 @@
 
 #include "Scattering_Operator.hh"
 
-class Angular_Discretization;
-class Energy_Discretization;
-class Nuclear_Data;
-class Spatial_Discretization;
-
 using std::shared_ptr;
 using std::vector;
 

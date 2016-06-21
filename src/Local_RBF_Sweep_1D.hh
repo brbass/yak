@@ -13,13 +13,7 @@ class Epetra_LinearProblem;
 class Epetra_Map;
 class Epetra_Vector;
 
-class Angular_Discretization;
-class Energy_Discretization;
 class Local_RBF_Mesh;
-class Nuclear_Data;
-class Source_Data;
-class Spatial_Discretization;
-
 
 using std::shared_ptr;
 

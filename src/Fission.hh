@@ -9,11 +9,6 @@
 using std::shared_ptr;
 using std::vector;
 
-class Angular_Discretization;
-class Energy_Discretization;
-class Nuclear_Data;
-class Spatial_Discretization;
-
 /*
   Applies fission to a moment representation of the flux
 */
