@@ -38,11 +38,6 @@ public:
     
 protected:
 
-    // Get vector input/output size
-    virtual int get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
-                         shared_ptr<Angular_Discretization> angular_discretization,
-                         shared_ptr<Energy_Discretization> energy_discretization);
-
     // Type of scattering
     Scattering_Type scattering_type_;
 

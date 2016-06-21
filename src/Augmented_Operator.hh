@@ -19,7 +19,7 @@ public:
                        shared_ptr<Vector_Operator> vector_operator);
     
 private:
-
+    
     virtual void apply(vector<double> &x) const override;
     
     int number_of_augments_;

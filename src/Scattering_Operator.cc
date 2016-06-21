@@ -11,6 +11,19 @@
 
 using namespace std;
 
+namespace // anonymous
+{
+    int get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
+                 shared_ptr<Angular_Discretization> angular_discretization,
+                 shared_ptr<Energy_Discretization> energy_discretization)
+    {
+        return (spatial_discretization->number_of_cells()
+                * spatial_discretization->number_of_nodes()
+                * energy_discretization->number_of_groups()
+                * angular_discretization->number_of_moments());
+    }
+} // namespace
+
 Scattering_Operator::
 Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
                     shared_ptr<Angular_Discretization> angular_discretization,
@@ -61,16 +74,5 @@ apply_incoherent(vector<double> &x) const
     {
         x[i] = y[i] - x[i];
     }
-}
-
-int Scattering_Operator::
-get_size(shared_ptr<Spatial_Discretization> spatial_discretization,
-         shared_ptr<Angular_Discretization> angular_discretization,
-         shared_ptr<Energy_Discretization> energy_discretization)
-{
-    return (spatial_discretization->number_of_cells()
-            * spatial_discretization->number_of_nodes()
-            * energy_discretization->number_of_groups()
-            * angular_discretization->number_of_moments());
 }
 
