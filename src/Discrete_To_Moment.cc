@@ -22,7 +22,7 @@ Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Discrete_To_Moment::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     vector<double> y(x);
     

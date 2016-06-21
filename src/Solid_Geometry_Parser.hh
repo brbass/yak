@@ -12,7 +12,7 @@ public:
     Solid_Geometry_Parser(pugi::xml_node &input_file);
 
     // Return pointer to object
-    virtual shared_ptr<Solid_Geometry> get_ptr()
+    virtual shared_ptr<Solid_Geometry> get_ptr() override
     {
         return solid_;
     }

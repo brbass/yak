@@ -27,7 +27,7 @@ public:
     
 private:
     
-    virtual void apply(vector<double> &x);
+    virtual void apply(vector<double> &x) const override;
 
     // Output size
     int get_row_size(shared_ptr<Spatial_Discretization> spatial_discretization,

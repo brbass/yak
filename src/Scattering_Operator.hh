@@ -54,16 +54,16 @@ protected:
 private: 
 
     // Apply scattering of chosen type
-    virtual void apply(vector<double> &x);
+    virtual void apply(vector<double> &x) const override;
 
     // Apply within-group and out-of-group scattering
-    virtual void apply_full(vector<double> &x) = 0;
+    virtual void apply_full(vector<double> &x) const = 0;
     
     // Apply only within-group scattering
-    virtual void apply_coherent(vector<double> &x) = 0;
+    virtual void apply_coherent(vector<double> &x) const = 0;
     
     // Apply only out-of-group scattering
-    virtual void apply_incoherent(vector<double> &x);
+    virtual void apply_incoherent(vector<double> &x) const;
 };
 
 #endif

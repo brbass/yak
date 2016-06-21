@@ -26,7 +26,7 @@ Fission(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Fission::
-apply_full(vector<double> &x)
+apply_full(vector<double> &x) const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
@@ -103,7 +103,7 @@ apply_full(vector<double> &x)
 }
 
 void Fission::
-apply_coherent(vector<double> &x)
+apply_coherent(vector<double> &x) const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();

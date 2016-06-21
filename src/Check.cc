@@ -40,4 +40,4 @@ namespace ch_ns
     
         throw runtime_error("check");
     }
-}
+} // namespace ch_ns

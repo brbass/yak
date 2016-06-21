@@ -206,7 +206,7 @@ Source_Iterator(Source_Iteration const &si):
 }
 
 void Source_Iteration::Source_Iterator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     vector<double> const internal_source = si_.source_data_->internal_source();
     
@@ -251,7 +251,7 @@ Flux_Iterator(Source_Iteration const &si):
 }
 
 void Source_Iteration::Flux_Iterator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
 
     shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);

@@ -19,7 +19,7 @@ public:
     
 private:
     
-    virtual void apply(vector<double> &x);
+    virtual void apply(vector<double> &x) const override;
 };
 
 #endif

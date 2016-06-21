@@ -40,25 +40,25 @@ public:
                        shared_ptr<Nuclear_Data> nuclear_data,
                        shared_ptr<Source_Data> source_data,
                        Solver_Type solver_type = Solver_Type::AMESOS);
-
+    
 protected:
 
     shared_ptr<Local_RBF_Mesh> rbf_mesh_;
 
 private:
     
-    virtual void apply(vector<double> &x);
-    void sweep_slab(vector<double> &x);
+    virtual void apply(vector<double> &x) const override;
+    void sweep_slab(vector<double> &x) const;
     void initialize_trilinos();
     void add_boundary_point(int b,
                             int i,
                             int o,
                             int g,
-                            vector<double> const &x);
+                            vector<double> const &x) const;
     void add_internal_point(int i,
                             int o,
                             int g,
-                            vector<double> const &x);
+                            vector<double> const &x) const;
 
     int max_iterations_ = 5000;
     double tolerance_ = 1e-6;

@@ -142,6 +142,6 @@ namespace XML_Functions
         
     //     return (!child.empty());
     // }
-}
+} // namespace XML_Functions
 
 #endif

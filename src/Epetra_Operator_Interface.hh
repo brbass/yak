@@ -34,60 +34,60 @@ public:
     ~Epetra_Operator_Interface();
 
     // Cannot use transpose
-    virtual int SetUseTranspose(bool UseTranspose)
+    virtual int SetUseTranspose(bool UseTranspose) override
     {
         return -1;
     }
     
     // Apply the Vector_Operator
     virtual int Apply(Epetra_MultiVector const &X,
-                      Epetra_MultiVector &Y) const;
+                      Epetra_MultiVector &Y) const override;
     
     // Do nothing, as explicit inverse is not available
     virtual int ApplyInverse(Epetra_MultiVector const &X,
-                             Epetra_MultiVector &Y) const
+                             Epetra_MultiVector &Y) const override
     {
         return 1;
     }
     
     // Cannot provide inf norm
-    virtual double NormInf() const
+    virtual double NormInf() const override
     {
         return 0.;
     }
     
     // Label for object
-    virtual const char *Label() const
+    virtual const char *Label() const override
     {
         return "Epetra_Interface";
     }
 
     // Cannot use transpose
-    virtual bool UseTranspose() const
+    virtual bool UseTranspose() const override
     {
         return false;
     }
 
     // Cannot provide inf norm
-    virtual bool HasNormInf() const
+    virtual bool HasNormInf() const override
     {
         return false;
     }
 
     // Return associated Epetra_Comm
-    virtual const Epetra_Comm &Comm() const
+    virtual const Epetra_Comm &Comm() const override
     {
         return *comm_;
     }
 
     // Return associated Epetra_Map
-    virtual const Epetra_Map &OperatorDomainMap() const
+    virtual const Epetra_Map &OperatorDomainMap() const override
     {
         return *map_;
     }
 
     // Return associated Epetra_Map
-    virtual const Epetra_Map &OperatorRangeMap() const
+    virtual const Epetra_Map &OperatorRangeMap() const override
     {
         return *map_;
     }

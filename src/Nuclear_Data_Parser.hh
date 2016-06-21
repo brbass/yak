@@ -18,7 +18,7 @@ public:
                         shared_ptr<Energy_Discretization> energy);
 
     // Return Nuclear_Data object
-    virtual shared_ptr<Nuclear_Data> get_ptr()
+    virtual shared_ptr<Nuclear_Data> get_ptr() override
     {
         return nuclear_;
     }

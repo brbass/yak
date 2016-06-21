@@ -18,7 +18,7 @@ public:
                        shared_ptr<Energy_Discretization> energy);
 
     // Return pointer to object
-    virtual shared_ptr<Source_Data> get_ptr()
+    virtual shared_ptr<Source_Data> get_ptr() override
     {
         return source_;
     }

@@ -40,16 +40,16 @@ public:
                      shared_ptr<Vector_Operator> fission);
 
     // Solve fixed source problem
-    virtual void solve_steady_state(vector<double> &x);
+    virtual void solve_steady_state(vector<double> &x) override;
 
     // Solve k-eigenvalue problem
-    virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x);
+    virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) override;
 
     // Solve time-dependent problem
-    virtual void solve_time_dependent(vector<double> &x);
+    virtual void solve_time_dependent(vector<double> &x) override;
 
     // Output data to XML file
-    virtual void output(pugi::xml_node &output_node) const;
+    virtual void output(pugi::xml_node &output_node) const override;
 
     // Check for convergence based on pointwise error in scalar flux
     bool check_phi_convergence(vector<double> const &x, 
@@ -60,7 +60,7 @@ public:
     {
         return moment_to_discrete_->column_size();
     }
-
+    
     // Number of data values to store for reflection
     int number_of_augments() const
     {
@@ -100,7 +100,7 @@ private:
         
     private:
         
-        virtual void apply(vector<double> &x);
+        virtual void apply(vector<double> &x) const override;
         
         Krylov_Iteration const &ki_;
     };
@@ -125,7 +125,7 @@ private:
         
     private:
         
-        virtual void apply(vector<double> &x);
+        virtual void apply(vector<double> &x) const override;
         
         Krylov_Iteration const &ki_;
     };

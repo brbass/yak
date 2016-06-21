@@ -16,7 +16,7 @@ public:
                              shared_ptr<Solver> solver);
 
     // Return pointer to object
-    virtual shared_ptr<Transport_Problem> get_ptr()
+    virtual shared_ptr<Transport_Problem> get_ptr() override
     {
         return transport_;
     }

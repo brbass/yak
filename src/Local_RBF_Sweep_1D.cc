@@ -40,7 +40,7 @@ Local_RBF_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Local_RBF_Sweep_1D::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     switch(spatial_discretization_->geometry())
     {
@@ -54,7 +54,7 @@ apply(vector<double> &x)
 }
 
 void Local_RBF_Sweep_1D::
-sweep_slab(vector<double> &x)
+sweep_slab(vector<double> &x) const
 {
     int number_of_points = rbf_mesh_->number_of_points();
     int number_of_groups = energy_discretization_->number_of_groups();
@@ -143,7 +143,7 @@ add_boundary_point(int b,
                    int i,
                    int o,
                    int g,
-                   vector<double> const &x)
+                   vector<double> const &x) const
 {
     int number_of_points = rbf_mesh_->number_of_points();
     int number_of_groups = energy_discretization_->number_of_groups();
@@ -197,7 +197,7 @@ void Local_RBF_Sweep_1D::
 add_internal_point(int i,
                    int o,
                    int g,
-                   vector<double> const &x)
+                   vector<double> const &x) const
 {
     int d = 0; // dimension
     int number_of_points = rbf_mesh_->number_of_points();

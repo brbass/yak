@@ -217,7 +217,7 @@ Source_Iterator(Krylov_Iteration const &ki):
 }
 
 void Krylov_Iteration::Source_Iterator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     vector<double> const internal_source = ki_.source_data_->internal_source();
     
@@ -262,7 +262,7 @@ Flux_Iterator(Krylov_Iteration const &ki):
 }
 
 void Krylov_Iteration::Flux_Iterator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(ki_.sweeper_);
     Assert(Linv);

@@ -58,6 +58,6 @@ namespace Vector_Functions_2D
         return {x[0] / k,
                 x[1] / k};
     }
-}
+} // namespace Vector_Functions_2D
 
 #endif

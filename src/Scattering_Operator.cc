@@ -32,7 +32,7 @@ Scattering_Operator(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Scattering_Operator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     switch(scattering_type_)
     {
@@ -49,7 +49,7 @@ apply(vector<double> &x)
 }
 
 void Scattering_Operator::
-apply_incoherent(vector<double> &x)
+apply_incoherent(vector<double> &x) const
 {
     vector<double> y(x);
     

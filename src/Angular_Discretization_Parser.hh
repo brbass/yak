@@ -15,7 +15,7 @@ public:
     Angular_Discretization_Parser(pugi::xml_node &input_file);
 
     // Return pointer to created object
-    virtual shared_ptr<Angular_Discretization> get_ptr()
+    virtual shared_ptr<Angular_Discretization> get_ptr() override
     {
         return angular_;
     }

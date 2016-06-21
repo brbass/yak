@@ -31,26 +31,26 @@ public:
     }
 
     // Output size
-    virtual int row_size()
+    virtual int row_size() const
     {
         return row_size_;
     }
 
     // Input size
-    virtual int column_size()
+    virtual int column_size() const
     {
         return column_size_;
     }
 
     // Are the input and output size the same?
-    virtual bool square()
+    virtual bool square() const
     {
         return (row_size_ == column_size_);
     }
     
 private:
     
-    virtual void apply(vector<double> &x) = 0;
+    virtual void apply(vector<double> &x) const = 0;
     
     int row_size_;
     int column_size_;

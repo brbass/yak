@@ -26,7 +26,7 @@ Scattering(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Scattering::
-apply_full(vector<double> &x)
+apply_full(vector<double> &x) const
 {
     vector<double> y(x);
     
@@ -68,7 +68,7 @@ apply_full(vector<double> &x)
 }
 
 void Scattering::
-apply_coherent(vector<double> &x)
+apply_coherent(vector<double> &x) const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();

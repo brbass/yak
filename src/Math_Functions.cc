@@ -271,4 +271,4 @@ namespace Math_Functions
         z = sin(phi) * val;
     }
 
-}
+} // namespace Math_Functions

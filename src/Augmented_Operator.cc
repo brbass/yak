@@ -11,7 +11,7 @@ Augmented_Operator(unsigned number_of_augments,
 }
 
 void Augmented_Operator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     int row_size = vector_operator_->row_size();
     int column_size = vector_operator_->column_size();

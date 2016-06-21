@@ -17,13 +17,13 @@ public:
           vector<double> const &origin,
           vector<double> const &normal);
     
-    virtual Relation relation(vector<double> const &particle_position) const;
+    virtual Relation relation(vector<double> const &particle_position) const override;
     virtual Intersection intersection(vector<double> const &particle_position,
                                       vector<double> const &particle_direction,
                                       double &distance,
-                                      vector<double> &position) const;
+                                      vector<double> &position) const override;
     virtual bool normal_direction(vector<double> const &position,
-                                  vector<double> &normal) const;
+                                  vector<double> &normal) const override;
     
 protected:
     

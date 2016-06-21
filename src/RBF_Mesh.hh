@@ -45,82 +45,82 @@ public:
              vector<double> const &boundary_normal);
 
     // Number of points
-    virtual int number_of_points()
+    virtual int number_of_points() override
     {
         return number_of_points_;
     }
 
     // Number of points not on the boundary
-    virtual int number_of_internal_points()
+    virtual int number_of_internal_points() override
     {
         return number_of_internal_points_;
     }
     
     // Number of points on the boundary
-    virtual int number_of_boundary_points()
+    virtual int number_of_boundary_points() override
     {
         return number_of_boundary_points_;
     }
 
     // Number of points
-    virtual int number_of_cells()
+    virtual int number_of_cells() override
     {
         return number_of_points_;
     }
 
     // Number of points on the boundary
-    virtual int number_of_boundary_cells()
+    virtual int number_of_boundary_cells() override
     {
         return number_of_boundary_points_;
     }
 
     // Number of nodes per point: always 1
-    virtual int number_of_nodes()
+    virtual int number_of_nodes() override
     {
         return 1;
     }
 
     // Which nodes are on the boundary for the boundary cells
     // Should always be true, as number_of_nodes = 1
-    virtual vector<bool> const &boundary_nodes() const
+    virtual vector<bool> const &boundary_nodes() const override
     {
         return boundary_nodes_;
     }
 
     // Number of points on the boundary
-    virtual vector<int> const &boundary_cells() const
+    virtual vector<int> const &boundary_cells() const override
     {
         return boundary_points_;
     }
 
     // Number of points not on the boundary
-    virtual vector<int> const &internal_cells() const
+    virtual vector<int> const &internal_cells() const override
     {
         return internal_points_;
     }
 
     // Material number for each point
-    virtual vector<int> const &material() const
+    virtual vector<int> const &material() const override
     {
         return material_;
     }
 
-    virtual vector<double> const &boundary_normal() const
+    virtual vector<double> const &boundary_normal() const override
     {
         return boundary_normal_;
     }
 
     // Basis function for a certain point
-    shared_ptr<RBF> const &basis_function(int point) const
+    virtual shared_ptr<RBF> const &basis_function(int point) const
     {
         return basis_functions_[point];
     }
 
     // Check class invariants
-    void check_class_invariants() const;
+    virtual void check_class_invariants() const;
 
     // Output data to XML file
-    virtual void output(pugi::xml_node &output_node) const;
+    virtual void output(pugi::xml_node &output_node) const override;
 
     // virtual void get_neighbors(int point,
     //                            vector<int> &local_neighbors);

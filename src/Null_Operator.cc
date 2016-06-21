@@ -8,7 +8,7 @@ Null_Operator(int size):
 }
 
 void Null_Operator::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     x.assign(x.size(), 0);
 }

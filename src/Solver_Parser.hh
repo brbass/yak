@@ -30,7 +30,7 @@ public:
                   shared_ptr<Source_Data> source);
 
     // Return object
-    virtual shared_ptr<Solver> get_ptr()
+    virtual shared_ptr<Solver> get_ptr() override
     {
         return solver_;
     }

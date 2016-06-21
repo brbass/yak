@@ -26,10 +26,10 @@ public:
 private: 
 
     // Apply within-group and out-of-group fission
-    virtual void apply_full(vector<double> &x);
+    virtual void apply_full(vector<double> &x) const override;
 
     // Apply only within-group fission
-    virtual void apply_coherent(vector<double> &x);
+    virtual void apply_coherent(vector<double> &x) const override;
 };
 
 #endif

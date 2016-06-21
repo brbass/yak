@@ -24,7 +24,7 @@ Moment_To_Discrete(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Moment_To_Discrete::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     vector<double> y(x);
     

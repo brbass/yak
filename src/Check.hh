@@ -19,7 +19,7 @@ namespace ch_ns
                string message,
                string file,
                int line);
-}
+} // namespace ch_ns
 
 // Check only happens in debug
 #ifdef NDEBUG

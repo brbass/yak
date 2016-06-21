@@ -64,6 +64,6 @@ namespace Vector_Functions_3D
                 x[1] / k,
                 x[2] / k};
     }
-}
+} // namespace Vector_Functions_3D
 
 #endif

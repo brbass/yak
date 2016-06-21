@@ -46,7 +46,7 @@ protected:
 
 private:
     
-    virtual void apply(vector<double> &x) = 0;
+    virtual void apply(vector<double> &x) const override = 0;
 };
 
 #endif

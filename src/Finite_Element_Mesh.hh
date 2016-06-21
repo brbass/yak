@@ -36,17 +36,17 @@ public:
                         vector<double> const &node_positions);
 
     // Global number of nodes
-    virtual int number_of_points()
+    virtual int number_of_points() override
     {
         return number_of_points_;
     }
 
     // Number of spatial elements
-    virtual int number_of_cells()
+    virtual int number_of_cells() override
     {
         return number_of_elements_;
     }
-
+    
     // Number of elements
     virtual int number_of_elements()
     {
@@ -54,74 +54,74 @@ public:
     }
 
     // Number of elements on the problem boundary
-    virtual int number_of_boundary_cells()
+    virtual int number_of_boundary_cells() override
     {
         return number_of_boundary_elements_;
     }
 
     // Global number of nodes on the boundary
-    virtual int number_of_boundary_points()
+    virtual int number_of_boundary_points() override
     {
         return number_of_boundary_elements_;
     }
 
-    virtual int number_of_internal_points()
+    virtual int number_of_internal_points() override
     {
         return number_of_internal_elements_;
     }
     
     // Number of nodes per element
-    virtual int number_of_nodes()
+    virtual int number_of_nodes() override
     {
         return number_of_nodes_;
     }
 
     // Which nodes are on the boundary for the boundary cells
-    virtual vector<bool> const &boundary_nodes() const
+    virtual vector<bool> const &boundary_nodes() const override
     {
         return boundary_nodes_;
     }
 
     // List of elements on the boundary
-    virtual vector<int> const &boundary_cells() const
+    virtual vector<int> const &boundary_cells() const override
     {
         return boundary_elements_;
     }
 
     // List of elements not on the boundary
-    virtual vector<int> const &internal_cells() const
+    virtual vector<int> const &internal_cells() const override
     {
         return internal_elements_;
     }
 
     // Material number of each element
-    virtual vector<int> const &material() const
+    virtual vector<int> const &material() const override
     {
         return material_;
     }
 
-    virtual vector<double> const &boundary_normal() const
+    virtual vector<double> const &boundary_normal() const override
     {
         return surface_normal_;
     }
     
     // Type of finite element
-    Element_Type element_type()
+    virtual Element_Type element_type()
     {
         return element_type_;
     }
 
     // Return specific element
-    Finite_Element const &elements(int element) const
+    virtual Finite_Element const &elements(int element) const
     {
         return elements_[element];
     }
 
     // Check class invariants
-    void check_class_invariants() const;
+    virtual void check_class_invariants() const;
 
     // Output data to XML file
-    virtual void output(pugi::xml_node &output_node) const;
+    virtual void output(pugi::xml_node &output_node) const override;
     
 private:
 

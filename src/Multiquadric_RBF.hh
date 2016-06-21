@@ -16,15 +16,15 @@ public:
                      vector<double> const &shape_parameter);
 
     // Value of basis function at the point r
-    virtual double basis(vector<double> const &r) const;
+    virtual double basis(vector<double> const &r) const override;
     
     // Derivative of basis function at the point r
     virtual double dbasis(int dim,
-                          vector<double> const &r) const;
+                          vector<double> const &r) const override;
 
     // Second derivative of the basis function at the point r
     virtual double ddbasis(int dim,
-                           vector<double> const &r) const;
+                           vector<double> const &r) const override;
     
 };
 

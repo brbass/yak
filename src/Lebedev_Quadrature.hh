@@ -21,26 +21,26 @@ public:
                        int number_of_ordinates);
 
     // Return Lebedev ordinates
-    virtual vector<double> const &ordinates() const
+    virtual vector<double> const &ordinates() const override
     {
         return ordinates_;
     }
     
     // Return Lebedev weights
-    virtual vector<double> const &weights() const
+    virtual vector<double> const &weights() const override
     {
         return weights_;
     }
 
     // Check class invariants
-    void check_class_invariants() const;
+    virtual void check_class_invariants() const;
 
     // Output data to XML file
-    virtual void output(pugi::xml_node &output_node) const;
+    virtual void output(pugi::xml_node &output_node) const override;
 
     // Not yet implemented
     virtual int reflect_ordinate(int o,
-                                 vector<double> const &n) const
+                                 vector<double> const &n) const override
     {
         AssertMsg(false, "not yet implemented");
         

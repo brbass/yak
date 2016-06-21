@@ -30,8 +30,8 @@ protected:
     
 private:
 
-    virtual void apply(vector<double> &x);
-    void sweep_slab(vector<double> &x);
+    virtual void apply(vector<double> &x) const override;
+    void sweep_slab(vector<double> &x) const;
     
 };
 

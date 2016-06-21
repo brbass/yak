@@ -28,7 +28,7 @@ DFEM_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void DFEM_Sweep_1D::
-apply(vector<double> &x)
+apply(vector<double> &x) const
 {
     switch(spatial_discretization_->geometry())
     {
@@ -42,7 +42,7 @@ apply(vector<double> &x)
 }
 
 void DFEM_Sweep_1D::
-sweep_slab(vector<double> &x)
+sweep_slab(vector<double> &x) const
 {
     vector<double> y(x);
     

@@ -44,5 +44,6 @@ namespace Math_Functions
                           double const &z,
                           double &mu,
                           double &phi);
-}
+} // namespace Math_Functions
+
 #endif

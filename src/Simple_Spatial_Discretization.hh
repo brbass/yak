@@ -16,62 +16,62 @@ public:
                                   int number_of_boundary_cells,
                                   Geometry geometry);
 
-    virtual int number_of_points()
+    virtual int number_of_points() override
     {
         return number_of_cells_ * number_of_nodes_;
     }
 
-    virtual int number_of_internal_points()
+    virtual int number_of_internal_points() override
     {
         return (number_of_cells_ - number_of_boundary_cells_) * number_of_nodes_;
     }
     
-    virtual int number_of_boundary_points()
+    virtual int number_of_boundary_points() override
     {
         return number_of_boundary_cells_ * number_of_nodes_;
     }
 
-    virtual int number_of_cells()
+    virtual int number_of_cells() override
     {
         return number_of_cells_;
     }
 
-    virtual int number_of_boundary_cells()
+    virtual int number_of_boundary_cells() override
     {
         return number_of_boundary_cells_;
     }
 
-    virtual int number_of_nodes()
+    virtual int number_of_nodes() override
     {
         return number_of_nodes_;
     }
 
-    virtual vector<bool> const &boundary_nodes() const
+    virtual vector<bool> const &boundary_nodes() const override
     {
         return boundary_nodes_;
     }
 
-    virtual vector<int> const &boundary_cells() const
+    virtual vector<int> const &boundary_cells() const override
     {
         return boundary_cells_;
     }
 
-    virtual vector<int> const &internal_cells() const
+    virtual vector<int> const &internal_cells() const override
     {
         return internal_cells_;
     }
 
-    virtual vector<int> const &material() const
+    virtual vector<int> const &material() const override
     {
         return material_;
     }
 
-    virtual vector<double> const &boundary_normal() const
+    virtual vector<double> const &boundary_normal() const override
     {
         return boundary_normal_;
     }
     
-    virtual void output(pugi::xml_node &output_node) const
+    virtual void output(pugi::xml_node &output_node) const override
     {
     }
 
