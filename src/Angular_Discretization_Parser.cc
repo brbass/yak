@@ -2,6 +2,7 @@
 
 #include "Gauss_Legendre_Quadrature.hh"
 #include "Lebedev_Quadrature.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 

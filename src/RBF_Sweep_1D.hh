@@ -3,8 +3,9 @@
 
 #include <memory>
 
-#include "RBF_Mesh.hh"
 #include "Ordinate_Sweep_Operator.hh"
+
+class RBF_Mesh;
 
 using std::shared_ptr;
 

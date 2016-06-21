@@ -1,6 +1,9 @@
 #include "Discrete_To_Moment.hh"
 
+#include "Angular_Discretization.hh"
 #include "Check.hh"
+#include "Energy_Discretization.hh"
+#include "Spatial_Discretization.hh"
 
 Discrete_To_Moment::
 Discrete_To_Moment(shared_ptr<Spatial_Discretization> spatial_discretization,

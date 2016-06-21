@@ -1,5 +1,9 @@
 #include "Nuclear_Data_Parser.hh"
 
+#include "Angular_Discretization.hh"
+#include "Energy_Discretization.hh"
+#include "Spatial_Discretization.hh"
+
 using namespace std;
 
 Nuclear_Data_Parser::

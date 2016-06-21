@@ -13,7 +13,7 @@ using std::vector;
 /*
   Mesh designed for use with radial basis functions
 */
-class RBF_Mesh : public virtual Spatial_Discretization
+class RBF_Mesh : public Spatial_Discretization
 {
 public:
 

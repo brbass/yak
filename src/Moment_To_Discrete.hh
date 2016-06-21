@@ -1,13 +1,14 @@
 #ifndef Moment_To_Discrete_hh
 #define Moment_To_Discrete_hh
 
-#include "Angular_Discretization.hh"
-#include "Energy_Discretization.hh"
-#include "Spatial_Discretization.hh"
-#include "Vector_Operator.hh"
-
 #include <memory>
 #include <vector>
+
+#include "Vector_Operator.hh"
+
+class Angular_Discretization;
+class Energy_Discretization;
+class Spatial_Discretization;
 
 using std::shared_ptr;
 using std::vector;

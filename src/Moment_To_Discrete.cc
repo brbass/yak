@@ -1,8 +1,10 @@
 #include "Moment_To_Discrete.hh"
 
 #include "Check.hh"
+#include "Angular_Discretization.hh"
+#include "Energy_Discretization.hh"
+#include "Spatial_Discretization.hh"
 
-#include <iostream>
 using namespace std;
 
 Moment_To_Discrete::

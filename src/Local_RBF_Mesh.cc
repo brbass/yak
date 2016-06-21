@@ -1,5 +1,9 @@
 #include "Local_RBF_Mesh.hh"
 
+#include <Epetra_SerialDenseMatrix.h>
+#include <Epetra_SerialDenseSolver.h>
+#include <Epetra_SerialDenseVector.h>
+
 #include "Check.hh"
 
 using namespace std;
@@ -18,8 +22,6 @@ Local_RBF_Mesh(int dimension,
                vector<double> const &positions,
                vector<double> const &shape_parameter,
                vector<double> const &boundary_normal):
-    Spatial_Discretization(dimension,
-                           geometry),
     RBF_Mesh(dimension,
              number_of_points,
              number_of_boundary_points,

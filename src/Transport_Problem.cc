@@ -1,5 +1,6 @@
 #include "Transport_Problem.hh"
 
+#include "Solver.hh"
 #include "Timer.hh"
 #include "XML_Functions.hh"
 

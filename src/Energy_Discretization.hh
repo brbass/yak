@@ -2,6 +2,7 @@
 #define Energy_Discretization_hh
 
 #include <vector>
+
 #include "pugixml.hpp"
 
 using std::vector;

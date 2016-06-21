@@ -1,6 +1,9 @@
 #include "Nuclear_Data.hh"
 
+#include "Angular_Discretization.hh"
 #include "Check.hh"
+#include "Energy_Discretization.hh"
+#include "Spatial_Discretization.hh"
 #include "XML_Functions.hh"
 
 Nuclear_Data::

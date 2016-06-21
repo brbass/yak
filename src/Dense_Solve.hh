@@ -1,11 +1,13 @@
 #ifndef Dense_Solve_hh
 #define Dense_Solve_hh
 
-#include "GSL_Dense_Solve.hh"
-#include "Trilinos_Dense_Solve.hh"
-
+#include <memory>
 #include <vector>
 
+class GSL_Dense_Solve;
+class Trilinos_Dense_Solve;
+
+using std::shared_ptr;
 using std::vector;
 
 /*
@@ -15,6 +17,7 @@ using std::vector;
 */
 class Dense_Solve
 {
+
 public:
 
     // Creator
@@ -35,8 +38,8 @@ private:
     
     unsigned size_;
     
-    GSL_Dense_Solve gsl_solver;
-    Trilinos_Dense_Solve trilinos_solver;
+    shared_ptr<GSL_Dense_Solve> gsl_solver_;
+    shared_ptr<Trilinos_Dense_Solve> trilinos_solver_;
 };
 
 #endif

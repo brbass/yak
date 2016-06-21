@@ -4,9 +4,11 @@
 #include <memory>
 #include <vector>
 
-#include "Angular_Discretization.hh"
-#include "Energy_Discretization.hh"
-#include "Spatial_Discretization.hh"
+#include "pugixml.hpp"
+
+class Angular_Discretization;
+class Energy_Discretization;
+class Spatial_Discretization;
 
 using std::shared_ptr;
 using std::vector;

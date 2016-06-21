@@ -1,7 +1,7 @@
 #ifndef RBF_Solid_Mesh_hh
 #define RBF_Solid_Mesh_hh
 
-class RBF_Solid_Mesh : public virtual RBF_Mesh
+class RBF_Solid_Mesh : public RBF_Mesh
 {
 public:
 

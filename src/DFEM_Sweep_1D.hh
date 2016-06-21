@@ -3,8 +3,9 @@
 
 #include <memory>
 
-#include "Finite_Element_Mesh.hh"
 #include "Ordinate_Sweep_Operator.hh"
+
+class Finite_Element_Mesh;
 
 using std::shared_ptr;
 

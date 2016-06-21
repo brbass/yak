@@ -1,5 +1,7 @@
 #include "Energy_Discretization_Parser.hh"
 
+#include "XML_Functions.hh"
+
 using namespace std;
 
 Energy_Discretization_Parser::

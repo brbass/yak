@@ -4,15 +4,15 @@
 #include <memory>
 #include <vector>
 
-#include "Angular_Discretization.hh"
-#include "Energy_Discretization.hh"
-#include "Nuclear_Data.hh"
 #include "Scattering_Operator.hh"
-#include "Spatial_Discretization.hh"
-#include "Vector_Operator.hh"
 
 using std::shared_ptr;
 using std::vector;
+
+class Angular_Discretization;
+class Energy_Discretization;
+class Nuclear_Data;
+class Spatial_Discretization;
 
 /*
   Applies fission to a moment representation of the flux

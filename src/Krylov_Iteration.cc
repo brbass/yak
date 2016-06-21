@@ -11,10 +11,15 @@
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
 
+#include "Angular_Discretization.hh"
 #include "Augmented_Operator.hh"
 #include "Check.hh"
+#include "Energy_Discretization.hh"
 #include "Epetra_Operator_Interface.hh"
+#include "Nuclear_Data.hh"
 #include "Ordinate_Sweep_Operator.hh"
+#include "Source_Data.hh"
+#include "Spatial_Discretization.hh"
 #include "XML_Functions.hh"
 
 using namespace std;

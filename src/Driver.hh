@@ -1,3 +1,6 @@
+#ifndef Driver_hh
+#define Driver_hh
+
 #include <string>
 
 using std::string;
@@ -20,3 +23,5 @@ private:
     string xml_in_;
     string xml_out_;
 };
+
+#endif

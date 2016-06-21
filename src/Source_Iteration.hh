@@ -3,13 +3,14 @@
 
 #include <memory>
 
-#include "Angular_Discretization.hh"
-#include "Energy_Discretization.hh"
 #include "Solver.hh"
-#include "Nuclear_Data.hh"
-#include "Source_Data.hh"
-#include "Spatial_Discretization.hh"
 #include "Vector_Operator.hh"
+
+class Angular_Discretization;
+class Energy_Discretization;
+class Nuclear_Data;
+class Source_Data;
+class Spatial_Discretization;
 
 using std::shared_ptr;
 

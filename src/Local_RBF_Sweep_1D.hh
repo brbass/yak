@@ -3,18 +3,23 @@
 
 #include <memory>
 
-#include <Amesos.h>
-#include <AztecOO.h>
-// #include <AztecOO_Version.h>
-#include <mpi.h>
-#include <Epetra_MpiComm.h>
-#include <Epetra_Map.h>
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_Vector.h>
-#include <Epetra_LinearProblem.h>
-
-#include "Local_RBF_Mesh.hh"
 #include "Ordinate_Sweep_Operator.hh"
+
+class Amesos_BaseSolver;
+class AztecOO;
+class Epetra_CrsMatrix;
+class Epetra_Comm;
+class Epetra_LinearProblem;
+class Epetra_Map;
+class Epetra_Vector;
+
+class Angular_Discretization;
+class Energy_Discretization;
+class Local_RBF_Mesh;
+class Nuclear_Data;
+class Source_Data;
+class Spatial_Discretization;
+
 
 using std::shared_ptr;
 

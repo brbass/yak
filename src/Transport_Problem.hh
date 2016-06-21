@@ -2,11 +2,14 @@
 #define Transport_Problem_hh
 
 #include <memory>
+#include <vector>
+
 #include "pugixml.hpp"
 
-#include "Solver.hh"
+class Solver;
 
 using std::shared_ptr;
+using std::vector;
 
 /*
   High-level class to run a transport problem

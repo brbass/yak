@@ -2,9 +2,14 @@
 
 #include <cmath>
 
+#include "Angular_Discretization.hh"
 #include "Augmented_Operator.hh"
 #include "Check.hh"
+#include "Energy_Discretization.hh"
+#include "Nuclear_Data.hh"
 #include "Ordinate_Sweep_Operator.hh"
+#include "Source_Data.hh"
+#include "Spatial_Discretization.hh"
  #include "XML_Functions.hh"
 
 using namespace std;
