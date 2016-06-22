@@ -18,8 +18,9 @@ Source_Data_Parser(pugi::xml_node &input_file,
     pugi::xml_node source_node = input_file.child("source_data");
     pugi::xml_node nuclear_node = input_file.child("nuclear_data");
     pugi::xml_node materials = nuclear_node.child("materials");
-    
+
     int number_of_materials = XML_Functions::child_value<int>(materials, "number_of_materials");
+    int dimension = spatial_->dimension();
     int number_of_cells = spatial_->number_of_cells();
     int number_of_nodes = spatial_->number_of_nodes();
     int number_of_boundary_cells = spatial_->number_of_boundary_cells();
@@ -135,6 +136,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     }
     
     vector<double> boundary_source;
+    vector<double> alpha;
 
     if (boundary_type_str == "cellwise_isotropic")
     {
@@ -180,7 +182,8 @@ Source_Data_Parser(pugi::xml_node &input_file,
         vector<double> boundary_s = XML_Functions::child_vector<double>(source_node, "boundary_source", number_of_surfaces * number_of_groups);
 
         boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
-
+        alpha.assign(number_of_boundary_cells, 0);
+        
         for (int b = 0; b < number_of_boundary_cells; ++b)
         {
             int i = boundary_cells[b];
@@ -202,19 +205,28 @@ Source_Data_Parser(pugi::xml_node &input_file,
                     boundary_source[k_o] = boundary_s[k];
                 }
             }
+
+            Surface::Surface_Type surface_type = solid_geometry->surface(surface)->surface_type();
+
+            if (surface_type == Surface::Surface_Type::REFLECTIVE_BOUNDARY)
+            {
+                alpha[b] = 1.0;
+            }
+            else
+            {
+                alpha[b] = 0.0;
+            }
         }
-    }
-    else if (boundary_type_str == "none")
-    {
-        boundary_type = Source_Data::Source_Type::FULL;
-        boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
     }
     else 
     {
         AssertMsg(false, "source type \"" + boundary_type_str + "\" not found");
     }
     
-    vector<double> alpha = XML_Functions::child_vector<double>(source_node, "alpha", number_of_boundary_cells);
+    if (dimension == 1)
+    {
+        alpha = XML_Functions::child_vector<double>(source_node, "alpha", number_of_boundary_cells);
+    }
     
     source_ = make_shared<Source_Data>(internal_type,
                                        boundary_type,
