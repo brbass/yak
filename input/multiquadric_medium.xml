@@ -20,7 +20,7 @@
     <local>1</local>
     <dimension>1</dimension>
     <coefficient_type>phi</coefficient_type>
-    <number_of_points>242</number_of_points>
+    <number_of_points>2402</number_of_points>
     <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
@@ -29,12 +29,12 @@
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>80</number_of_points>
+        <number_of_points>800</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_points>160</number_of_points>
+        <number_of_points>1600</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>

@@ -66,7 +66,7 @@ Local_RBF_Mesh(int dimension,
             }
             
             shared_ptr<Epetra_SerialDenseSolver> solver = make_shared<Epetra_SerialDenseSolver>();
-            
+
             solver->SetMatrix(*mat);
             solver->Factor();
             

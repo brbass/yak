@@ -92,8 +92,6 @@ sweep_slab(vector<double> &x) const
                 add_internal_point(i, o, g, x);
             }
             
-            cout << (*mat_) << endl;
-            
             // Perform matrix solve
             switch(solver_type_)
             {

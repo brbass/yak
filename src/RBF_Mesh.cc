@@ -100,7 +100,7 @@ RBF_Mesh(int dimension,
         vector<double> shape(dimension_);
         for (int d = 0; d < dimension_; ++d)
         {
-            position[d] = positions[d];
+            position[d] = positions[d + dimension_ * i];
             shape[d] = shape_parameter_[d];
         }
 
