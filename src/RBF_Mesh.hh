@@ -7,6 +7,8 @@
 #include "RBF.hh"
 #include "Spatial_Discretization.hh"
 
+class KD_Tree;
+
 using std::shared_ptr;
 using std::vector;
 
@@ -35,15 +37,16 @@ public:
              int number_of_points,
              int number_of_boundary_points,
              int number_of_internal_points,
+             int number_of_neighbors,
+             double shape_multiplier,
              Geometry geometry,
              Basis_Type basis_type,
              vector<int> const &material,
              vector<int> const &boundary_points,
              vector<int> const &internal_points,
              vector<double> const &positions,
-             vector<double> const &shape_parameter,
              vector<double> const &boundary_normal);
-
+    
     // Number of points
     virtual int number_of_points() override
     {
@@ -80,6 +83,12 @@ public:
         return 1;
     }
 
+    // Number of neighbors for each point
+    virtual int number_of_neighbors() const
+    {
+        return number_of_neighbors_;
+    }
+    
     // Which nodes are on the boundary for the boundary cells
     // Should always be true, as number_of_nodes = 1
     virtual vector<bool> const &boundary_nodes() const override
@@ -87,6 +96,12 @@ public:
         return boundary_nodes_;
     }
 
+    // Get list of nearest neighbors to a point, sorted by distance
+    virtual vector<int> const &neighbors(int i) const
+    {
+        return neighbors_[i];
+    }
+    
     // Number of points on the boundary
     virtual vector<int> const &boundary_cells() const override
     {
@@ -98,38 +113,38 @@ public:
     {
         return internal_points_;
     }
-
+    
     // Material number for each point
     virtual vector<int> const &material() const override
     {
         return material_;
     }
-
+    
     virtual vector<double> const &boundary_normal() const override
     {
         return boundary_normal_;
     }
-
+    
     // Basis function for a certain point
     virtual shared_ptr<RBF> const &basis_function(int point) const
     {
         return basis_functions_[point];
     }
-
+    
     // Check class invariants
     virtual void check_class_invariants() const;
-
+    
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const override;
-
-    // virtual void get_neighbors(int point,
-    //                            vector<int> &local_neighbors);
     
 protected:
 
     int number_of_points_;
     int number_of_boundary_points_;
     int number_of_internal_points_;
+    int number_of_neighbors_;
+
+    double shape_multiplier_;
     
     Basis_Type basis_type_;
     
@@ -140,45 +155,11 @@ protected:
     vector<double> boundary_normal_;
     vector<double> point_positions_;
     vector<double> shape_parameter_;
+    vector<vector<int> > neighbors_;
+
+    shared_ptr<KD_Tree> kd_tree_;
     
     vector<shared_ptr<RBF> > basis_functions_;
-
-    // shared_ptr<KD_Adaptor> kd_adaptor_;
-    // shared_ptr<KDTreeSingleIndexAdaptor<L2_Adaptor<double, KD_Adaptor> > > 
-    
-    // class KD_Adaptor
-    // {
-    // public:
-        
-    //     KD_Adaptor(RBF_Mesh const &rbf_mesh);
-
-    //     inline int kdtree_get_point_count() const
-    //     {
-    //         return rbf_mesh_.number_of_points();
-    //     }
-
-    //     inline double kdtree_get_pt(const int idx, int dim) const
-    //     {
-    //         return rbf_mesh_.basis_functions_[idx]->position()[dim];
-    //     }
-
-    //     inline double kdtree_distance(const double *p1, const int idx_p2, int size)
-    //     {
-    //         vector<double> const p1_vec(p1, p1 + size);
-        
-    //         return rbf_mesh_.basis_functions_[idx]->get_distance_squared(p1_vec);
-    //     }
-        
-    //     template <class BBOX>
-    //     bool kdtree_get_bbox(BBOX &/*bb*/) const
-    //     {
-    //         return false;
-    //     }
-        
-    // private:
-        
-    //     RBF_Mesh const &rbf_mesh_;
-    // }
 };
 
 #endif

@@ -139,6 +139,7 @@ next_intersection(vector<double> const &particle_position,
 int Solid_Geometry::
 next_boundary(vector<double> const &particle_position,
               vector<double> const &particle_direction,
+              int &boundary_region,
               double &distance,
               vector<double> &position) const
 {
@@ -173,10 +174,12 @@ next_boundary(vector<double> const &particle_position,
                 
                 int minus_region = find_region(minus_position);
                 int plus_region = find_region(plus_position);
-
+                int region_index;
+                
                 if ((plus_region == NO_REGION || minus_region == NO_REGION) && (minus_region != plus_region))
                 {
                     best_surface = i;
+                    region_index = (plus_region == NO_REGION) ? minus_region : plus_region;
                     distance = current_distance;
                     position = current_position;
                 }

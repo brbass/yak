@@ -5,6 +5,7 @@
 
 #include "Circle.hh"
 #include "Cylinder.hh"
+#include "KD_Tree.hh"
 #include "Line.hh"
 #include "Plane.hh"
 #include "Random_Number_Generator.hh"
@@ -298,7 +299,39 @@ void cube_with_sphere_minus_cylinder()
     }
 }
 
+void test_kd_tree()
+{
+    int index = 0;
+    int dimension = 2;
+    int number_of_points = 100;
+    int number_of_neighbors = 10;
+    
+    Random_Number_Generator rng(-1, 1);
+    
+    vector<double> points = rng.random_double_vector(number_of_points * dimension);
+    
+    KD_Tree kd_tree(dimension,
+                    number_of_points,
+                    points);
+    
+    vector<int> indices;
+    vector<double> distances;
+    
+    kd_tree.find_neighbors(index,
+                           number_of_neighbors,
+                           indices,
+                           distances);
+    
+    for (int i = 0; i < number_of_neighbors; ++i)
+    {
+        cout << setw(16) << indices[i];
+        cout << setw(16) << distances[i];
+        cout << endl;
+    }
+}
+
 int main()
 {
-    cube_with_sphere_minus_cylinder();
+    test_kd_tree();
+    // cube_with_sphere_minus_cylinder();
 }

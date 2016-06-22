@@ -1,8 +1,280 @@
 #include "Spatial_Discretization_Parser.hh"
 
+#include "Finite_Element_Mesh.hh"
+#include "Local_RBF_Mesh.hh"
+#include "Random_Number_Generator.hh"
+#include "RBF_Mesh.hh"
 #include "Solid_Geometry.hh"
+#include "Solid_Geometry_Parser.hh"
+#include "Vector_Functions_2D.hh"
+#include "Vector_Functions_3D.hh"
 
 using namespace std;
+namespace vf2 = Vector_Functions_2D;
+namespace vf3 = Vector_Functions_3D;
+
+namespace // anonymous
+{
+    Random_Number_Generator mu_rng(-1, 1);
+    Random_Number_Generator theta_rng(0, 2 * M_PI);
+    Random_Number_Generator r_rng(0, 1);
+
+    // Get a random point inside a sphere
+    
+    void get_point(int dimension,
+                   double bounding_radius,
+                   vector<double> const &bounding_origin,
+                   vector<double> &point)
+    {
+        double mu = mu_rng.random_double();
+        double theta = theta_rng.random_double();
+        double r = r_rng.random_double() * bounding_radius;
+        double sqrt_mu = sqrt(1 - mu * mu);
+        
+        point[0] = bounding_origin[0] + r * sqrt_mu * cos(theta);
+        point[1] = bounding_origin[1] + r * sqrt_mu * sin(theta);
+        point[2] = bounding_origin[2] + r * mu;
+    }
+
+    // Get a random, inward-facing ray from the edge of a sphere
+    void get_ray(int dimension,
+                 double bounding_radius,
+                 vector<double> const &bounding_origin,
+                 vector<double> &origin,
+                 vector<double> &direction)
+    {
+        double mu = mu_rng.random_double();
+        double theta = theta_rng.random_double();
+
+        vector<double> normal(dimension, 0);
+        
+        origin.assign(dimension, 0);
+        direction.assign(dimension, 0);
+        
+        switch(dimension)
+        {
+        case 2:
+        {
+            origin[0] = bounding_origin[0] + bounding_radius * cos(theta);
+            origin[1] = bounding_origin[1] + bounding_radius * sin(theta);
+            
+            normal[0] = cos(theta);
+            normal[1] = sin(theta);
+            
+            while (vf2::dot(direction, normal) > 0)
+            {
+                double phi = theta_rng.random_double();
+                
+                direction[0] = cos(phi);
+                direction[1] = sin(phi);
+            }
+            
+            break;
+        }
+        case 3:
+        {
+            double sqrt_mu = sqrt(1 - mu * mu);
+            
+            origin[0] = bounding_origin[0] + bounding_radius * sqrt_mu * cos(theta);
+            origin[1] = bounding_origin[1] + bounding_radius * sqrt_mu * sin(theta);
+            origin[2] = bounding_origin[2] + bounding_radius * mu;
+
+            normal[0] = sqrt_mu * cos(theta);
+            normal[1] = sqrt_mu * sin(theta);
+            normal[2] = mu;
+
+            while (vf3::dot(direction, normal) > 0)
+            {
+                double xi = mu_rng.random_double();
+                double phi = theta_rng.random_double();
+                double sqrt_xi = sqrt(1 - xi * xi);
+                
+                direction[0] = sqrt_xi * cos(phi);
+                direction[1] = sqrt_xi * sin(phi);
+                direction[2] = xi;
+            }
+            
+            break;
+        }
+        default:
+            AssertMsg(false, "dimension not found");
+        }
+        
+    }
+
+    // Check whether point is too close to others
+    
+    bool point_works(int num_points,
+                     int dimension,
+                     double min_distance,
+                     vector<double> const &point,
+                     vector<double> const &positions)
+    {
+        for (int i = 0; i < num_points; ++i)
+        {
+            double distance = 0;
+
+            for (int d = 0; d < dimension; ++d)
+            {
+                double k = point[d] - positions[d + dimension * i];
+                
+                distance += k * k;
+            }
+
+            distance = sqrt(distance);
+
+            if (distance < min_distance)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    void get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
+                          pugi::xml_node &spatial,
+                          int &dimension,
+                          int &number_of_points,
+                          int &number_of_boundary_points,
+                          int &number_of_internal_points,
+                          vector<int> &material,
+                          vector<int> &boundary_points,
+                          vector<int> &internal_points,
+                          vector<double> &positions,
+                          vector<double> &boundary_normal)
+    {
+        dimension = solid_geometry->dimension();
+
+        material.resize(0);
+        boundary_points.resize(0);
+        internal_points.resize(0);
+        positions.resize(0);
+        boundary_normal.resize(0);
+        
+        // Get parameters for bounding sphere
+        
+        int max_attempts = XML_Functions::child_value<int>(spatial, "max_attempts");
+        double min_distance = XML_Functions::child_value<double>(spatial, "min_distance");
+        double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
+        vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
+        
+        int current_boundary_point = 0;
+        int current_point = 0;
+        int current_internal_point = 0;
+        int num_attempts = 0;
+        
+        while (num_attempts < max_attempts)
+        {
+            vector<double> position;
+            vector<double> direction;
+            
+            int surface = Solid_Geometry::NO_SURFACE;
+            int boundary_region = Solid_Geometry::NO_REGION;
+            double boundary_distance;
+            vector<double> boundary_position;
+            
+            // Find ray that intersects with problem
+            
+            while (surface == Solid_Geometry::NO_SURFACE)
+            {
+                get_ray(dimension,
+                        bounding_radius,
+                        bounding_origin,
+                        position,
+                        direction);
+                
+                surface = solid_geometry->next_boundary(position,
+                                                        direction,
+                                                        boundary_region,
+                                                        boundary_distance,
+                                                        boundary_position);
+            }
+
+            // Find all intersections of the ray
+            
+            while(surface != Solid_Geometry::NO_SURFACE)
+            {
+                if (point_works(current_point,
+                                dimension,
+                                min_distance,
+                                boundary_position,
+                                positions))
+                {
+                    material.push_back(solid_geometry->region(boundary_region)->material());
+                    boundary_points.push_back(current_point);
+                    
+                    vector<double> normal;
+                    Check(solid_geometry->surface(surface)->normal_direction(boundary_position,
+                                                                             normal));
+                    for (int d = 0; d < dimension; ++d)
+                    {
+                        positions.push_back(boundary_position[d]);
+                        boundary_normal.push_back(normal[d]);
+                    }
+                    
+                    current_boundary_point += 1;
+                    current_point += 1;
+                }
+                else
+                {
+                    num_attempts += 1;
+                }
+                
+                surface = solid_geometry->next_boundary(position,
+                                                        direction,
+                                                        boundary_region,
+                                                        boundary_distance,
+                                                        boundary_position);
+            }
+        }
+
+        num_attempts = 0;
+        while (num_attempts < max_attempts)
+        {
+            int region = Solid_Geometry::NO_REGION;
+            vector<double> point;
+            
+            while(region == Solid_Geometry::NO_REGION)
+            {
+                // Find random point
+
+                get_point(dimension,
+                          bounding_radius,
+                          bounding_origin,
+                          point);
+                
+                region = solid_geometry->find_region(point);
+            }
+
+            if (point_works(current_point,
+                            dimension,
+                            min_distance,
+                            point,
+                            positions))
+            {
+                material.push_back(solid_geometry->region(region)->material());
+                internal_points.push_back(current_point);
+
+                for (int d = 0; d < dimension; ++d)
+                {
+                    positions.push_back(point[d]);
+                }
+                
+                current_point += 1;
+                current_internal_point += 1;
+            }
+            else
+            {
+                num_attempts += 1;
+            }
+        }
+        
+        number_of_points = current_point;
+        number_of_boundary_points = current_boundary_point;
+        number_of_internal_points = current_internal_point;
+    }
+} // namespace
 
 Spatial_Discretization_Parser::
 Spatial_Discretization_Parser(pugi::xml_node &input_file):
@@ -195,7 +467,6 @@ get_rbf_1d(pugi::xml_node &spatial)
 
     vector<int> material(number_of_points);
     vector<double> positions(number_of_points);
-    vector<double> shape_parameter(number_of_points);
 
     int point = 0;
     int region_x = 0;
@@ -211,7 +482,6 @@ get_rbf_1d(pugi::xml_node &spatial)
         {
             material[point] = region_material;
             positions[point] = region_x;
-            shape_parameter[point] = shape_multiplier / dx;
             
             point += 1;
         }
@@ -220,7 +490,6 @@ get_rbf_1d(pugi::xml_node &spatial)
         {
             material[point] = region_material;
             positions[point] = region_x + (0.5 + i) * dx;
-            shape_parameter[point] = shape_multiplier / dx;
             
             point += 1;
         }
@@ -231,7 +500,6 @@ get_rbf_1d(pugi::xml_node &spatial)
         {
             material[point] = region_material;
             positions[point] = region_x;
-            shape_parameter[point] = shape_multiplier / dx;
             
             point += 1;
         }
@@ -251,22 +519,39 @@ get_rbf_1d(pugi::xml_node &spatial)
     }
     vector<double> boundary_normal = {-1, 1};
     
+    int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
+        
     if (local)
-    {
-        int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
+    { 
+        string coefficient_str = XML_Functions::child_value<string>(spatial, "coefficient_type");
+        Local_RBF_Mesh::Coefficient_Type coefficient_type;
+        
+        if (coefficient_str == "alpha")
+        {
+            coefficient_type = Local_RBF_Mesh::Coefficient_Type::ALPHA;
+        }
+        else if (coefficient_str == "phi")
+        {
+            coefficient_type = Local_RBF_Mesh::Coefficient_Type::PHI;
+        }
+        else
+        {
+            AssertMsg(false, "coefficient type \"" + coefficient_str + "\" not found");
+        }
         
         return make_shared<Local_RBF_Mesh>(dimension,
                                            number_of_points,
                                            number_of_boundary_points,
                                            number_of_internal_points,
                                            number_of_neighbors,
+                                           shape_multiplier,
                                            geometry,
                                            basis_type,
+                                           coefficient_type,
                                            material,
                                            boundary_points,
                                            internal_points,
                                            positions,
-                                           shape_parameter,
                                            boundary_normal);
     }
     else
@@ -275,13 +560,14 @@ get_rbf_1d(pugi::xml_node &spatial)
                                      number_of_points,
                                      number_of_boundary_points,
                                      number_of_internal_points,
+                                     number_of_neighbors,
+                                     shape_multiplier,
                                      geometry,
                                      basis_type,
                                      material,
                                      boundary_points,
                                      internal_points,
                                      positions,
-                                     shape_parameter,
                                      boundary_normal);
     }
 }
@@ -289,57 +575,122 @@ get_rbf_1d(pugi::xml_node &spatial)
 shared_ptr<RBF_Mesh> Spatial_Discretization_Parser::
 get_rbf_solid(pugi::xml_node &spatial)
 {
-    // Solid_Geometry_Parser solid_geometry_parser(spatial);
+    Solid_Geometry_Parser solid_geometry_parser(spatial);
 
-    // shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
+    shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
+
+    int dimension;
+    int number_of_points;
+    int number_of_boundary_points;
+    int number_of_internal_points;
+    vector<int> material;
+    vector<int> boundary_points;
+    vector<int> internal_points;
+    vector<double> positions;
+    vector<double> boundary_normal;
     
+    get_solid_points(solid_geometry,
+                     spatial,
+                     dimension,
+                     number_of_points,
+                     number_of_boundary_points,
+                     number_of_internal_points,
+                     material,
+                     boundary_points,
+                     internal_points,
+                     positions,
+                     boundary_normal);
     
+    int local = XML_Functions::child_value<int>(spatial, "local");
+    int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
+    double shape_multiplier = XML_Functions::child_value<double>(spatial, "shape_multiplier");
+    string basis_str = XML_Functions::child_value<string>(spatial, "basis_type");
+
+    Spatial_Discretization::Geometry geometry = Spatial_Discretization::Geometry::CARTESIAN;
+
+    RBF_Mesh::Basis_Type basis_type;
+    
+    if (basis_str == "gaussian")
+    {
+        basis_type = RBF_Mesh::Basis_Type::GAUSSIAN;
+    }
+    else if (basis_str == "multiquadric")
+    {
+        basis_type = RBF_Mesh::Basis_Type::MULTIQUADRIC;
+    }
+    else if (basis_str == "inverse_multiquadric")
+    {
+        basis_type = RBF_Mesh::Basis_Type::INVERSE_MULTIQUADRIC;
+    }
+    else if (basis_str == "wendland30")
+    {
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND30;
+    }
+    else if (basis_str == "wendland31")
+    {
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND31;
+    }
+    else if (basis_str == "wendland32")
+    {
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND32;
+    }
+    else if (basis_str == "wendland33")
+    {
+        basis_type = RBF_Mesh::Basis_Type::WENDLAND33;
+    }
+    else
+    {
+        AssertMsg(false, "basis_type \"" + basis_str + "\" not found");
+    }
+
+    if (local)
+    {
+        string coefficient_str = XML_Functions::child_value<string>(spatial, "coefficient_type");
+        Local_RBF_Mesh::Coefficient_Type coefficient_type;
+        
+        if (coefficient_str == "alpha")
+        {
+            coefficient_type = Local_RBF_Mesh::Coefficient_Type::ALPHA;
+        }
+        else if (coefficient_str == "phi")
+        {
+            coefficient_type = Local_RBF_Mesh::Coefficient_Type::PHI;
+        }
+        else
+        {
+            AssertMsg(false, "coefficient type \"" + coefficient_str + "\" not found");
+        }
+        
+        return make_shared<Local_RBF_Mesh>(dimension,
+                                           number_of_points,
+                                           number_of_boundary_points,
+                                           number_of_internal_points,
+                                           number_of_neighbors,
+                                           shape_multiplier,
+                                           geometry,
+                                           basis_type,
+                                           coefficient_type,
+                                           material,
+                                           boundary_points,
+                                           internal_points,
+                                           positions,
+                                           boundary_normal);
+    }
+    else
+    {
+        return make_shared<RBF_Mesh>(dimension,
+                                     number_of_points,
+                                     number_of_boundary_points,
+                                     number_of_internal_points,
+                                     number_of_neighbors,
+                                     shape_multiplier,
+                                     geometry,
+                                     basis_type,
+                                     material,
+                                     boundary_points,
+                                     internal_points,
+                                     positions,
+                                     boundary_normal);
+    }
 }
 
-void Spatial_Discretization_Parser::
-get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
-                 pugi::xml_node &spatial,
-                 int &number_of_points,
-                 int &number_of_boundary_points,
-                 int &number_of_internal_points,
-                 vector<int> &material,
-                 vector<int> &boundary_points,
-                 vector<int> &internal_points,
-                 vector<double> &positions,
-                 vector<double> &boundary_normal)
-{
-    int dimension = solid_geometry->dimension();
-    number_of_points = XML_Functions::child_value<int>(spatial, "number_of_points");
-    number_of_boundary_points = XML_Functions::child_value<int>(spatial, "number_of_boundary_points");
-    number_of_internal_points = XML_Functions::child_value<int>(spatial, "number_of_internal_points");
-    
-    material.resize(number_of_points);
-    boundary_points.resize(number_of_boundary_points);
-    internal_points.resize(number_of_internal_points);
-    positions.resize(number_of_points * dimension);
-    boundary_normal.resize(number_of_boundary_points * dimension);
-    
-    // Get parameters for bounding sphere
-    
-    double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
-    vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
-
-    int current_boundary_point = 0;
-    while (current_boundary_point < number_of_boundary_points)
-    {
-        
-    }
-    switch(dimension)
-    {
-    case 2:
-    {
-        
-    }
-    case 3:
-    {
-        
-    }
-    default:
-        AssertMsg(false, "dimension not found");
-    }
-}

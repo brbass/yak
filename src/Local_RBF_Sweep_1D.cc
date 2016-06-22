@@ -91,7 +91,9 @@ sweep_slab(vector<double> &x) const
 
                 add_internal_point(i, o, g, x);
             }
-
+            
+            cout << (*mat_) << endl;
+            
             // Perform matrix solve
             switch(solver_type_)
             {
@@ -151,6 +153,7 @@ add_boundary_point(int b,
     int number_of_augments = source_data_->number_of_augments();
     int number_of_neighbors = rbf_mesh_->number_of_neighbors();
     vector<int> const neighbors = rbf_mesh_->neighbors(i);
+    
     vector<double> const boundary_source = source_data_->boundary_source();
     vector<double> const alpha = source_data_->alpha();
     

@@ -132,10 +132,10 @@ void test_ldfe(int number_of_scattering_moments,
         geometry = Spatial_Discretization::Geometry::SLAB;
         break;
     case 2:
-        geometry = Spatial_Discretization::Geometry::RECTANGLE;
+        geometry = Spatial_Discretization::Geometry::CARTESIAN;
         break;
     case 3:
-        geometry = Spatial_Discretization::Geometry::CUBOID;
+        geometry = Spatial_Discretization::Geometry::CARTESIAN;
         break;
     }
     

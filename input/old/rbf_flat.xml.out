@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <output>
 	<solution>
+		<time>0.0100519</time>
 		<phi data_order="node-group-moment-cell">10.9126 11.3148 11.0413 11.0413 11.3148 10.9126 </phi>
 	</solution>
 	<source_iteration>

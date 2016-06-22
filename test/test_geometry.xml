@@ -5,31 +5,31 @@
     <surfaces>
       <surface>
         <number>0</number>
-        <type>line</type>
+        <shape>line</shape>
         <axis>0</axis>
         <position>-2</position>
       </surface>
       <surface> 
         <number>1</number>
-        <type>line</type>
+        <shape>line</shape>
         <axis>0</axis>
         <position>2</position>
       </surface>
       <surface> 
         <number>2</number>
-        <type>line</type>
+        <shape>line</shape>
         <axis>1</axis>
         <position>-2</position>
       </surface>
       <surface> 
         <number>3</number>
-        <type>line</type>
+        <shape>line</shape>
         <axis>1</axis>
         <position>2</position>
       </surface>
       <surface>
         <number>4</number>
-        <type>circle</type>
+        <shape>circle</shape>
         <radius>1</radius>
         <position>0 0</position>
       </surface>
