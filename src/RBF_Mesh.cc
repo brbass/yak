@@ -8,6 +8,7 @@
 #include "Inverse_Multiquadric_RBF.hh"
 #include "KD_Tree.hh"
 #include "Multiquadric_RBF.hh"
+#include "Solid_Geometry.hh"
 #include "Wendland_RBF.hh"
 #include "XML_Functions.hh"
 
@@ -45,7 +46,8 @@ RBF_Mesh(int dimension,
          vector<int> const &boundary_points,
          vector<int> const &internal_points,
          vector<double> const &positions,
-         vector<double> const &boundary_normal):
+         vector<double> const &boundary_normal,
+         shared_ptr<Solid_Geometry> const solid_geometry):
     Spatial_Discretization(dimension,
                            geometry),
     number_of_points_(number_of_points),
@@ -58,7 +60,8 @@ RBF_Mesh(int dimension,
     internal_points_(internal_points),
     point_positions_(positions),
     boundary_normal_(boundary_normal),
-    boundary_nodes_(number_of_boundary_points, true)
+    boundary_nodes_(number_of_boundary_points, true),
+    solid_geometry_(solid_geometry)
 {
     Check(0 < number_of_neighbors <= number_of_points);
 

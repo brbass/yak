@@ -149,67 +149,6 @@ total_source() const
     return total_source;
 }
 
-// void Source_Data::
-// update_psi_boundary(vector<double> const &psi)
-// {
-//     int number_of_cells = spatial_discretization_->number_of_cells();
-//     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
-//     int number_of_nodes = spatial_discretization_->number_of_nodes();
-//     int number_of_groups = energy_discretization_->number_of_groups();
-//     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-//     vector<int> boundary_cells = spatial_discretization_->boundary_cells();
-    
-//     for (int b = 0; b < number_of_boundary_cells; ++b)
-//     {
-//         int i = boundary_cells[b];
-        
-//         for (int g = 0; g < number_of_groups; ++g)
-//         {
-//             for (int o = 0; o < number_of_ordinates; ++o)
-//             {
-//                 for (int n = 0; n < number_of_nodes; ++n)
-//                 {
-//                     int k_psib = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * b));
-//                     int k_psi = n + number_of_nodes * (g + number_of_groups * (o + number_of_ordinates * i));
-                    
-//                     psi_boundary_[k_psib] = psi[k_psi];
-//                 }
-//             }
-//         }
-//     }
-// }
-
-
-// void Source_Data::
-// update_phi_boundary(vector<double> const &phi)
-// {
-//     int number_of_cells = spatial_discretization_->number_of_cells();
-//     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
-//     int number_of_nodes = spatial_discretization_->number_of_nodes();
-//     int number_of_groups = energy_discretization_->number_of_groups();
-//     int number_of_moments = angular_discretization_->number_of_ordinates();
-//     vector<int> boundary_cells = spatial_discretization_->boundary_cells();
-    
-//     for (int b = 0; b < number_of_boundary_cells; ++b)
-//     {
-//         int i = boundary_cells[b];
-        
-//         for (int g = 0; g < number_of_groups; ++g)
-//         {
-//             for (int m = 0; m < number_of_moments; ++m)
-//             {
-//                 for (int n = 0; n < number_of_nodes; ++n)
-//                 {
-//                     int k_phib = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * b));
-//                     int k_phi = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
-                    
-//                     phi_boundary_[k_phib] = phi[k_phi];
-//                 }
-//             }
-//         }
-//     }
-// }
-
 void Source_Data::
 output(pugi::xml_node &output_node) const
 {

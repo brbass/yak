@@ -34,7 +34,8 @@ public:
                    vector<int> const &boundary_points,
                    vector<int> const &internal_points,
                    vector<double> const &positions,
-                   vector<double> const &boundary_normal);
+                   vector<double> const &boundary_normal,
+                   shared_ptr<Solid_Geometry> const solid_geometry = shared_ptr<Solid_Geometry>());
     
     // Convert matrix row from solution for coefficient to solution for result
     virtual void convert_to_phi(int point,

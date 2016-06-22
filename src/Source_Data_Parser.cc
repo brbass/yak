@@ -1,5 +1,8 @@
 #include "Source_Data_Parser.hh"
 
+#include "RBF_Mesh.hh"
+#include "Solid_Geometry.hh"
+
 using namespace std;
 
 Source_Data_Parser::
@@ -137,7 +140,7 @@ Source_Data_Parser(pugi::xml_node &input_file,
     {
         boundary_type = Source_Data::Source_Type::FULL;
         
-        double angular_normalization = angular_->angular_normalization();
+        // double angular_normalization = angular_->angular_normalization();
         
         vector<double> boundary_m = XML_Functions::child_vector<double>(source_node, "boundary_source", number_of_boundary_cells * number_of_groups);
         
@@ -165,6 +168,47 @@ Source_Data_Parser(pugi::xml_node &input_file,
             }
         }
     }
+    else if (boundary_type_str == "surface_isotropic")
+    {
+        boundary_type = Source_Data::Source_Type::FULL;
+
+        vector<int> const boundary_cells = spatial->boundary_cells();
+        shared_ptr<RBF_Mesh> const rbf_mesh = dynamic_pointer_cast<RBF_Mesh>(spatial);
+        shared_ptr<Solid_Geometry> const solid_geometry = rbf_mesh->solid_geometry();
+        int number_of_surfaces = solid_geometry->number_of_surfaces();
+        
+        vector<double> boundary_s = XML_Functions::child_vector<double>(source_node, "boundary_source", number_of_surfaces * number_of_groups);
+
+        boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
+
+        for (int b = 0; b < number_of_boundary_cells; ++b)
+        {
+            int i = boundary_cells[b];
+            shared_ptr<RBF> const basis = rbf_mesh->basis_function(i);
+            int surface = solid_geometry->find_surface(basis->position());
+
+            if (surface == Solid_Geometry::NO_SURFACE)
+            {
+                AssertMsg(false, "could not find surface");
+            }
+
+            for (int o = 0; o < number_of_ordinates; ++o)
+            {
+                for (int g = 0; g < number_of_groups; ++g)
+                {
+                    int k = g + number_of_groups * surface;
+                    int k_o = g + number_of_groups * (o + number_of_ordinates * b);
+                    
+                    boundary_source[k_o] = boundary_s[k];
+                }
+            }
+        }
+    }
+    else if (boundary_type_str == "none")
+    {
+        boundary_type = Source_Data::Source_Type::FULL;
+        boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
+    }
     else 
     {
         AssertMsg(false, "source type \"" + boundary_type_str + "\" not found");
@@ -181,4 +225,3 @@ Source_Data_Parser(pugi::xml_node &input_file,
                                        boundary_source,
                                        alpha);
 }
-

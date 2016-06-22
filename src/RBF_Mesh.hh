@@ -8,6 +8,7 @@
 #include "Spatial_Discretization.hh"
 
 class KD_Tree;
+class Solid_Geometry;
 
 using std::shared_ptr;
 using std::vector;
@@ -45,7 +46,8 @@ public:
              vector<int> const &boundary_points,
              vector<int> const &internal_points,
              vector<double> const &positions,
-             vector<double> const &boundary_normal);
+             vector<double> const &boundary_normal,
+             shared_ptr<Solid_Geometry> const solid_geometry = shared_ptr<Solid_Geometry>());
     
     // Number of points
     virtual int number_of_points() override
@@ -130,6 +132,11 @@ public:
     {
         return basis_functions_[point];
     }
+
+    virtual shared_ptr<Solid_Geometry> const solid_geometry() const
+    {
+        return solid_geometry_;
+    }
     
     // Check class invariants
     virtual void check_class_invariants() const;
@@ -158,6 +165,7 @@ protected:
     vector<vector<int> > neighbors_;
 
     shared_ptr<KD_Tree> kd_tree_;
+    shared_ptr<Solid_Geometry> solid_geometry_;
     
     vector<shared_ptr<RBF> > basis_functions_;
 };

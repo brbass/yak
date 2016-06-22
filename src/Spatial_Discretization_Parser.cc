@@ -674,7 +674,8 @@ get_rbf_solid(pugi::xml_node &spatial)
                                            boundary_points,
                                            internal_points,
                                            positions,
-                                           boundary_normal);
+                                           boundary_normal,
+                                           solid_geometry);
     }
     else
     {
@@ -690,7 +691,8 @@ get_rbf_solid(pugi::xml_node &spatial)
                                      boundary_points,
                                      internal_points,
                                      positions,
-                                     boundary_normal);
+                                     boundary_normal,
+                                     solid_geometry);
     }
 }
 

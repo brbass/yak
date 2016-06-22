@@ -22,7 +22,8 @@ Local_RBF_Mesh(int dimension,
                vector<int> const &boundary_points,
                vector<int> const &internal_points,
                vector<double> const &positions,
-               vector<double> const &boundary_normal):
+               vector<double> const &boundary_normal,
+               shared_ptr<Solid_Geometry> const solid_geometry):
     RBF_Mesh(dimension,
              number_of_points,
              number_of_boundary_points,
@@ -35,7 +36,8 @@ Local_RBF_Mesh(int dimension,
              boundary_points,
              internal_points,
              positions,
-             boundary_normal),
+             boundary_normal,
+             solid_geometry),
     coefficient_type_(coefficient_type)
 {
     // Initialize Trilinos if needed

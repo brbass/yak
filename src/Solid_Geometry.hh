@@ -20,15 +20,19 @@ public:
     Solid_Geometry(int dimension,
                    vector<shared_ptr<Surface> > const &surfaces,
                    vector<shared_ptr<Region> > const &regions);
-
+    
     int dimension() const
     {
         return dimension_;
     }
-    // double tolerance() const
-    // {
-    //     return tolerance_;
-    // }
+    int number_of_surfaces() const
+    {
+        return surfaces_.size();
+    }
+    int number_of_regions() const
+    {
+        return regions_.size();
+    }
     double delta_distance() const
     {
         return delta_distance_;
