@@ -18,9 +18,9 @@ Angular_Discretization_Parser(pugi::xml_node &input_file):
 
     if (dimension == 1)
     {
-    angular_ = make_shared<Gauss_Legendre_Quadrature>(dimension,
-                                                      number_of_moments,
-                                                      number_of_ordinates);
+        angular_ = make_shared<Gauss_Legendre_Quadrature>(dimension,
+                                                          number_of_moments,
+                                                          number_of_ordinates);
     }
     else
     {
