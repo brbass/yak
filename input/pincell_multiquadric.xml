@@ -5,6 +5,7 @@
   
   <solution_method>
     <type>krylov_iteration</type>
+    <!-- <type>null_solver</type> -->
     <max_iterations>5000</max_iterations>
     <kspace>15</kspace>
     <solver_print>1</solver_print>
@@ -22,8 +23,8 @@
     <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <basis_type>multiquadric</basis_type>
-    <max_attempts>1000</max_attempts>
-    <min_distance>0.2</min_distance>
+    <max_attempts>100000</max_attempts>
+    <min_distance>0.05</min_distance>
     <bounding_radius>3.0</bounding_radius>
     <bounding_origin>0 0</bounding_origin>
     
