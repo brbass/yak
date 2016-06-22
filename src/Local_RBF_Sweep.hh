@@ -48,7 +48,6 @@ protected:
 private:
     
     virtual void apply(vector<double> &x) const override;
-    void sweep_slab(vector<double> &x) const;
     void initialize_trilinos();
     void add_boundary_point(int b,
                             int i,

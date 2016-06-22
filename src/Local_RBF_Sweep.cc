@@ -35,18 +35,12 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
 {
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
     Assert(rbf_mesh_);
-
+    
     initialize_trilinos();
 }
 
 void Local_RBF_Sweep::
 apply(vector<double> &x) const
-{
-    
-}
-
-void Local_RBF_Sweep::
-sweep_slab(vector<double> &x) const
 {
     int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
@@ -180,7 +174,7 @@ add_boundary_point(int b,
                               number_of_neighbors,
                               &data[0],
                               &neighbors[0]);
-    
+
     // Replace RHS value
     int psi_size = row_size() - number_of_augments;
     int o1 = number_of_ordinates - o - 1;
@@ -223,23 +217,23 @@ add_internal_point(int i,
     for (int n = 0; n < number_of_neighbors; ++n)
     {
         int j = neighbors[n];
-
+        
         shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
-
+        
         int k_sig = g + number_of_groups * i;
         
         double derivative = 0;
-
+        
         for (int d = 0; d < dimension; ++d)
         {
-            int k_ord = d + dimension * i;
+            int k_ord = d + dimension * o;
             
             derivative += ordinates[k_ord] * basis_rbf->dbasis(d, equation_position);
         }
         
         data[n] = derivative + sigma_t[k_sig] * basis_rbf->basis(equation_position);
     }
-
+    
     rbf_mesh_->convert_to_phi(i,
                               data);
     

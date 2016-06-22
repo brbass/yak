@@ -65,19 +65,19 @@ solve_steady_state(vector<double> &x)
     shared_ptr<Vector_Operator> FI = make_shared<Flux_Iterator>(*this);
     
     // Sweep source 
-
+    
     vector<double> q(phi_size() + number_of_augments(), 0);
+    
+    print_name("Initial source iteration");
     
     if (source_data_->has_reflection())
     {
         vector<double> q_old;
         
-        print_name("Initial source iteration");
-        
         for (int it = 0; it < max_iterations_; ++it)
         {
             print_iteration(it);
-
+            
             q_old = q;
             
             (*SI)(q);
@@ -103,7 +103,9 @@ solve_steady_state(vector<double> &x)
     }
     else
     {
+        print_iteration(0);
         (*SI)(q);
+        print_convergence();
         
         source_iterations_ = 1;
     }
