@@ -2,6 +2,12 @@
 
 #include <iostream>
 
+#include "Angular_Discretization.hh"
+#include "Energy_Discretization.hh"
+#include "Nuclear_Data.hh"
+#include "Source_Data.hh"
+#include "Spatial_Discretization.hh"
+
 using namespace std;
 
 Solver::

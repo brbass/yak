@@ -1,18 +1,19 @@
 #ifndef Solver_Parser_hh
 #define Solver_Parser_hh
 
-#include "DFEM_Sweep_1D.hh"
-#include "Discrete_To_Moment.hh"
-#include "Fission.hh"
-#include "Krylov_Iteration.hh"
-#include "Local_RBF_Sweep_1D.hh"
-#include "Moment_To_Discrete.hh"
-#include "Ordinate_Sweep_Operator.hh"
 #include "Parser.hh"
-#include "RBF_Sweep_1D.hh"
-#include "Scattering.hh"
 #include "Solver.hh"
-#include "Source_Iteration.hh"
+
+class DFEM_Sweep_1D;
+class Discrete_To_Moment;
+class Fission;
+class Krylov_Iteration;
+class Local_RBF_Sweep;
+class Moment_To_Discrete;
+class Ordinate_Sweep_Operator;
+class RBF_Sweep_1D;
+class Scattering;
+class Source_Iteration;
 
 /*
   Create a Solver object
@@ -51,7 +52,7 @@ public:
     shared_ptr<RBF_Sweep_1D> parse_rbf();
 
     // Parse the Local RBF Sweeper
-    shared_ptr<Local_RBF_Sweep_1D> parse_rbf_local();
+    shared_ptr<Local_RBF_Sweep> parse_rbf_local();
     
     // Parse the Discrete_To_Moment operator
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();

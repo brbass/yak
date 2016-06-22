@@ -213,10 +213,10 @@ get_regions(pugi::xml_node &regions_node,
             {
                 AssertMsg(false, "region relation not found");
             }
-
+            
             region_relations.push_back(relation);
             local_regions.push_back(regions[relation_number]);
-        }       
+        }
         
         regions[number]->initialize(material,
                                     surface_relations,

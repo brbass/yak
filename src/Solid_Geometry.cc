@@ -112,11 +112,11 @@ next_intersection(vector<double> const &particle_position,
                 vector<double> plus_position;
                 
                 new_position(-delta_distance(),
-                             particle_position,
+                             current_position,
                              particle_direction,
                              minus_position);
                 new_position(delta_distance(),
-                             particle_position,
+                             current_position,
                              particle_direction,
                              plus_position);
                 
@@ -143,51 +143,46 @@ next_boundary(vector<double> const &particle_position,
               double &distance,
               vector<double> &position) const
 {
-    int best_surface = NO_SURFACE;
-    distance = numeric_limits<double>::max();
-    position.resize(dimension_);
-    
-    for (int i = 0; i < surfaces_.size(); ++i)
+    int surface = 0;
+    double current_distance = numeric_limits<double>::max();
+    vector<double> current_position(particle_position);
+    distance = 0;
+
+    while (surface != NO_SURFACE)
     {
-        double current_distance;
-        vector<double> current_position;
+        surface = next_intersection(current_position,
+                                    particle_direction,
+                                    current_distance,
+                                    current_position);
         
-        if(surfaces_[i]->intersection(particle_position,
-                                      particle_direction,
-                                      current_distance,
-                                      current_position)
-           == Surface::Intersection::INTERSECTS)
+        distance += current_distance;
+        
+        vector<double> minus_position;
+        vector<double> plus_position;
+        
+        new_position(-delta_distance(),
+                     current_position,
+                     particle_direction,
+                     minus_position);
+        new_position(delta_distance(),
+                     current_position,
+                     particle_direction,
+                     plus_position);
+        
+        int minus_region = find_region(minus_position);
+        int plus_region = find_region(plus_position);
+        
+        if ((plus_region == NO_REGION || minus_region == NO_REGION) && (minus_region != plus_region))
         {
-            if (current_distance < distance)
-            {
-                vector<double> minus_position;
-                vector<double> plus_position;
-                
-                new_position(-delta_distance(),
-                             particle_position,
-                             particle_direction,
-                             minus_position);
-                new_position(delta_distance(),
-                             particle_position,
-                             particle_direction,
-                             plus_position);
-                
-                int minus_region = find_region(minus_position);
-                int plus_region = find_region(plus_position);
-                int region_index;
-                
-                if ((plus_region == NO_REGION || minus_region == NO_REGION) && (minus_region != plus_region))
-                {
-                    best_surface = i;
-                    region_index = (plus_region == NO_REGION) ? minus_region : plus_region;
-                    distance = current_distance;
-                    position = current_position;
-                }
-            }
+            boundary_region = (plus_region == NO_REGION) ? minus_region : plus_region;
+            position = current_position;
+            
+            break;
         }
+        
     }
     
-    return best_surface;
+    return surface;
 }
 
 void Solid_Geometry::

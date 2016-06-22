@@ -1,6 +1,16 @@
 #include "Solver_Parser.hh"
 
 #include "Check.hh"
+#include "DFEM_Sweep_1D.hh"
+#include "Discrete_To_Moment.hh"
+#include "Fission.hh"
+#include "Krylov_Iteration.hh"
+#include "Local_RBF_Sweep.hh"
+#include "Moment_To_Discrete.hh"
+#include "Ordinate_Sweep_Operator.hh"
+#include "RBF_Sweep_1D.hh"
+#include "Scattering.hh"
+#include "Source_Iteration.hh"
 
 using namespace std;
 
@@ -144,14 +154,14 @@ parse_rbf()
                                      source_);
 }
 
-shared_ptr<Local_RBF_Sweep_1D> Solver_Parser::
+shared_ptr<Local_RBF_Sweep> Solver_Parser::
 parse_rbf_local()
 {
-    return make_shared<Local_RBF_Sweep_1D>(spatial_,
-                                           angular_,
-                                           energy_,
-                                           nuclear_,
-                                           source_);
+    return make_shared<Local_RBF_Sweep>(spatial_,
+                                        angular_,
+                                        energy_,
+                                        nuclear_,
+                                        source_);
 }
 
 shared_ptr<Discrete_To_Moment> Solver_Parser::

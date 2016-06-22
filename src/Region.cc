@@ -19,6 +19,7 @@ initialize(int material,
     material_ = material;
     surface_relations_ = surface_relations;
     surfaces_ = surfaces;
+    region_relations_ = region_relations;
     regions_ = regions;
 
     for (int i = 0; i < surfaces_.size(); ++i)
@@ -60,7 +61,7 @@ relation(vector<double> const &point,
         region_relation = regions_[i]->relation(point,
                                                 recursion_level + 1);
         
-        if (surface_relation != surface_relations_[i])
+        if (region_relation != region_relations_[i])
         {
             return Region::Relation::OUTSIDE;
         }

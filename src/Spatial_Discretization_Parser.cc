@@ -31,9 +31,24 @@ namespace // anonymous
         double r = r_rng.random_double() * bounding_radius;
         double sqrt_mu = sqrt(1 - mu * mu);
         
-        point[0] = bounding_origin[0] + r * sqrt_mu * cos(theta);
-        point[1] = bounding_origin[1] + r * sqrt_mu * sin(theta);
-        point[2] = bounding_origin[2] + r * mu;
+        point.resize(dimension);
+   
+        switch(dimension)
+        {
+        case 2:
+        {
+            point[0] = bounding_origin[0] + r * cos(theta);
+            point[1] = bounding_origin[1] + r * sin(theta);
+            break;
+        }
+        case 3:
+        {
+            point[0] = bounding_origin[0] + r * sqrt_mu * cos(theta);
+            point[1] = bounding_origin[1] + r * sqrt_mu * sin(theta);
+            point[2] = bounding_origin[2] + r * mu;
+            break;
+        }
+        }
     }
 
     // Get a random, inward-facing ray from the edge of a sphere
@@ -60,7 +75,10 @@ namespace // anonymous
             
             normal[0] = cos(theta);
             normal[1] = sin(theta);
-            
+
+            direction[0] = normal[0];
+            direction[1] = normal[1];
+
             while (vf2::dot(direction, normal) > 0)
             {
                 double phi = theta_rng.random_double();
@@ -171,45 +189,52 @@ namespace // anonymous
             
             int surface = Solid_Geometry::NO_SURFACE;
             int boundary_region = Solid_Geometry::NO_REGION;
-            double boundary_distance;
-            vector<double> boundary_position;
+            double distance;
             
             // Find ray that intersects with problem
             
             while (surface == Solid_Geometry::NO_SURFACE)
             {
+                // Get random ray in random inward-facing direction
+                
                 get_ray(dimension,
                         bounding_radius,
                         bounding_origin,
                         position,
                         direction);
                 
+                // See if ray intersects with a problem boundary
+                // Move particle to the problem boundary
+
                 surface = solid_geometry->next_boundary(position,
                                                         direction,
                                                         boundary_region,
-                                                        boundary_distance,
-                                                        boundary_position);
+                                                        distance,
+                                                        position);
             }
 
             // Find all intersections of the ray
             
             while(surface != Solid_Geometry::NO_SURFACE)
             {
+                // Check whether point is too close to others
+                
                 if (point_works(current_point,
                                 dimension,
                                 min_distance,
-                                boundary_position,
+                                position,
                                 positions))
                 {
                     material.push_back(solid_geometry->region(boundary_region)->material());
                     boundary_points.push_back(current_point);
                     
+                    // Find normal vector
                     vector<double> normal;
-                    Check(solid_geometry->surface(surface)->normal_direction(boundary_position,
+                    Check(solid_geometry->surface(surface)->normal_direction(position,
                                                                              normal));
                     for (int d = 0; d < dimension; ++d)
                     {
-                        positions.push_back(boundary_position[d]);
+                        positions.push_back(position[d]);
                         boundary_normal.push_back(normal[d]);
                     }
                     
@@ -221,14 +246,28 @@ namespace // anonymous
                     num_attempts += 1;
                 }
                 
+                // Move particle ahead slightly to avoid finding the same boundary again
+                
+                solid_geometry->new_position(solid_geometry->delta_distance(),
+                                             position,
+                                             direction,
+                                             position);
+                
+                // Find the next boundary
+                
                 surface = solid_geometry->next_boundary(position,
                                                         direction,
                                                         boundary_region,
-                                                        boundary_distance,
-                                                        boundary_position);
+                                                        distance,
+                                                        position);
             }
         }
 
+        // Get internal points
+        
+        vector<double> test_point = {0, 0};
+        int test_region = solid_geometry->find_region(test_point);
+        
         num_attempts = 0;
         while (num_attempts < max_attempts)
         {
@@ -246,7 +285,7 @@ namespace // anonymous
                 
                 region = solid_geometry->find_region(point);
             }
-
+            
             if (point_works(current_point,
                             dimension,
                             min_distance,

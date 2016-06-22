@@ -234,7 +234,7 @@ add_internal_point(int i,
         {
             int k_ord = d + dimension * i;
             
-            derivative += ordinates[k_ord] * basis_rbf->basis(d, equation_position);
+            derivative += ordinates[k_ord] * basis_rbf->dbasis(d, equation_position);
         }
         
         data[n] = derivative + sigma_t[k_sig] * basis_rbf->basis(equation_position);

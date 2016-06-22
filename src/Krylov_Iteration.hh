@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Solver.hh"
+#include "Source_Data.hh"
 #include "Vector_Operator.hh"
 
 using std::shared_ptr;
