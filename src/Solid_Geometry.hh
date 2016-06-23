@@ -47,30 +47,31 @@ public:
         return regions_[r];
     }
     
-    int find_region(vector<double> const &particle_position) const;
+    int find_region(vector<double> const &position) const;
     
-    int find_surface(vector<double> const &particle_position) const;
+    int find_surface(vector<double> const &position) const;
     
-    int next_intersection(vector<double> const &particle_position,
-                          vector<double> const &particle_direction,
+    int next_intersection(vector<double> const &initial_position,
+                          vector<double> const &initial_direction,
+                          int &final_region,
                           double &distance,
-                          vector<double> &position) const;
+                          vector<double> &final_position) const;
 
-    int next_boundary(vector<double> const &particle_position,
-                      vector<double> const &particle_direction,
+    int next_boundary(vector<double> const &initial_position,
+                      vector<double> const &initial_direction,
                       int &boundary_region,
                       double &distance,
-                      vector<double> &position) const;
+                      vector<double> &final_position) const;
     
-    int next_geometric_intersection(vector<double> const &particle_position,
-                                    vector<double> const &particle_direction,
+    int next_geometric_intersection(vector<double> const &initial_position,
+                                    vector<double> const &initial_direction,
                                     double &distance,
-                                    vector<double> &position) const;
+                                    vector<double> &final_position) const;
 
     void new_position(double distance,
-                      vector<double> const &particle_position,
-                      vector<double> const &particle_direction,
-                      vector<double> &new_position) const;
+                      vector<double> const &initial_position,
+                      vector<double> const &initial_direction,
+                      vector<double> &final_position) const;
     
 private:
 
