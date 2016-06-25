@@ -1,4 +1,4 @@
-set(subdirectories "")
+set(subdirectories src)
 
 foreach(subdirectory ${subdirectories})
     add_subdirectory(${subdirectory})
