@@ -7,6 +7,7 @@
 #include "Krylov_Iteration.hh"
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
+#include "Null_Solver.hh"
 #include "Ordinate_Sweep_Operator.hh"
 #include "RBF_Sweep_1D.hh"
 #include "Scattering.hh"
@@ -39,6 +40,15 @@ Solver_Parser(pugi::xml_node &input_file,
     else if (solver_type == "krylov_iteration")
     {
         solver_ = parse_krylov_iteration();
+    }
+    else if (solver_type == "null_solver")
+    {
+        solver_ = make_shared<Null_Solver>(1,
+                                           spatial,
+                                           angular,
+                                           energy,
+                                           nuclear,
+                                           source);
     }
     else
     {
