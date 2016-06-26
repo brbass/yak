@@ -1,5 +1,5 @@
-set(library_name data)
-set(library_dependencies external utilities discretization)
+set(library_name driver)
+set(library_dependencies external utilities discretization data solver)
 
 include_directories(${global_include_directories})
 
