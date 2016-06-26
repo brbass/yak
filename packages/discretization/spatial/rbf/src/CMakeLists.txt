@@ -1,5 +1,4 @@
 set(library_name discretization_spatial_rbf)
-# set(library_dependencies external utilities)
 
 include_directories(${global_include_directories})
 

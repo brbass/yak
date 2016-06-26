@@ -23,8 +23,8 @@ add_library(${library_name} ${src})
 
 target_link_libraries(${library_name} ${library_dependencies})
 
-install(TARGETS ${library_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-
 foreach(subdirectory ${subdirectories})
     add_subdirectory(${subdirectory})
 endforeach()
+
+install(TARGETS ${library_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

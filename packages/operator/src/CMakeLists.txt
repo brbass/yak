@@ -2,7 +2,7 @@ set(library_name operator)
 
 set(library_include_directories ${global_include_directories} ${global_trilinos_include_directories})
 set(library_link_directories ${global_trilinos_link_directories})
-set(library_dependencies external utilities discretization data ${global_trilinos_link_libraries})
+set(library_dependencies external utilities discretization_angular discretization_energy discretization_spatial data ${global_trilinos_link_libraries})
 
 file(GLOB src *.cc *.hh)
 
