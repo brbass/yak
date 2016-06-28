@@ -154,8 +154,13 @@ add_boundary_point(int b,
     vector<double> const alpha = source_data_->alpha();
 
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
-    vector<double const>::iterator it = boundary_normal.begin() + dimension * b;
-    vector<double> const local_normal(it, it + dimension);
+    vector<double> local_normal(dimension);
+    for (int d = 0; d < dimension; ++d)
+    {
+        int k_bn = d + dimension * b;
+
+        local_normal[d] = boundary_normal[k_bn];
+    }
     
     // Replace matrix values
     vector<double> data(number_of_neighbors, 0);

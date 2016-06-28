@@ -101,6 +101,10 @@ namespace // anonymous
             normal[1] = sqrt_mu * sin(theta);
             normal[2] = mu;
 
+            direction[0] = normal[0];
+            direction[1] = normal[1];
+            direction[2] = normal[2];
+
             while (vf3::dot(direction, normal) > 0)
             {
                 double xi = mu_rng.random_double();
@@ -232,6 +236,7 @@ namespace // anonymous
                     vector<double> normal;
                     Check(solid_geometry->surface(surface)->normal_direction(position,
                                                                              normal));
+                    
                     for (int d = 0; d < dimension; ++d)
                     {
                         positions.push_back(position[d]);
@@ -262,7 +267,7 @@ namespace // anonymous
                                                         position);
             }
         }
-
+        
         // Get internal points
         
         vector<double> test_point = {0, 0};
