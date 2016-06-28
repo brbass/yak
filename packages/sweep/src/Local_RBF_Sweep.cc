@@ -62,7 +62,7 @@ apply(vector<double> &x) const
             for (int b = 0; b < number_of_boundary_points; ++b)
             {
                 int i = boundary_points[b];
-
+                
                 double sum = 0;
                 
                 for (int d = 0; d < dimension; ++d)
@@ -142,15 +142,20 @@ add_boundary_point(int b,
                    int g,
                    vector<double> const &x) const
 {
+    int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     int number_of_augments = source_data_->number_of_augments();
     int number_of_neighbors = rbf_mesh_->number_of_neighbors();
     vector<int> const neighbors = rbf_mesh_->neighbors(i);
-    
+
     vector<double> const boundary_source = source_data_->boundary_source();
     vector<double> const alpha = source_data_->alpha();
+
+    vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
+    vector<double const>::iterator it = boundary_normal.begin() + dimension * b;
+    vector<double> const local_normal(it, it + dimension);
     
     // Replace matrix values
     vector<double> data(number_of_neighbors, 0);
@@ -177,7 +182,8 @@ add_boundary_point(int b,
 
     // Replace RHS value
     int psi_size = row_size() - number_of_augments;
-    int o1 = number_of_ordinates - o - 1;
+    int o1 = angular_discretization_->reflect_ordinate(o,
+                                                       local_normal);
     int k_ref = psi_size + g + number_of_groups * (o1 + number_of_ordinates * b);
     double rhs = alpha[b] * x[k_ref];
 

@@ -31,7 +31,7 @@ public:
                                 vector<double> &distances) const;
     
 private:
-
+    
     int number_of_points_;
     int dimension_;
     

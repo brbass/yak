@@ -19,55 +19,31 @@
     <type>rbf_solid</type>
     <local>1</local>
     <coefficient_type>phi</coefficient_type>
-    <number_of_neighbors>100</number_of_neighbors>
+    <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>1.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
-    <max_attempts>100000</max_attempts>
-    <min_distance>0.04</min_distance>
-    <bounding_radius>2.0</bounding_radius>
-    <bounding_origin>1.5 0</bounding_origin>
+    <max_attempts>1000</max_attempts>
+    <min_distance>0.5</min_distance>
+    <bounding_radius>3.1</bounding_radius>
+    <bounding_origin>0 0 0</bounding_origin>
     
     <solid_geometry>
-      <dimension>2</dimension>
+      <dimension>3</dimension>
       <surfaces>
         <surface>
           <number>0</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>0 0</origin>
-          <normal>-1 0</normal>
+          <shape>sphere</shape>
+          <type>internal</type>
+          <origin>0 0 0</origin>
+          <radius>1</radius>
         </surface>
-
+        
         <surface>
           <number>1</number>
-          <shape>line</shape>
-          <type>internal</type>
-          <origin>1 0</origin>
-          <normal>1 0</normal>
-        </surface>
-
-        <surface>
-          <number>2</number>
-          <shape>line</shape>
+          <shape>sphere</shape>
           <type>vacuum_boundary</type>
-          <origin>3 0</origin>
-          <normal>1 0</normal>
-        </surface>
-
-        <surface>
-          <number>3</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>0 1</origin>
-          <normal>0 1</normal>
-        </surface>
-
-        <surface>
-          <number>4</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>0 -1</origin>
-          <normal>0 -1</normal>
+          <origin>0 0 0</origin>
+          <radius>3</radius>
         </surface>
       </surfaces>
 
@@ -78,22 +54,7 @@
 
           <surface_relation>
             <surface>0</surface>
-            <relation>negative</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>1</surface>
-            <relation>negative</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>3</surface>
-            <relation>negative</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>4</surface>
-            <relation>negative</relation>
+            <relation>inside</relation>
           </surface_relation>
         </region>
 
@@ -102,23 +63,13 @@
           <material>1</material>
 
           <surface_relation>
+            <surface>0</surface>
+            <relation>outside</relation>
+          </surface_relation>
+
+          <surface_relation>
             <surface>1</surface>
-            <relation>positive</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>2</surface>
-            <relation>negative</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>3</surface>
-            <relation>negative</relation>
-          </surface_relation>
-
-          <surface_relation>
-            <surface>4</surface>
-            <relation>negative</relation>
+            <relation>inside</relation>
           </surface_relation>
         </region>
       </regions>
@@ -126,7 +77,7 @@
   </spatial_discretization>
   
   <angular_discretization>
-    <dimension>2</dimension>
+    <dimension>3</dimension>
     <number_of_moments>1</number_of_moments>
     <rule>1</rule>
   </angular_discretization>
@@ -164,6 +115,6 @@
   <source_data>
     <internal_source_type>isotropic</internal_source_type>
     <boundary_source_type>surface_isotropic</boundary_source_type>
-    <boundary_source>0 0 0 0 0 0 0 0 0 0</boundary_source>
+    <boundary_source>0 0 0 0</boundary_source>
   </source_data>
 </input>
