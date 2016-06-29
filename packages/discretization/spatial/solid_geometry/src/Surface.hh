@@ -65,6 +65,8 @@ public:
     virtual double distance(vector<double> const &position) const
     {
         AssertMsg(false, "Not yet implemented for this surface");
+        
+        return 0;
     }
 
     /* Type of intersection of streaming particle with surface

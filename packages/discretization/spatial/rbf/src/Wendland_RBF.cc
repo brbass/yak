@@ -1,6 +1,11 @@
 #include "Wendland_RBF.hh"
 
 #include <cmath>
+#include <string>
+
+#include "Check.hh"
+
+using std::to_string;
 
 Wendland_RBF::
 Wendland_RBF(int number_of_dimensions,
@@ -46,6 +51,10 @@ basis(vector<double> const &r) const
             return pow(1-dist, 8)*(32*dist*dist*dist+18*dist*dist+8*dist+1);
         }
         return 0;
+    default:
+        AssertMsg(false, "order \"" + to_string(order_) + "\" not implemented");
+        
+        return 0;
     }
 }
 
@@ -86,6 +95,10 @@ dbasis(int dim,
         {
             return kr2*22*pow(dist-1, 7)*(1+dist*(16*dist+7));
         }
+        return 0;
+    default:
+        AssertMsg(false, "order \"" + to_string(order_) + "\" not implemented");
+        
         return 0;
     }
 }
@@ -132,6 +145,10 @@ ddbasis(int dim,
         {
             return 22 * shape_[dim] * shape_[dim]* pow(dist - 1, 6)*((dist-1)*(1+dist*(7+16*dist)) + 24*k2r2*(1+6*dist));
         }
+        return 0;
+    default:
+        AssertMsg(false, "order \"" + to_string(order_) + "\" not implemented");
+        
         return 0;
     }
 }
