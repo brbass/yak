@@ -38,16 +38,17 @@ relation(vector<double> const &particle_position) const
                                                          vf3::dot(direction_,
                                                                   k0)));
     double const r = vf3::magnitude(n);
+    double const dr = r - radius_;
 
-    if (abs(r - radius_) <= relation_tolerance_)
+    if (abs(dr) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
-    else if (r < radius_)
+    else if (dr < 0)
     {
         return Relation::INSIDE;
     }
-    else // if (r > radius_)
+    else // if (dr > 0)
     {
         return Relation::OUTSIDE;
     }

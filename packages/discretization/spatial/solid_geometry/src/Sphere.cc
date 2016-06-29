@@ -26,16 +26,17 @@ relation(vector<double> const &particle_position) const
                                             origin_);
     
     double const r = vf3::magnitude(k0);
+    double const dr = r - radius_;
     
-    if (r <= relation_tolerance_)
+    if (abs(dr) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
-    if (r < radius_)
+    if (dr < 0)
     {
         return Relation::INSIDE;
     }
-    else // if (r > radius_)
+    else // if (dr > 0)
     {
         return Relation::OUTSIDE;
     }

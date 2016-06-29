@@ -25,12 +25,13 @@ relation(vector<double> const &particle_position) const
     vector<double> const x = vf2::subtract(particle_position, origin_);
     
     double const r = vf2::magnitude(x);
+    double const dr = r - radius_;
     
-    if (abs(r - radius_) <= relation_tolerance_)
+    if (abs(dr) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
-    else if (r < radius_)
+    else if (dr < 0)
     {
         return Relation::INSIDE;
     }

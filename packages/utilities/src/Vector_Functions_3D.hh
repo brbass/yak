@@ -15,7 +15,7 @@ namespace Vector_Functions_3D
                 x[1] + y[1],
                 x[2] + y[2]};
     }
-
+    
     template<class T> vector<T> subtract(vector<T> const &x,
                                          vector<T> const &y)
     {

@@ -17,38 +17,47 @@ namespace // anonymous
 {
     Random_Number_Generator mu_rng(-1, 1);
     Random_Number_Generator theta_rng(0, 2 * M_PI);
-    Random_Number_Generator r_rng(0, 1);
-
-    // Get a random point inside a sphere
+    
+    // Get a random point inside a cube
     
     void get_point(int dimension,
                    double bounding_radius,
                    vector<double> const &bounding_origin,
                    vector<double> &point)
     {
-        double mu = mu_rng.random_double();
-        double theta = theta_rng.random_double();
-        double r = r_rng.random_double() * bounding_radius;
-        double sqrt_mu = sqrt(1 - mu * mu);
-        
         point.resize(dimension);
-   
-        switch(dimension)
+        
+        for (int d = 0; d < dimension; ++d)
         {
-        case 2:
-        {
-            point[0] = bounding_origin[0] + r * cos(theta);
-            point[1] = bounding_origin[1] + r * sin(theta);
-            break;
+            point[d] = bounding_radius * mu_rng.random_double() + bounding_origin[d];
         }
-        case 3:
-        {
-            point[0] = bounding_origin[0] + r * sqrt_mu * cos(theta);
-            point[1] = bounding_origin[1] + r * sqrt_mu * sin(theta);
-            point[2] = bounding_origin[2] + r * mu;
-            break;
-        }
-        }
+        
+        // switch(dimension)
+        // {
+        // case 2:
+        // {
+        //     double theta = 2 * M_PI * rng.random_double();
+        //     double r = bounding_radius * rng.random_double();
+
+        //     point[0] = bounding_origin[0] + r * cos(theta);
+        //     point[1] = bounding_origin[1] + r * sin(theta);
+            
+        //     break;
+        // }
+        // case 3:
+        // {
+        //     double theta = 2 * M_PI * rng.random_double();
+        //     double r = bounding_radius * rng.random_double();
+        //     double mu = 2 * rng.random_double() - 1
+        //     double sqrt_mu = sqrt(1 - mu * mu);
+            
+        //     point[0] = bounding_origin[0] + r * sqrt_mu * cos(theta);
+        //     point[1] = bounding_origin[1] + r * sqrt_mu * sin(theta);
+        //     point[2] = bounding_origin[2] + r * mu;
+
+        //     break;
+        // }
+        // }
     }
 
     // Get a random, inward-facing ray from the edge of a sphere
@@ -181,7 +190,8 @@ namespace // anonymous
         // Get parameters for bounding sphere
         
         int max_attempts = XML_Functions::child_value<int>(spatial, "max_attempts");
-        double min_distance = XML_Functions::child_value<double>(spatial, "min_distance");
+        double min_distance_boundary = XML_Functions::child_value<double>(spatial, "min_distance_boundary");
+        double min_distance_internal = XML_Functions::child_value<double>(spatial, "min_distance_internal");
         double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
         vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
         
@@ -232,7 +242,7 @@ namespace // anonymous
                 
                 if (point_works(current_point,
                                 dimension,
-                                min_distance,
+                                min_distance_boundary,
                                 position,
                                 positions))
                 {
@@ -297,7 +307,7 @@ namespace // anonymous
             
             if (point_works(current_point,
                             dimension,
-                            min_distance,
+                            min_distance_internal,
                             point,
                             positions))
             {
