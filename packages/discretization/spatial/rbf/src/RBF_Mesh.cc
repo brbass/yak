@@ -17,20 +17,37 @@ using namespace std;
 namespace // anonymous
 {
     double get_shape_parameter(int number_of_neighbors,
+                               int dimension,
                                double shape_multiplier,
                                vector<double> const &distance)
     {
+        // double average_distance = 0;
+        
+        // for (int i = 0; i < number_of_neighbors; ++i)
+        // {
+        //     average_distance += sqrt(distance[i]);
+        // }
+        
+        // average_distance /= number_of_neighbors;
+        
+        // return number_of_neighbors * shape_multiplier / (4 * average_distance);
+        
         double average_distance = 0;
         
-        for (int i = 0; i < number_of_neighbors; ++i)
+        int number_to_average = 2 * dimension;
+        
+        number_to_average = number_to_average > number_of_neighbors ? number_of_neighbors : number_to_average;
+        
+        for (int i = 0; i < number_to_average; ++i)
         {
             average_distance += sqrt(distance[i]);
         }
         
-        average_distance /= number_of_neighbors;
+        average_distance /= number_to_average;
         
-        return number_of_neighbors * shape_multiplier / (4 * average_distance);
+        return shape_multiplier / average_distance;
     }
+
 }
 
 RBF_Mesh::
@@ -90,6 +107,7 @@ RBF_Mesh(int dimension,
         neighbors_[i] = neighbors;
 
         double shape_parameter = get_shape_parameter(number_of_neighbors_,
+                                                     dimension_,
                                                      shape_multiplier_,
                                                      distances);
         
