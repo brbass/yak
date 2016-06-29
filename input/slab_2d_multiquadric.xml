@@ -19,11 +19,11 @@
     <type>rbf_solid</type>
     <local>1</local>
     <coefficient_type>phi</coefficient_type>
-    <number_of_neighbors>100</number_of_neighbors>
-    <shape_multiplier>1.0</shape_multiplier>
+    <number_of_neighbors>50</number_of_neighbors>
+    <shape_multiplier>0.4</shape_multiplier>
     <basis_type>multiquadric</basis_type>
-    <max_attempts>100000</max_attempts>
-    <min_distance>0.04</min_distance>
+    <max_attempts>1000</max_attempts>
+    <min_distance>0.2</min_distance>
     <bounding_radius>2.0</bounding_radius>
     <bounding_origin>1.5 0</bounding_origin>
     

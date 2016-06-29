@@ -32,6 +32,7 @@ private:
 
     virtual void apply(vector<double> &x) const override;
     void sweep_slab(vector<double> &x) const;
+    void sweep_sphere(vector<double> &x) const;
     
 };
 

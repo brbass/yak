@@ -34,6 +34,8 @@ apply(vector<double> &x) const
     case Spatial_Discretization::Geometry::SLAB:
         sweep_slab(x);
         break;
+    case Spatial_Discretization::Geometry::SPHERE:
+        sweep_sphere(x);
     default:
         AssertMsg(false, "Sweep type not implemented");
         break;
@@ -195,3 +197,8 @@ sweep_slab(vector<double> &x) const
     }
 }
 
+void DFEM_Sweep_1D::
+sweep_sphere(vector<double> &x) const
+{
+    AssertMsg(false, "not yet implemented");
+}
