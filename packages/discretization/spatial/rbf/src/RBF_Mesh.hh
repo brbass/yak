@@ -47,6 +47,8 @@ public:
              vector<int> const &internal_points,
              vector<double> const &positions,
              vector<double> const &boundary_normal,
+             vector<int> const &surface = vector<int>(),
+             vector<int> const &region = vector<int>(),
              shared_ptr<Solid_Geometry> const solid_geometry = shared_ptr<Solid_Geometry>());
     
     // Number of points
@@ -116,6 +118,18 @@ public:
         return internal_points_;
     }
     
+    // Surface the boundary point lies on
+    virtual vector<int> const &surface() const
+    {
+        return surface_;
+    }
+
+    // Region the internal point is in
+    virtual vector<int> const &region() const
+    {
+        return region_;
+    }
+
     // Material number for each point
     virtual vector<int> const &material() const override
     {
@@ -159,6 +173,8 @@ protected:
     vector<int> boundary_points_;
     vector<int> internal_points_;
     vector<int> material_;
+    vector<int> region_;
+    vector<int> surface_;
     vector<double> boundary_normal_;
     vector<double> point_positions_;
     vector<double> shape_parameter_;

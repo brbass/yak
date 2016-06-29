@@ -1,19 +1,25 @@
 #include "Surface.hh"
 
+#include <limits>
+
 #include "Vector_Functions_2D.hh"
 #include "Vector_Functions_3D.hh"
+
+using std::numeric_limits;
 
 namespace vf2 = Vector_Functions_2D;
 namespace vf3 = Vector_Functions_3D;
 
 Surface::
 Surface(int dimension,
-        Surface_Type surface_type,
-        double tolerance):
+        Surface_Type surface_type):
     dimension_(dimension),
-    surface_type_(surface_type),
-    tolerance_(tolerance)
+    surface_type_(surface_type)
 {
+    check_normal_ = false;
+    relation_tolerance_ = 10 * numeric_limits<double>::epsilon();
+    intersection_tolerance_ = 10 * numeric_limits<double>::epsilon();
+    normal_tolerance_ = 1000 * numeric_limits<double>::epsilon();
 };
 
 bool Surface::

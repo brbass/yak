@@ -67,6 +67,8 @@ private:
     
     int rule_;
 
+    double reflection_tolerance_;
+
     vector<double> mu_;
     vector<double> eta_;
     vector<double> xi_;

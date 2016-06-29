@@ -26,7 +26,7 @@ relation(vector<double> const &particle_position) const
     
     double const r = vf2::magnitude(x);
     
-    if (abs(r - radius_) <= tolerance_)
+    if (abs(r - radius_) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
@@ -38,6 +38,16 @@ relation(vector<double> const &particle_position) const
     {
         return Relation::OUTSIDE;
     }
+}
+
+double Circle::
+distance(vector<double> const &position) const
+{
+    vector<double> const x = vf2::subtract(position, origin_);
+    
+    double const r = vf2::magnitude(x);
+    
+    return abs(r - radius_);
 }
 
 Circle::Intersection Circle::
@@ -59,7 +69,7 @@ intersection(vector<double> const &particle_position,
     {
         return Intersection::NONE;
     }
-    else if (l2 <= tolerance_)
+    else if (l2 <= intersection_tolerance_)
     {
         return Intersection::PARALLEL;
     }
@@ -86,7 +96,7 @@ intersection(vector<double> const &particle_position,
                         vf2::multiply(particle_direction,
                                       distance));
     
-    if (l3 <= tolerance_)
+    if (l3 <= intersection_tolerance_)
     {
         return Intersection::TANGEANT;
     }
@@ -104,10 +114,13 @@ normal_direction(vector<double> const &position,
 
     vector<double> const k0 = vf2::subtract(position,
                                             origin_);
-    
-    if (abs(vf2::magnitude_squared(k0) - radius_ * radius_) > tolerance_)
+
+    if (check_normal_)
     {
-        return false;
+        if (abs(vf2::magnitude_squared(k0) - radius_ * radius_) > normal_tolerance_ * radius_ * radius_)
+        {
+            return false;
+        }
     }
     
     normal = vf2::normalize(k0);

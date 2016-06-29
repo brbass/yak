@@ -23,6 +23,8 @@ Local_RBF_Mesh(int dimension,
                vector<int> const &internal_points,
                vector<double> const &positions,
                vector<double> const &boundary_normal,
+               vector<int> const &surface,
+               vector<int> const &region,
                shared_ptr<Solid_Geometry> const solid_geometry):
     RBF_Mesh(dimension,
              number_of_points,
@@ -37,6 +39,8 @@ Local_RBF_Mesh(int dimension,
              internal_points,
              positions,
              boundary_normal,
+             surface,
+             region,
              solid_geometry),
     coefficient_type_(coefficient_type)
 {

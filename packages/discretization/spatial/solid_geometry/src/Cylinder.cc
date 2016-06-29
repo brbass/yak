@@ -39,7 +39,7 @@ relation(vector<double> const &particle_position) const
                                                                   k0)));
     double const r = vf3::magnitude(n);
 
-    if (abs(r - radius_) <= tolerance_)
+    if (abs(r - radius_) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
@@ -88,7 +88,7 @@ intersection(vector<double> const &particle_position,
     {
         return Intersection::NONE;
     }
-    else if (l2 <= tolerance_)
+    else if (l2 <= intersection_tolerance_)
     {
         return Intersection::PARALLEL;
     }
@@ -115,7 +115,7 @@ intersection(vector<double> const &particle_position,
                         vf3::multiply(particle_direction,
                                       distance));
 
-    if (l3 <= tolerance_)
+    if (l3 <= intersection_tolerance_)
     {
         return Intersection::TANGEANT;
     }
@@ -135,10 +135,13 @@ normal_direction(vector<double> const &position,
                                            vf3::multiply(direction_,
                                                          vf3::dot(direction_,
                                                                   k0)));
-    
-    if (abs(vf3::magnitude_squared(n) - radius_ * radius_) > tolerance_)
+
+    if (check_normal_)
     {
-        return false;
+        if (abs(vf3::magnitude_squared(n) - radius_ * radius_) > normal_tolerance_ * radius_ * radius_)
+        {
+            return false;
+        }
     }
     
     normal = vf3::normalize(n);

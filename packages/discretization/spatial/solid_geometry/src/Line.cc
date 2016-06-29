@@ -21,11 +21,14 @@ Line(Surface_Type surface_type,
 Line::Relation Line::
 relation(vector<double> const &particle_position) const
 {
-    double const k = vf2::dot(normal_,
-                              vf2::subtract(particle_position,
-                                            origin_));
+    vector<double> const k0 = vf2::subtract(particle_position,
+                                            origin_);
+    double const k1 = vf2::magnitude(k0);
 
-    if (abs(k) <= tolerance_)
+    double const k = vf2::dot(normal_, 
+                              k0);
+
+    if (abs(k) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
@@ -52,7 +55,7 @@ intersection(vector<double> const &particle_position,
     double const l1 = vf2::dot(particle_direction,
                                normal_);
     
-    if (abs(l1) <= tolerance_)
+    if (abs(l1) <= intersection_tolerance_)
     {
         return Intersection::PARALLEL;
     }
@@ -79,12 +82,16 @@ bool Line::
 normal_direction(vector<double> const &position,
                  vector<double> &normal) const
 {
-    // Check whether point lies on line
-    if (vf2::dot(normal_,
-                 vf2::subtract(position, origin_))
-        > tolerance_)
+    if (check_normal_)
     {
-        return false;
+        vector<double> const k0 = vf2::subtract(position, origin_);
+        double const k1 = vf2::magnitude(k0);
+
+        // Check whether point lies on line
+        if (vf2::dot(normal_, k0) > normal_tolerance_ * k1)
+        {
+            return false;
+        }
     }
     
     normal = normal_;

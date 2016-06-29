@@ -25,7 +25,7 @@ relation(vector<double> const &particle_position) const
                               vf3::subtract(particle_position,
                                             origin_));
 
-    if (abs(k) <= tolerance_)
+    if (abs(k) <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
@@ -52,7 +52,7 @@ intersection(vector<double> const &particle_position,
     double const l1 = vf3::dot(particle_direction,
                                normal_);
     
-    if (abs(l1) <= tolerance_)
+    if (abs(l1) <= intersection_tolerance_)
     {
         return Intersection::PARALLEL;
     }
@@ -80,11 +80,16 @@ normal_direction(vector<double> const &position,
                  vector<double> &normal) const
 {
     // Check whether point lies on plane
-    if (vf3::dot(normal_,
-                 vf3::subtract(position, origin_))
-        > tolerance_)
+
+    if (check_normal_)
     {
-        return false;
+        vector<double> const k0 = vf3::subtract(position, origin_);
+        double k1 = vf3::magnitude(k0);
+
+        if (vf3::dot(normal_, k0) > normal_tolerance_ * k1)
+        {
+            return false;
+        }
     }
     
     normal = normal_;

@@ -178,7 +178,8 @@ Source_Data_Parser(pugi::xml_node &input_file,
         shared_ptr<RBF_Mesh> const rbf_mesh = dynamic_pointer_cast<RBF_Mesh>(spatial);
         shared_ptr<Solid_Geometry> const solid_geometry = rbf_mesh->solid_geometry();
         int number_of_surfaces = solid_geometry->number_of_surfaces();
-        
+        vector<int> const surfaces = rbf_mesh->surface();
+
         vector<double> boundary_s = XML_Functions::child_vector<double>(source_node, "boundary_source", number_of_surfaces * number_of_groups);
 
         boundary_source.assign(number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups, 0);
@@ -188,13 +189,8 @@ Source_Data_Parser(pugi::xml_node &input_file,
         {
             int i = boundary_cells[b];
             shared_ptr<RBF> const basis = rbf_mesh->basis_function(i);
-            int surface = solid_geometry->find_surface(basis->position());
-
-            if (surface == Solid_Geometry::NO_SURFACE)
-            {
-                AssertMsg(false, "could not find surface");
-            }
-
+            int surface = surfaces[b];
+            
             for (int o = 0; o < number_of_ordinates; ++o)
             {
                 for (int g = 0; g < number_of_groups; ++g)

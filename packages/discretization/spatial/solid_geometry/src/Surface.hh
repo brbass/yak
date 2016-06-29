@@ -1,10 +1,10 @@
 #ifndef Surface_hh
 #define Surface_hh
 
-#include <limits>
 #include <vector>
 
-using std::numeric_limits;
+#include "Check.hh"
+
 using std::vector;
 
 /*
@@ -44,8 +44,7 @@ public:
 
     /* Constructor */
     Surface(int dimension_,
-            Surface_Type surface_type,
-            double tolerance = 1000 * numeric_limits<double>::epsilon());
+            Surface_Type surface_type);
     
     /* Number of spatial dimensions */
     virtual int dimension()
@@ -60,16 +59,21 @@ public:
     }
 
     /* Returns relationship between point and surface */
-    virtual Relation relation(vector<double> const &particle_position) const = 0;
+    virtual Relation relation(vector<double> const &position) const = 0;
     
+    /* Returns distance to the surface */
+    virtual double distance(vector<double> const &position) const
+    {
+        AssertMsg(false, "Not yet implemented for this surface");
+    }
+
     /* Type of intersection of streaming particle with surface
        If type is TANGEANT or PARALLEL, the distance and position are
-       
        returned. Otherwise, the distance and position remain unchanged.*/
-    virtual Intersection intersection(vector<double> const &particle_position,
-                                      vector<double> const &particle_direction,
+    virtual Intersection intersection(vector<double> const &initial_position,
+                                      vector<double> const &initial_direction,
                                       double &distance,
-                                      vector<double> &position) const = 0;
+                                      vector<double> &final_position) const = 0;
 
     /* Normal direction of surface at a point on the surface */
     virtual bool normal_direction(vector<double> const &position,
@@ -77,14 +81,17 @@ public:
 
     /* Reflected direction */
     virtual bool reflected_direction(vector<double> const &position,
-                                     vector<double> const &old_direction,
-                                     vector<double> &new_direction);
+                                     vector<double> const &initial_direction,
+                                     vector<double> &final_direction);
     
 protected:
 
+    bool check_normal_;
     int dimension_;
     Surface_Type surface_type_;
-    double tolerance_;
+    double relation_tolerance_;
+    double intersection_tolerance_;
+    double normal_tolerance_;
 };
 
 #endif

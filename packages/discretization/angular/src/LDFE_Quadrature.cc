@@ -1,13 +1,14 @@
 #include "LDFE_Quadrature.hh"
 
 #include <cmath>
-
 #include <iostream>
 #include <iomanip>
-using namespace std;
+#include <limits>
 
 #include "Check.hh"
 #include "XML_Functions.hh"
+
+using namespace std;
 
 namespace // anonymous
 {
@@ -42,6 +43,7 @@ LDFE_Quadrature(int dimension,
                                                    rule)),
     rule_(rule)
 {
+    reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();
     initialize_quadrature();
 }
 
@@ -115,7 +117,7 @@ reflect_ordinate(int o,
     switch(dimension_)
     {
     case 2:
-        if (abs(normal[0]) == 1)
+        if (abs(abs(normal[0]) - 1) < reflection_tolerance_)
         {
             if (mu_[o] > 0)
             {
@@ -126,7 +128,7 @@ reflect_ordinate(int o,
                 return o + 2;
             }
         }
-        else if (abs(normal[1]) == 1)
+        else if (abs(abs(normal[1]) - 1) < reflection_tolerance_)
         {
             if (eta_[o] > 0)
             {
@@ -139,12 +141,12 @@ reflect_ordinate(int o,
         }
         else 
         {
-            AssertMsg(false, "surface must be in x, y or z plane");
+            AssertMsg(false, "surface must be in x, y, or z plane: {" + to_string(normal[0]) + ", " + to_string(normal[1]) + "}");
             
             return o;
         }
     case 3:
-        if (abs(normal[0]) == 1)
+        if (abs(abs(normal[0]) - 1) < reflection_tolerance_)
         {
             if (mu_[o] > 0)
             {
@@ -155,7 +157,7 @@ reflect_ordinate(int o,
                 return o + 4;
             }
         }
-        else if (abs(normal[1]) == 1)
+        else if (abs(abs(normal[1]) - 1) < reflection_tolerance_)
         {
             if (eta_[o] > 0)
             {
@@ -166,7 +168,7 @@ reflect_ordinate(int o,
                 return o + 2;
             }
         }
-        else if (abs(normal[2]) == 1)
+        else if (abs(abs(normal[2]) - 1) < reflection_tolerance_)
         {
             if (xi_[o] > 0)
             {
@@ -179,7 +181,7 @@ reflect_ordinate(int o,
         }
         else 
         {
-            AssertMsg(false, "surface must be in x, y or z plane");
+            AssertMsg(false, "surface must be in x, y, or z plane: {" + to_string(normal[0]) + ", " + to_string(normal[1]) + ", " + to_string(normal[2]) + "}");
             
             return o;
         }

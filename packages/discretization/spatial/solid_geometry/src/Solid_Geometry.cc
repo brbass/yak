@@ -12,7 +12,7 @@ Solid_Geometry(int dimension,
     surfaces_(surfaces),
     regions_(regions)
 {
-    delta_distance_ = 10000 * numeric_limits<double>::epsilon();
+    delta_distance_ = 1000 * numeric_limits<double>::epsilon();
 }
 
 int Solid_Geometry::

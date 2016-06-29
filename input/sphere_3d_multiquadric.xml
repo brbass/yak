@@ -35,7 +35,7 @@
           <shape>sphere</shape>
           <type>internal</type>
           <origin>0 0 0</origin>
-          <radius>1</radius>
+          <radius>1.0</radius>
         </surface>
         
         <surface>
@@ -43,7 +43,7 @@
           <shape>sphere</shape>
           <type>vacuum_boundary</type>
           <origin>0 0 0</origin>
-          <radius>3</radius>
+          <radius>3.0</radius>
         </surface>
       </surfaces>
 

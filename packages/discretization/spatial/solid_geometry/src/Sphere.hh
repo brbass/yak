@@ -18,6 +18,7 @@ public:
            vector<double> const &origin);
     
     virtual Relation relation(vector<double> const &particle_position) const override;
+    virtual double distance(vector<double> const &position) const override;
     virtual Intersection intersection(vector<double> const &particle_position,
                                       vector<double> const &particle_direction,
                                       double &distance,

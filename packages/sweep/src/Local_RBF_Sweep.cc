@@ -1,5 +1,7 @@
 #include "Local_RBF_Sweep.hh"
 
+#include <limits>
+
 #include <Amesos.h>
 #include <AztecOO.h>
 #include <mpi.h>
@@ -33,6 +35,7 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
                             source_data),
     solver_type_(solver_type)
 {
+    reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
     Assert(rbf_mesh_);
     
@@ -187,10 +190,16 @@ add_boundary_point(int b,
 
     // Replace RHS value
     int psi_size = row_size() - number_of_augments;
-    int o1 = angular_discretization_->reflect_ordinate(o,
-                                                       local_normal);
-    int k_ref = psi_size + g + number_of_groups * (o1 + number_of_ordinates * b);
-    double rhs = alpha[b] * x[k_ref];
+
+    double rhs = 0;
+    if (alpha[b] > reflection_tolerance_)
+    {
+        int o1 = angular_discretization_->reflect_ordinate(o,
+                                                           local_normal);
+        int k_ref = psi_size + g + number_of_groups * (o1 + number_of_ordinates * b);
+        
+        rhs = alpha[b] * x[k_ref];
+    }
 
     if (include_boundary_source_)
     {

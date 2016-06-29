@@ -35,6 +35,8 @@ public:
                    vector<int> const &internal_points,
                    vector<double> const &positions,
                    vector<double> const &boundary_normal,
+                   vector<int> const &surface = vector<int>(),
+                   vector<int> const &region = vector<int>(),
                    shared_ptr<Solid_Geometry> const solid_geometry = shared_ptr<Solid_Geometry>());
     
     // Convert matrix row from solution for coefficient to solution for result

@@ -160,6 +160,8 @@ namespace // anonymous
                           int &number_of_points,
                           int &number_of_boundary_points,
                           int &number_of_internal_points,
+                          vector<int> &surfaces,
+                          vector<int> &regions,
                           vector<int> &material,
                           vector<int> &boundary_points,
                           vector<int> &internal_points,
@@ -168,6 +170,8 @@ namespace // anonymous
     {
         dimension = solid_geometry->dimension();
 
+        surfaces.resize(0);
+        regions.resize(0);
         material.resize(0);
         boundary_points.resize(0);
         internal_points.resize(0);
@@ -181,6 +185,8 @@ namespace // anonymous
         double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
         vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
         
+        // Find boundary points
+
         int current_boundary_point = 0;
         int current_point = 0;
         int current_internal_point = 0;
@@ -190,6 +196,7 @@ namespace // anonymous
         {
             vector<double> position;
             vector<double> direction;
+            vector<double> normal;
             
             int surface = Solid_Geometry::NO_SURFACE;
             int boundary_region = Solid_Geometry::NO_REGION;
@@ -229,11 +236,11 @@ namespace // anonymous
                                 position,
                                 positions))
                 {
+                    surfaces.push_back(surface);
                     material.push_back(solid_geometry->region(boundary_region)->material());
                     boundary_points.push_back(current_point);
                     
                     // Find normal vector
-                    vector<double> normal;
                     Check(solid_geometry->surface(surface)->normal_direction(position,
                                                                              normal));
                     
@@ -270,9 +277,6 @@ namespace // anonymous
         
         // Get internal points
         
-        vector<double> test_point = {0, 0};
-        int test_region = solid_geometry->find_region(test_point);
-        
         num_attempts = 0;
         while (num_attempts < max_attempts)
         {
@@ -297,6 +301,7 @@ namespace // anonymous
                             point,
                             positions))
             {
+                regions.push_back(region);
                 material.push_back(solid_geometry->region(region)->material());
                 internal_points.push_back(current_point);
 
@@ -630,6 +635,8 @@ get_rbf_solid(pugi::xml_node &spatial)
     vector<int> material;
     vector<int> boundary_points;
     vector<int> internal_points;
+    vector<int> surface;
+    vector<int> region;
     vector<double> positions;
     vector<double> boundary_normal;
     
@@ -639,6 +646,8 @@ get_rbf_solid(pugi::xml_node &spatial)
                      number_of_points,
                      number_of_boundary_points,
                      number_of_internal_points,
+                     surface,
+                     region,
                      material,
                      boundary_points,
                      internal_points,
@@ -719,6 +728,8 @@ get_rbf_solid(pugi::xml_node &spatial)
                                            internal_points,
                                            positions,
                                            boundary_normal,
+                                           surface,
+                                           region,
                                            solid_geometry);
     }
     else
@@ -736,6 +747,8 @@ get_rbf_solid(pugi::xml_node &spatial)
                                      internal_points,
                                      positions,
                                      boundary_normal,
+                                     surface,
+                                     region,
                                      solid_geometry);
     }
 }

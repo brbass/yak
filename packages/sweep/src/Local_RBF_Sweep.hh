@@ -61,6 +61,7 @@ private:
 
     int max_iterations_ = 5000;
     double tolerance_ = 1e-6;
+    double reflection_tolerance_;
     Solver_Type solver_type_;
     
     shared_ptr<Epetra_Comm> comm_;

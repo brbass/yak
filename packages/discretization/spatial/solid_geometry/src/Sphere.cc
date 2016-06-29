@@ -27,7 +27,7 @@ relation(vector<double> const &particle_position) const
     
     double const r = vf3::magnitude(k0);
     
-    if (r <= tolerance_)
+    if (r <= relation_tolerance_)
     {
         return Relation::EQUAL;
     }
@@ -39,6 +39,17 @@ relation(vector<double> const &particle_position) const
     {
         return Relation::OUTSIDE;
     }
+}
+
+double Sphere::
+distance(vector<double> const &position) const
+{
+    vector<double> const k0 = vf3::subtract(position,
+                                            origin_);
+    
+    double const r = vf3::magnitude(k0);
+    
+    return abs(r - radius_);
 }
 
 Sphere::Intersection Sphere::
@@ -82,7 +93,7 @@ intersection(vector<double> const &particle_position,
                         vf3::multiply(particle_direction,
                                       distance));
     
-    if (l2 <= tolerance_)
+    if (l2 <= intersection_tolerance_)
     {
         return Intersection::TANGEANT;
     }
@@ -100,10 +111,13 @@ normal_direction(vector<double> const &position,
     
     vector<double> const k0 = vf3::subtract(position,
                                             origin_);
-    
-    if (abs(vf3::magnitude_squared(k0) - radius_ * radius_) > tolerance_)
+
+    if (check_normal_)
     {
-        return false;
+        if (abs(vf3::magnitude_squared(k0) - radius_ * radius_) > normal_tolerance_ * radius_ * radius_)
+        {
+            return false;
+        }
     }
     
     normal = vf3::normalize(k0);
