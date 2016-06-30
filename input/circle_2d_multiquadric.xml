@@ -19,11 +19,11 @@
     <type>rbf_solid</type>
     <local>1</local>
     <coefficient_type>phi</coefficient_type>
-    <number_of_neighbors>100</number_of_neighbors>
-    <shape_multiplier>1.0</shape_multiplier>
+    <number_of_neighbors>50</number_of_neighbors>
+    <shape_multiplier>2.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
-    <min_distance_boundary>0.7</min_distance_boundary>
+    <min_distance_boundary>0.1</min_distance_boundary>
     <min_distance_internal>0.1</min_distance_internal>
     <bounding_radius>3.1</bounding_radius>
     <bounding_origin>0 0</bounding_origin>
@@ -95,8 +95,10 @@
         <material_number>0</material_number>
         <sigma_t>1.0 2.0</sigma_t>
         <sigma_s>0.84 0.0 0.09 0.4</sigma_s>
+        <!-- <sigma_s>0 0 0 0</sigma_s> -->
         <nu>2.4 2.4</nu>
         <sigma_f>0.003 1.10</sigma_f>
+        <!-- <sigma_f>0 0</sigma_f> -->
         <chi>1.0 0.0</chi>
         <internal_source>1.0 0.0</internal_source>
       </material>
@@ -105,6 +107,7 @@
         <material_number>1</material_number>
         <sigma_t>1.0 2.0</sigma_t>
         <sigma_s>0.2 0.0 0.8 1.9</sigma_s>
+        <!-- <sigma_s>0 0 0 0</sigma_s> -->
         <nu>0.0 0.0</nu>
         <sigma_f>0.0 0.0</sigma_f>
         <chi>0.0 0.0</chi>
