@@ -25,13 +25,15 @@ Local_RBF_Diffusion(shared_ptr<Spatial_Discretization> spatial_discretization,
                     shared_ptr<Angular_Discretization> angular_discretization,
                     shared_ptr<Energy_Discretization> energy_discretization,
                     shared_ptr<Nuclear_Data> nuclear_data,
-                    shared_ptr<Source_Data> source_data):
+                    shared_ptr<Source_Data> source_data,
+                    Solver_Type solver_type):
     Sweep_Operator(Sweep_Type::MOMENT,
                    spatial_discretization,
                    angular_discretization,
                    energy_discretization,
                    nuclear_data,
-                   source_data)
+                   source_data),
+    solver_type_(solver_type)
 {
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
     Assert(rbf_mesh_);
@@ -48,4 +50,5 @@ apply(vector<double> &x) const
 void Local_RBF_Diffusion::
 initialize_trilinos()
 {
+    
 }
