@@ -7,7 +7,7 @@
 #include "Check.hh"
 #include "Energy_Discretization.hh"
 #include "Nuclear_Data.hh"
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
  #include "XML_Functions.hh"
@@ -210,7 +210,7 @@ apply(vector<double> &x) const
 {
     vector<double> const internal_source = si_.source_data_->internal_source();
     
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);
+    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
     Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
@@ -254,7 +254,7 @@ void Source_Iteration::Flux_Iterator::
 apply(vector<double> &x) const
 {
 
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(si_.sweeper_);
+    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
     shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.scattering_);

@@ -17,7 +17,7 @@
 #include "Energy_Discretization.hh"
 #include "Epetra_Operator_Interface.hh"
 #include "Nuclear_Data.hh"
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
 #include "XML_Functions.hh"
@@ -223,7 +223,7 @@ apply(vector<double> &x) const
 {
     vector<double> const internal_source = ki_.source_data_->internal_source();
     
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(ki_.sweeper_);
+    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
     Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);
@@ -266,7 +266,7 @@ Flux_Iterator(Krylov_Iteration const &ki):
 void Krylov_Iteration::Flux_Iterator::
 apply(vector<double> &x) const
 {
-    shared_ptr<Ordinate_Sweep_Operator> Linv = dynamic_pointer_cast<Ordinate_Sweep_Operator>(ki_.sweeper_);
+    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
     Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);

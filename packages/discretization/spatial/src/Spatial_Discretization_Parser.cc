@@ -15,8 +15,8 @@ namespace vf3 = Vector_Functions_3D;
 
 namespace // anonymous
 {
-    Random_Number_Generator mu_rng(-1, 1);
-    Random_Number_Generator theta_rng(0, 2 * M_PI);
+    Random_Number_Generator<double> mu_rng(-1, 1);
+    Random_Number_Generator<double> theta_rng(0, 2 * M_PI);
     
     // Get a random point inside a cube
     
@@ -29,7 +29,7 @@ namespace // anonymous
         
         for (int d = 0; d < dimension; ++d)
         {
-            point[d] = bounding_radius * mu_rng.random_double() + bounding_origin[d];
+            point[d] = bounding_radius * mu_rng.scalar() + bounding_origin[d];
         }
         
         // switch(dimension)
@@ -67,8 +67,8 @@ namespace // anonymous
                  vector<double> &origin,
                  vector<double> &direction)
     {
-        double mu = mu_rng.random_double();
-        double theta = theta_rng.random_double();
+        double mu = mu_rng.scalar();
+        double theta = theta_rng.scalar();
 
         vector<double> normal(dimension, 0);
         
@@ -90,7 +90,7 @@ namespace // anonymous
 
             while (vf2::dot(direction, normal) > 0)
             {
-                double phi = theta_rng.random_double();
+                double phi = theta_rng.scalar();
                 
                 direction[0] = cos(phi);
                 direction[1] = sin(phi);
@@ -116,8 +116,8 @@ namespace // anonymous
 
             while (vf3::dot(direction, normal) > 0)
             {
-                double xi = mu_rng.random_double();
-                double phi = theta_rng.random_double();
+                double xi = mu_rng.scalar();
+                double phi = theta_rng.scalar();
                 double sqrt_xi = sqrt(1 - xi * xi);
                 
                 direction[0] = sqrt_xi * cos(phi);

@@ -17,11 +17,12 @@ RBF_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
              shared_ptr<Energy_Discretization> energy_discretization,
              shared_ptr<Nuclear_Data> nuclear_data,
              shared_ptr<Source_Data> source_data):
-    Ordinate_Sweep_Operator(spatial_discretization,
-                            angular_discretization,
-                            energy_discretization,
-                            nuclear_data,
-                            source_data)
+    Sweep_Operator(Sweep_Type::ORDINATE,
+                   spatial_discretization,
+                   angular_discretization,
+                   energy_discretization,
+                   nuclear_data,
+                   source_data)
 {
     rbf_mesh_ = dynamic_pointer_cast<RBF_Mesh>(spatial_discretization);
     Assert(rbf_mesh_);

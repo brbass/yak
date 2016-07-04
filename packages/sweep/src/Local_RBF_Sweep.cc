@@ -28,11 +28,12 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
                 shared_ptr<Nuclear_Data> nuclear_data,
                 shared_ptr<Source_Data> source_data,
                 Solver_Type solver_type):
-    Ordinate_Sweep_Operator(spatial_discretization,
-                            angular_discretization,
-                            energy_discretization,
-                            nuclear_data,
-                            source_data),
+    Sweep_Operator(Sweep_Type::ORDINATE,
+                   spatial_discretization,
+                   angular_discretization,
+                   energy_discretization,
+                   nuclear_data,
+                   source_data),
     solver_type_(solver_type)
 {
     reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();

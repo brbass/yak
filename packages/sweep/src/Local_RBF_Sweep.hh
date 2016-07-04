@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 
 class Amesos_BaseSolver;
 class AztecOO;
@@ -22,7 +22,7 @@ using std::shared_ptr;
   
   Creates and solves the matrix directly
 */
-class Local_RBF_Sweep : public Ordinate_Sweep_Operator
+class Local_RBF_Sweep : public Sweep_Operator
 {
 public:
 
@@ -30,9 +30,9 @@ public:
     enum class Solver_Type
     {
         AMESOS,
-            AZTECOO
-            };
-
+        AZTECOO
+    };
+    
     // Constructor
     Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
                     shared_ptr<Angular_Discretization> angular_discretization,

@@ -10,7 +10,7 @@ class Fission;
 class Krylov_Iteration;
 class Local_RBF_Sweep;
 class Moment_To_Discrete;
-class Ordinate_Sweep_Operator;
+class Sweep_Operator;
 class RBF_Sweep_1D;
 class Scattering;
 class Source_Iteration;
@@ -42,8 +42,8 @@ public:
     // Parse Krylov iteration
     shared_ptr<Krylov_Iteration> parse_krylov_iteration();
 
-    // Parse the Ordinate_Sweep_Operator
-    shared_ptr<Ordinate_Sweep_Operator> parse_sweeper();
+    // Parse the Sweep_Operator
+    shared_ptr<Sweep_Operator> parse_sweeper();
 
     // Parse the DFEM sweeper
     shared_ptr<DFEM_Sweep_1D> parse_dfem();

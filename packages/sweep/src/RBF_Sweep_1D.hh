@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 
 class RBF_Mesh;
 
@@ -14,7 +14,7 @@ using std::shared_ptr;
   
   Creates and solves the matrix directly
 */
-class RBF_Sweep_1D : public Ordinate_Sweep_Operator
+class RBF_Sweep_1D : public Sweep_Operator
 {
 public:
 

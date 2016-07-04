@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 
 class Finite_Element_Mesh;
 
@@ -13,7 +13,7 @@ using std::shared_ptr;
    Inverse operator for DFEM sweep
    Uses lumped mass matrices for stability
 */
-class DFEM_Sweep_1D : public Ordinate_Sweep_Operator
+class DFEM_Sweep_1D : public Sweep_Operator
 {
 public:
 

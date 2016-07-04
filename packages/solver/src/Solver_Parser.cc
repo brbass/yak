@@ -8,7 +8,7 @@
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
-#include "Ordinate_Sweep_Operator.hh"
+#include "Sweep_Operator.hh"
 #include "RBF_Sweep_1D.hh"
 #include "Scattering.hh"
 #include "Source_Iteration.hh"
@@ -116,7 +116,7 @@ parse_krylov_iteration()
                                          fission);
 }
 
-shared_ptr<Ordinate_Sweep_Operator> Solver_Parser::
+shared_ptr<Sweep_Operator> Solver_Parser::
 parse_sweeper()
 {
     pugi::xml_node solver = input_file_.child("solution_method");
@@ -140,7 +140,7 @@ parse_sweeper()
     {
         AssertMsg(false, "sweeper type " + sweeper_type + " not found");
         
-        return shared_ptr<Ordinate_Sweep_Operator>();
+        return shared_ptr<Sweep_Operator>();
     }
 }
 
