@@ -1,5 +1,6 @@
 #include "Source_Data.hh"
 
+#include <cmath>
 #include <string>
 
 #include "Check.hh"
@@ -32,7 +33,8 @@ Source_Data(Source_Type internal_source_type,
     int number_of_groups = energy_discretization_->number_of_groups();
 
     number_of_augments_ = number_of_boundary_cells * number_of_nodes * number_of_ordinates * number_of_groups;
-
+    
+    calculate_partial_current();
     check_class_invariants();
 }
 
@@ -64,6 +66,51 @@ check_class_invariants() const
     case Source_Type::MOMENT:
         Assert(boundary_source_.size() == number_of_boundary_cells * number_of_nodes * number_of_moments * number_of_groups);
         break;
+    }
+}
+
+void Source_Data::
+calculate_partial_current()
+{
+    int dimension = angular_discretization_->dimension();
+    int number_of_boundaries = spatial_discretization_->number_of_boundary_points();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    vector<double> const weights = angular_discretization_->weights();
+    vector<double> const ordinates = angular_discretization_->ordinates();
+    vector<double> const boundary_normal = spatial_discretization_->boundary_normal();
+    
+    partial_current_.resize(number_of_boundaries * number_of_groups);
+
+    for (int b = 0; b < number_of_boundaries; ++b)
+    {
+        for (int g = 0; g < number_of_groups; ++g)
+        {
+            double current = 0;
+            
+            for (int o = 0; o < number_of_ordinates; ++o)
+            {
+                double omega_dot_n = 0;
+                
+                for (int d = 0; d < dimension; ++d)
+                {
+                    int k_ord = d + dimension * o;
+                    int k_bn = d + dimension * b;
+                    
+                    omega_dot_n += ordinates[k_ord] * boundary_normal[k_bn];
+                }
+                
+                if (omega_dot_n < 0)
+                {
+                    int k_bs = g + number_of_groups * (o + number_of_ordinates * b);
+                    current += abs(omega_dot_n) * boundary_source_[k_bs] * weights[o];
+                }
+            }
+
+            int k_pc = g + number_of_groups * b;
+            
+            partial_current_[k_pc] = current;
+        }
     }
 }
 

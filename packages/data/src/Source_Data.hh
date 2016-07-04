@@ -65,6 +65,12 @@ public:
         return boundary_source_;
     }
 
+    // Partial current on boundary
+    vector<double> const &partial_current() const
+    {
+        return partial_current_;
+    }
+    
     // Fraction of flux to be reflected on each boundary
     vector<double> const &alpha() const
     {
@@ -85,6 +91,8 @@ public:
 
 private:
 
+    void calculate_partial_current();
+    
     Source_Type internal_source_type_;
     Source_Type boundary_source_type_;
 
@@ -96,6 +104,7 @@ private:
     vector<double> internal_source_;
     vector<double> boundary_source_;
     vector<double> alpha_;
+    vector<double> partial_current_;
 };
 
 #endif

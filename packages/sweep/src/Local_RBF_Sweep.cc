@@ -110,7 +110,9 @@ apply(vector<double> &x) const
             default:
                 AssertMsg(false, "Solver type not implemented");
             }
-
+            
+            // Update values for this group and ordinate
+            
             for (int i = 0; i < number_of_points; ++i)
             {
                 int k_x = g + number_of_groups * (o + number_of_ordinates * i);
@@ -191,7 +193,7 @@ add_boundary_point(int b,
 
     // Replace RHS value
     int psi_size = row_size() - number_of_augments;
-
+    
     double rhs = 0;
     if (alpha[b] > reflection_tolerance_)
     {
@@ -234,6 +236,7 @@ add_internal_point(int i,
     
     // Replace matrix values
     vector<double> data(number_of_neighbors, 0);
+    int k_sig = g + number_of_groups * i;
     
     for (int n = 0; n < number_of_neighbors; ++n)
     {
@@ -241,7 +244,6 @@ add_internal_point(int i,
         
         shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
         
-        int k_sig = g + number_of_groups * i;
         
         double derivative = 0;
         
