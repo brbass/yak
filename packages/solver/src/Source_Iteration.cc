@@ -236,9 +236,17 @@ apply(vector<double> &x) const
         }
     }
     
-    (*M)(x);
-    (*Linv)(x);
-    (*D)(x);
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        (*Linv)(x);
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        (*M)(x);
+        (*Linv)(x);
+        (*D)(x);
+        break;
+    }            
 }
 
 Source_Iteration::Flux_Iterator::
@@ -274,7 +282,15 @@ apply(vector<double> &x) const
         }
     }
     
-    (*M)(x); // discrete fission+scattering source
-    (*Linv)(x); // solution
-    (*D)(x); // moment solution
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        (*Linv)(x);
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        (*M)(x);
+        (*Linv)(x);
+        (*D)(x);
+        break;
+    }            
 }

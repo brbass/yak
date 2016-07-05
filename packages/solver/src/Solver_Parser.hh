@@ -8,6 +8,7 @@ class DFEM_Sweep_1D;
 class Discrete_To_Moment;
 class Fission;
 class Krylov_Iteration;
+class Local_RBF_Diffusion;
 class Local_RBF_Sweep;
 class Moment_To_Discrete;
 class Sweep_Operator;
@@ -53,6 +54,9 @@ public:
 
     // Parse the Local RBF Sweeper
     shared_ptr<Local_RBF_Sweep> parse_rbf_local();
+
+    // Parse the Local RBF Diffusion
+    shared_ptr<Local_RBF_Diffusion> parse_rbf_diffusion();
     
     // Parse the Discrete_To_Moment operator
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();

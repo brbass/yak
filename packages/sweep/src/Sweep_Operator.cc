@@ -16,7 +16,7 @@ namespace // anonymous
     {
         switch(sweep_type)
         {
-        case Sweep_Operator::Sweep_Type::ORDINATE:
+        case Sweep_Operator::Sweep_Type::MOMENT:
             return (spatial_discretization->number_of_cells()
                     * spatial_discretization->number_of_nodes()
                     * energy_discretization->number_of_groups()

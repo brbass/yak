@@ -41,6 +41,12 @@ public:
     {
         include_boundary_source_ = include_source;
     }
+
+    // Sweep type
+    virtual Sweep_Type sweep_type() const
+    {
+        return sweep_type_;
+    }
     
 protected:
 

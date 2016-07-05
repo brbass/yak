@@ -5,6 +5,7 @@
 #include "Discrete_To_Moment.hh"
 #include "Fission.hh"
 #include "Krylov_Iteration.hh"
+#include "Local_RBF_Diffusion.hh"
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
@@ -136,6 +137,10 @@ parse_sweeper()
     {
         return parse_rbf_local();
     }
+    else if (sweeper_type == "rbf_diffusion")
+    {
+        return parse_rbf_diffusion();
+    }
     else
     {
         AssertMsg(false, "sweeper type " + sweeper_type + " not found");
@@ -172,6 +177,16 @@ parse_rbf_local()
                                         energy_,
                                         nuclear_,
                                         source_);
+}
+
+shared_ptr<Local_RBF_Diffusion> Solver_Parser::
+parse_rbf_diffusion()
+{
+    return make_shared<Local_RBF_Diffusion>(spatial_,
+                                            angular_,
+                                            energy_,
+                                            nuclear_,
+                                            source_);
 }
 
 shared_ptr<Discrete_To_Moment> Solver_Parser::
