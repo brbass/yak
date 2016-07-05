@@ -99,7 +99,7 @@ apply(vector<double> &x) const
             case Solver_Type::AMESOS:
                 (*amesos_solver_)->NumericFactorization();
                 (*amesos_solver_)->Solve();
-        
+                
                 break;
             case Solver_Type::AZTECOO:
             {

@@ -33,18 +33,25 @@ public:
                         shared_ptr<Nuclear_Data> nuclear_data,
                         shared_ptr<Source_Data> source_data,
                         Solver_Type solver_type = Solver_Type::AMESOS);
+
+    shared_ptr<Epetra_CrsMatrix> get_matrix(int g);
     
 private:
 
     virtual void apply(vector<double> &x) const override;
     void initialize_trilinos();
+    void set_matrix(int g);
     void add_boundary_point(int b,
                             int i,
-                            int g,
-                            vector<double> const &x) const;
+                            int g) const;
+    void add_boundary_rhs(int b,
+                          int i,
+                          int g) const;
     void add_internal_point(int i,
-                            int g,
-                            vector<double> const &x) const;
+                            int g) const;
+    void add_internal_rhs(int i,
+                          int g,
+                          vector<double> const &x) const;
     
     int max_iterations_ = 5000;
     double tolerance_ = 1e-6;

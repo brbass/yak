@@ -38,7 +38,8 @@ public:
                      shared_ptr<Vector_Operator> discrete_to_moment,
                      shared_ptr<Vector_Operator> moment_to_discrete,
                      shared_ptr<Vector_Operator> scattering,
-                     shared_ptr<Vector_Operator> fission);
+                     shared_ptr<Vector_Operator> fission,
+                     shared_ptr<Vector_Operator> preconditioner = shared_ptr<Vector_Operator>());
 
     // Solve fixed source problem
     virtual void solve_steady_state(vector<double> &x) override;
@@ -69,7 +70,8 @@ public:
     }
 
 private:
-    
+
+    bool preconditioned_;
     int max_iterations_;
     int kspace_;
     int total_iterations_;
@@ -81,7 +83,8 @@ private:
     shared_ptr<Vector_Operator> moment_to_discrete_;
     shared_ptr<Vector_Operator> scattering_;
     shared_ptr<Vector_Operator> fission_;
-
+    shared_ptr<Vector_Operator> preconditioner_;
+    
     /*
       Computes the first-flight flux, including boundary sources, via source iteration
       b = D Linv q

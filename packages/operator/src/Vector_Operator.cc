@@ -7,3 +7,4 @@ Vector_Operator(int row_size,
     column_size_(column_size)
 {
 }
+

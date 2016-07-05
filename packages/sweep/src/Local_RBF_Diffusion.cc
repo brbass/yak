@@ -8,6 +8,7 @@
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
+#include <Ifpack_ILU.h>
 
 #include "Angular_Discretization.hh"
 #include "Check.hh"
@@ -61,13 +62,15 @@ apply(vector<double> &x) const
         {
             int i = boundary_points[b];
                 
-            add_boundary_point(b, i, g, x);
+            add_boundary_point(b, i, g);
+            add_boundary_rhs(b, i, g);
         }
         for (int p = 0; p < number_of_internal_points; ++p)
         {
             int i = internal_points[p];
             
-            add_internal_point(i, g, x);
+            add_internal_point(i, g);
+            add_internal_rhs(i, g, x);
         }
             
         // Perform matrix solve
@@ -80,6 +83,12 @@ apply(vector<double> &x) const
             break;
         case Solver_Type::AZTECOO:
         {
+            // shared_ptr<Epetra_CrsMatrix> mat = make_shared<Epetra_CrsMatrix>(*mat_);
+            // shared_ptr<Ifpack_ILU> prec = make_shared<Ifpack_ILU>(mat.get());
+            // prec->Initialize();
+            // prec->Compute();
+            
+            // aztec_solver_->SetPrecOperator(prec.get());
             aztec_solver_->Iterate(max_iterations_, tolerance_);
             
             break;
@@ -114,8 +123,7 @@ apply(vector<double> &x) const
 void Local_RBF_Diffusion::
 add_boundary_point(int b,
                    int i,
-                   int g,
-                   vector<double> const &x) const
+                   int g) const
 {
     int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
@@ -127,11 +135,7 @@ add_boundary_point(int b,
 
     shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
     vector<double> const equation_position = equation_rbf->position();
-    
-    vector<double> const boundary_source = source_data_->boundary_source();
-    vector<double> const partial_current = source_data_->partial_current();
     vector<double> const alpha = source_data_->alpha();
-
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
     
     int k_sig = g + number_of_groups * i;
@@ -166,12 +170,22 @@ add_boundary_point(int b,
                               number_of_neighbors,
                               &data[0],
                               &neighbors[0]);
-    
-    // Replace RHS value
+}
 
+void Local_RBF_Diffusion::
+add_boundary_rhs(int b,
+                 int i,
+                 int g) const
+{
+    int number_of_groups = energy_discretization_->number_of_groups();
+    vector<double> const partial_current = source_data_->partial_current();
+
+    // Replace RHS value
+    
     if (include_boundary_source_)
     {
         int k_pc = g + number_of_groups * b;
+        
         (*rhs_)[i] = partial_current[k_pc];
     }
     else
@@ -182,8 +196,7 @@ add_boundary_point(int b,
 
 void Local_RBF_Diffusion::
 add_internal_point(int i,
-                   int g,
-                   vector<double> const &x) const
+                   int g) const
 {
     int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
@@ -231,6 +244,16 @@ add_internal_point(int i,
                               number_of_neighbors,
                               &data[0],
                               &neighbors[0]);
+    
+}
+
+void Local_RBF_Diffusion::
+add_internal_rhs(int i,
+                 int g,
+                 vector<double> const &x) const
+{
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_moments = angular_discretization_->number_of_moments();
     
     // Replace RHS value
     
@@ -290,12 +313,38 @@ initialize_trilinos()
         
         aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
         aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
+        // aztec_solver_->SetAztecOption(AZ_precond, AZ_dom_decomp);
+        // aztec_solver_->SetAztecOption(AZ_subdomain_solve, AZ_lu);
         aztec_solver_->SetAztecOption(AZ_solver, AZ_gmres);
-        aztec_solver_->SetAztecOption(AZ_kspace, 10);
+        aztec_solver_->SetAztecOption(AZ_kspace, 100);
         aztec_solver_->SetAztecOption(AZ_output, AZ_none);
         
         break;
     default:
         AssertMsg(false, "Solver type not implemented");
     }
+}
+
+shared_ptr<Epetra_CrsMatrix> Local_RBF_Diffusion::
+get_matrix(int g)
+{
+    int number_of_boundary_points = rbf_mesh_->number_of_boundary_points();
+    int number_of_internal_points = rbf_mesh_->number_of_internal_points();
+    vector<int> const boundary_points = rbf_mesh_->boundary_cells();
+    vector<int> const internal_points = rbf_mesh_->internal_cells();
+    
+    for (int b = 0; b < number_of_boundary_points; ++b)
+    {
+        int i = boundary_points[b];
+        
+        add_boundary_point(b, i, g);
+    }
+    for (int p = 0; p < number_of_internal_points; ++p)
+    {
+        int i = internal_points[p];
+        
+        add_internal_point(i, g);
+    }
+
+    return mat_;
 }

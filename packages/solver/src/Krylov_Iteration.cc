@@ -38,7 +38,8 @@ Krylov_Iteration(int max_iterations,
                  shared_ptr<Vector_Operator> discrete_to_moment,
                  shared_ptr<Vector_Operator> moment_to_discrete,
                  shared_ptr<Vector_Operator> scattering,
-                 shared_ptr<Vector_Operator> fission):
+                 shared_ptr<Vector_Operator> fission,
+                 shared_ptr<Vector_Operator> preconditioner):
     Solver(solver_print,
            spatial_discretization,
            angular_discretization,
@@ -54,8 +55,17 @@ Krylov_Iteration(int max_iterations,
     discrete_to_moment_(discrete_to_moment),
     moment_to_discrete_(moment_to_discrete),
     scattering_(scattering),
-    fission_(fission)
+    fission_(fission),
+    preconditioner_(preconditioner)
 {
+    if (preconditioner_ == shared_ptr<Vector_Operator>())
+    {
+        preconditioned_ = false;
+    }
+    else
+    {
+        preconditioned_ = true;
+    }
 }
 
 void Krylov_Iteration::
@@ -248,7 +258,7 @@ apply(vector<double> &x) const
             x[i] = internal_source[i];
         }
     }
-
+    
     switch (Linv->sweep_type())
     {
     case Sweep_Operator::Sweep_Type::MOMENT:
@@ -259,7 +269,7 @@ apply(vector<double> &x) const
         (*Linv)(x);
         (*D)(x);
         break;
-    }            
+    }
 }
 
 Krylov_Iteration::Flux_Iterator::
@@ -284,7 +294,7 @@ apply(vector<double> &x) const
     Linv->include_boundary_source(false);
     
     vector<double> x1(x);
-
+    
     {
         vector<double> x2(x);
         

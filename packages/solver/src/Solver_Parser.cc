@@ -133,19 +133,24 @@ parse_sweeper()
     {
         return parse_rbf();
     }
-    else if (sweeper_type == "rbf_local")
-    {
-        return parse_rbf_local();
-    }
-    else if (sweeper_type == "rbf_diffusion")
-    {
-        return parse_rbf_diffusion();
-    }
     else
     {
-        AssertMsg(false, "sweeper type " + sweeper_type + " not found");
+        string solver_type = XML_Functions::child_value<string>(sweeper, "solver");
         
-        return shared_ptr<Sweep_Operator>();
+        if (sweeper_type == "rbf_local")
+        {
+            return parse_rbf_local(solver_type);
+        }
+        else if (sweeper_type == "rbf_diffusion")
+        {
+            return parse_rbf_diffusion(solver_type);
+        }
+        else
+        {
+            AssertMsg(false, "sweeper type " + sweeper_type + " not found");
+
+            return shared_ptr<Sweep_Operator>();
+        }
     }
 }
 
@@ -170,23 +175,47 @@ parse_rbf()
 }
 
 shared_ptr<Local_RBF_Sweep> Solver_Parser::
-parse_rbf_local()
+parse_rbf_local(string solver_type)
 {
+    Local_RBF_Sweep::Solver_Type solver;
+    
+    if (solver_type == "aztecoo")
+    {
+        solver = Local_RBF_Sweep::Solver_Type::AZTECOO;
+    }
+    else
+    {
+        solver = Local_RBF_Sweep::Solver_Type::AMESOS;
+    }
+    
     return make_shared<Local_RBF_Sweep>(spatial_,
                                         angular_,
                                         energy_,
                                         nuclear_,
-                                        source_);
+                                        source_,
+                                        solver);
 }
 
 shared_ptr<Local_RBF_Diffusion> Solver_Parser::
-parse_rbf_diffusion()
+parse_rbf_diffusion(string solver_type)
 {
+    Local_RBF_Diffusion::Solver_Type solver;
+    
+    if (solver_type == "aztecoo")
+    {
+        solver = Local_RBF_Diffusion::Solver_Type::AZTECOO;
+    }
+    else
+    {
+        solver = Local_RBF_Diffusion::Solver_Type::AMESOS;
+    }
+
     return make_shared<Local_RBF_Diffusion>(spatial_,
                                             angular_,
                                             energy_,
                                             nuclear_,
-                                            source_);
+                                            source_,
+                                            solver);
 }
 
 shared_ptr<Discrete_To_Moment> Solver_Parser::

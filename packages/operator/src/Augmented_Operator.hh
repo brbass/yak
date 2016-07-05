@@ -16,12 +16,14 @@ public:
 
     // Constructor
     Augmented_Operator(unsigned number_of_augments,
-                       shared_ptr<Vector_Operator> vector_operator);
+                       shared_ptr<Vector_Operator> vector_operator,
+                       bool zero_out_augments = false);
     
 private:
     
     virtual void apply(vector<double> &x) const override;
-    
+
+    bool zero_out_augments_;
     int number_of_augments_;
     shared_ptr<Vector_Operator> vector_operator_;
 };
