@@ -4,7 +4,7 @@ Vector_Operator_Difference::
 Vector_Operator_Difference(shared_ptr<Vector_Operator> op1,
                            shared_ptr<Vector_Operator> op2):
     Vector_Operator(op1->row_size(),
-                    op2->column_size()),
+                    op1->column_size()),
     op1_(op1),
     op2_(op2)
 {
@@ -14,7 +14,7 @@ void Vector_Operator_Difference::
 apply(vector<double> &x) const
 {
     vector<double> y(x);
-
+    
     (*op1_)(x);
     (*op2_)(y);
 

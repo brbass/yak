@@ -6,11 +6,15 @@
 #include "Augmented_Operator.hh"
 #include "Check.hh"
 #include "Energy_Discretization.hh"
+#include "Identity_Operator.hh"
+#include "Multiplicative_Operator.hh"
 #include "Nuclear_Data.hh"
 #include "Sweep_Operator.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
- #include "XML_Functions.hh"
+#include "Vector_Functions.hh"
+#include "Vector_Operator_Functions.hh"
+#include "XML_Functions.hh"
 
 using namespace std;
 
@@ -27,7 +31,8 @@ Source_Iteration(int max_iterations,
                  shared_ptr<Vector_Operator> discrete_to_moment,
                  shared_ptr<Vector_Operator> moment_to_discrete,
                  shared_ptr<Vector_Operator> scattering,
-                 shared_ptr<Vector_Operator> fission):
+                 shared_ptr<Vector_Operator> fission,
+                 shared_ptr<Vector_Operator> preconditioner):
     Solver(solver_print,
            spatial_discretization,
            angular_discretization,
@@ -42,8 +47,17 @@ Source_Iteration(int max_iterations,
     discrete_to_moment_(discrete_to_moment),
     moment_to_discrete_(moment_to_discrete),
     scattering_(scattering),
-    fission_(fission)
+    fission_(fission),
+    preconditioner_(preconditioner)
 {
+    if (preconditioner_ == shared_ptr<Vector_Operator>())
+    {
+        preconditioned_ = false;
+    }
+    else
+    {
+        preconditioned_ = true;
+    }
 }
 
 /*
@@ -62,11 +76,11 @@ solve_steady_state(vector<double> &x)
         vector<double> q_old;
         
         print_name("Initial source iteration");
-
+        
         for (int it = 0; it < max_iterations_; ++it)
         {
             print_iteration(it);
-
+            
             q_old = q;
             
             (*SI)(q);
@@ -134,7 +148,6 @@ solve_steady_state(vector<double> &x)
 /*
   Check convergence of pointwise relative error in scalar flux
 */
-
 bool Source_Iteration::
 check_phi_convergence(vector<double> const &x, 
                       vector<double> const &x_old)
@@ -167,11 +180,105 @@ check_phi_convergence(vector<double> const &x,
     return true;
 }
 
+/*
+  Check convergence of the k eigenvalue
+*/
+bool Source_Iteration::
+check_k_convergence(double k,
+                    double k_old)
+{
+    if (abs(k - k_old) / (abs(k_old) + tolerance_ * tolerance_) > tolerance_)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 void Source_Iteration::
 solve_k_eigenvalue(double &k_eigenvalue, 
                    vector<double> &x)
 {
-    AssertMsg(false, "not implemented");
+    k_eigenvalue = 1.0;
+    x.resize(phi_size() + number_of_augments(), 0);
+
+    shared_ptr<Vector_Operator> D
+        = make_shared<Augmented_Operator>(number_of_augments(),
+                                          discrete_to_moment_);
+    shared_ptr<Vector_Operator> M
+        = make_shared<Augmented_Operator>(number_of_augments(),
+                                          moment_to_discrete_);
+    shared_ptr<Vector_Operator> S
+        = make_shared<Augmented_Operator>(number_of_augments(),
+                                          scattering_);
+    shared_ptr<Vector_Operator> F
+        = make_shared<Augmented_Operator>(number_of_augments(),
+                                          fission_,
+                                          true); // zero out augments
+    shared_ptr<Multiplicative_Operator> U
+        = make_shared<Multiplicative_Operator>(phi_size() + number_of_augments(),
+                                               k_eigenvalue);
+    shared_ptr<Sweep_Operator> Linv
+        = dynamic_pointer_cast<Sweep_Operator>(sweeper_);
+    Assert(Linv);
+    Linv->include_boundary_source(false);
+    
+    shared_ptr<Vector_Operator> T;
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        T = Linv;
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        T = D * Linv * M;
+        break;
+    }
+    
+    shared_ptr<Vector_Operator> Op = T * (S + U * F);
+    
+    double k_eigenvalue_old;
+    vector<double> x_old;
+    
+    print_name("Source iteration");
+    
+    for (int it = 0; it < max_iterations_; ++it)
+    {
+        print_iteration(it);
+        
+        k_eigenvalue_old = k_eigenvalue;
+        x_old = x;
+        
+        U->set_scalar(1. / k_eigenvalue);
+        
+        (*Op)(x);
+        
+        vector<double> x1(x.begin(), x.begin() + phi_size());
+        vector<double> x2(x_old.begin(), x_old.begin() + phi_size());
+        (*fission_)(x1);
+        (*fission_)(x2);
+        
+        double x_mag = Vector_Functions::magnitude(x1);
+        double x_old_mag = Vector_Functions::magnitude(x2);
+        
+        k_eigenvalue = x_mag / x_old_mag * k_eigenvalue_old;
+        
+        if (check_k_convergence(k_eigenvalue, k_eigenvalue_old))
+        {
+            total_iterations_ = it + 1;
+            
+            print_convergence();
+            
+            break;
+        }
+    }
+    if (total_iterations_ == max_iterations_)
+    {
+        print_failure();
+    }
+    
+    x.resize(phi_size()); // remove augments
 }
 
 void Source_Iteration::
@@ -210,12 +317,42 @@ apply(vector<double> &x) const
 {
     vector<double> const internal_source = si_.source_data_->internal_source();
     
-    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
-    Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
     
+    shared_ptr<Sweep_Operator> Linv =
+        dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
+    Assert(Linv);
     Linv->include_boundary_source(true);
+
+    shared_ptr<Vector_Operator> T;
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        T = Linv;
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        T = D * Linv * M;
+        break;
+    }
+
+    shared_ptr<Vector_Operator> E;
+    if (si_.preconditioned_)
+    {
+        shared_ptr<Sweep_Operator> Cinv;
+        Cinv = dynamic_pointer_cast<Sweep_Operator>(si_.preconditioner_);
+        Assert(Cinv);
+        Cinv->include_boundary_source(true);
+        switch (Cinv->sweep_type())
+        {
+        case Sweep_Operator::Sweep_Type::MOMENT:
+            E = Cinv;
+            break;
+        default: // Sweep_Operator::Sweep_Type::ORDINATE:
+            E = D * Cinv * M;
+            break;
+        }
+    }
     
     if(si_.source_data_->internal_source_type() == Source_Data::Source_Type::FULL)
     {
@@ -235,18 +372,29 @@ apply(vector<double> &x) const
             x[i] = internal_source[i];
         }
     }
-    
-    switch (Linv->sweep_type())
+
+    shared_ptr<Vector_Operator> Op;
+
+    if (si_.preconditioned_)
     {
-    case Sweep_Operator::Sweep_Type::MOMENT:
-        (*Linv)(x);
-        break;
-    default: // Sweep_Operator::Sweep_Type::ORDINATE:
-        (*M)(x);
-        (*Linv)(x);
-        (*D)(x);
-        break;
-    }            
+        shared_ptr<Vector_Operator> S
+            = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                              si_.scattering_);
+        shared_ptr<Vector_Operator> F
+            = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                              si_.fission_,
+                                              true); // Only one of S or F needs to include the augments
+        shared_ptr<Vector_Operator> I
+            = make_shared<Identity_Operator>(si_.phi_size() + si_.number_of_augments());
+        
+        Op = (I + E * (S + F)) * T;
+    }
+    else
+    {
+        Op = T;
+    }
+    
+    (*Op)(x);
 }
 
 Source_Iteration::Flux_Iterator::
@@ -261,36 +409,67 @@ Flux_Iterator(Source_Iteration const &si):
 void Source_Iteration::Flux_Iterator::
 apply(vector<double> &x) const
 {
+    shared_ptr<Vector_Operator> D
+        = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                          si_.discrete_to_moment_);
+    shared_ptr<Vector_Operator> M
+        = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                          si_.moment_to_discrete_);
 
-    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
-    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.discrete_to_moment_);
-    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.moment_to_discrete_);
-    shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.scattering_);
-    shared_ptr<Vector_Operator> F = make_shared<Augmented_Operator>(si_.number_of_augments(), si_.fission_);
-
+    shared_ptr<Sweep_Operator> Linv =
+        dynamic_pointer_cast<Sweep_Operator>(si_.sweeper_);
+    Assert(Linv);
     Linv->include_boundary_source(false);
-    
-    {
-        vector<double> x1(x);
-        
-        (*S)(x); // moment scattering source
-        (*F)(x1); // moment fission source
-        
-        for (int i = 0; i < si_.phi_size(); ++i)
-        {
-            x[i] += x1[i];
-        }
-    }
-    
+
+    shared_ptr<Vector_Operator> T;
     switch (Linv->sweep_type())
     {
     case Sweep_Operator::Sweep_Type::MOMENT:
-        (*Linv)(x);
+        T = Linv;
         break;
     default: // Sweep_Operator::Sweep_Type::ORDINATE:
-        (*M)(x);
-        (*Linv)(x);
-        (*D)(x);
+        T = D * Linv * M;
         break;
-    }            
+    }
+
+    shared_ptr<Vector_Operator> E;
+    if (si_.preconditioned_)
+    {
+        shared_ptr<Sweep_Operator> Cinv;
+        Cinv = dynamic_pointer_cast<Sweep_Operator>(si_.preconditioner_);
+        Assert(Cinv);
+        Cinv->include_boundary_source(false);
+        switch (Cinv->sweep_type())
+        {
+        case Sweep_Operator::Sweep_Type::MOMENT:
+            E = Cinv;
+            break;
+        default: // Sweep_Operator::Sweep_Type::ORDINATE:
+            E = D * Cinv * M;
+            break;
+        }
+    }
+    
+    shared_ptr<Vector_Operator> S
+        = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                          si_.scattering_);
+    shared_ptr<Vector_Operator> F
+        = make_shared<Augmented_Operator>(si_.number_of_augments(),
+                                          si_.fission_,
+                                          true); // Only one of S or F needs to include the augments
+    shared_ptr<Vector_Operator> I
+        = make_shared<Identity_Operator>(si_.phi_size() + si_.number_of_augments());
+
+    shared_ptr<Vector_Operator> Op;
+    
+    if (si_.preconditioned_)
+    {
+        Op = I + (I + E * (S + F)) * (T * (S + F) - I);
+    }
+    else
+    {
+        Op = T * (S + F);
+    }
+    
+    (*Op)(x);
 }

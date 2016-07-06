@@ -16,10 +16,12 @@
 #include "Check.hh"
 #include "Energy_Discretization.hh"
 #include "Epetra_Operator_Interface.hh"
+#include "Identity_Operator.hh"
 #include "Nuclear_Data.hh"
 #include "Sweep_Operator.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
+#include "Vector_Operator_Functions.hh"
 #include "XML_Functions.hh"
 
 using namespace std;
@@ -135,7 +137,6 @@ solve_steady_state(vector<double> &x)
     shared_ptr<AztecOO> solver = make_shared<AztecOO>(*problem);
     
     solver->SetAztecOption(AZ_precond, AZ_none);
-    // solver->SetAztecOption(AZ_precond, AZ_Jacobi);
     solver->SetAztecOption(AZ_solver, AZ_gmres);
     solver->SetAztecOption(AZ_kspace, kspace_);
     solver->SetAztecOption(AZ_conv, AZ_rhs);
@@ -233,12 +234,42 @@ apply(vector<double> &x) const
 {
     vector<double> const internal_source = ki_.source_data_->internal_source();
     
-    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
-    Assert(Linv);
     shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
     shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);
     
+    shared_ptr<Sweep_Operator> Linv =
+        dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
+    Assert(Linv);
     Linv->include_boundary_source(true);
+
+    shared_ptr<Vector_Operator> T;
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        T = Linv;
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        T = D * Linv * M;
+        break;
+    }
+
+    shared_ptr<Vector_Operator> E;
+    if (ki_.preconditioned_)
+    {
+        shared_ptr<Sweep_Operator> Cinv;
+        Cinv = dynamic_pointer_cast<Sweep_Operator>(ki_.preconditioner_);
+        Assert(Cinv);
+        Cinv->include_boundary_source(true);
+        switch (Cinv->sweep_type())
+        {
+        case Sweep_Operator::Sweep_Type::MOMENT:
+            E = Cinv;
+            break;
+        default: // Sweep_Operator::Sweep_Type::ORDINATE:
+            E = D * Cinv * M;
+            break;
+        }
+    }
     
     if(ki_.source_data_->internal_source_type() == Source_Data::Source_Type::FULL)
     {
@@ -258,18 +289,29 @@ apply(vector<double> &x) const
             x[i] = internal_source[i];
         }
     }
-    
-    switch (Linv->sweep_type())
+
+    shared_ptr<Vector_Operator> Op;
+
+    if (ki_.preconditioned_)
     {
-    case Sweep_Operator::Sweep_Type::MOMENT:
-        (*Linv)(x);
-        break;
-    default: // Sweep_Operator::Sweep_Type::ORDINATE:
-        (*M)(x);
-        (*Linv)(x);
-        (*D)(x);
-        break;
+        shared_ptr<Vector_Operator> S
+            = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                              ki_.scattering_);
+        shared_ptr<Vector_Operator> F
+            = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                              ki_.fission_,
+                                              true); // Only one of S or F needs to include the augments
+        shared_ptr<Vector_Operator> I
+            = make_shared<Identity_Operator>(ki_.phi_size() + ki_.number_of_augments());
+        
+        Op = (I + E * (S + F)) * T;
     }
+    else
+    {
+        Op = T;
+    }
+    
+    (*Op)(x);
 }
 
 Krylov_Iteration::Flux_Iterator::
@@ -284,43 +326,71 @@ Flux_Iterator(Krylov_Iteration const &ki):
 void Krylov_Iteration::Flux_Iterator::
 apply(vector<double> &x) const
 {
-    shared_ptr<Sweep_Operator> Linv = dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
-    Assert(Linv);
-    shared_ptr<Vector_Operator> D = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.discrete_to_moment_);
-    shared_ptr<Vector_Operator> M = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.moment_to_discrete_);
-    shared_ptr<Vector_Operator> S = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.scattering_);
-    shared_ptr<Vector_Operator> F = make_shared<Augmented_Operator>(ki_.number_of_augments(), ki_.fission_);
+    shared_ptr<Vector_Operator> D
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.discrete_to_moment_);
+    shared_ptr<Vector_Operator> M
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.moment_to_discrete_);
 
+    shared_ptr<Sweep_Operator> Linv =
+        dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
+    Assert(Linv);
     Linv->include_boundary_source(false);
-    
-    vector<double> x1(x);
-    
-    {
-        vector<double> x2(x);
-        
-        (*S)(x); // moment scattering source
-        (*F)(x2); // moment fission source
-        
-        for (int i = 0; i < ki_.phi_size(); ++i)
-        {
-            x[i] += x2[i];
-        }
-    }
-    
+
+    shared_ptr<Vector_Operator> T;
     switch (Linv->sweep_type())
     {
     case Sweep_Operator::Sweep_Type::MOMENT:
-        (*Linv)(x);
+        T = Linv;
         break;
     default: // Sweep_Operator::Sweep_Type::ORDINATE:
-        (*M)(x);
-        (*Linv)(x);
-        (*D)(x);
+        T = D * Linv * M;
         break;
-    }            
-    
-    for (int i = 0; i < x.size(); ++i)
-    {
-        x[i] = x1[i] - x[i];
     }
+
+    shared_ptr<Vector_Operator> E;
+    if (ki_.preconditioned_)
+    {
+        shared_ptr<Sweep_Operator> Cinv;
+        Cinv = dynamic_pointer_cast<Sweep_Operator>(ki_.preconditioner_);
+        Assert(Cinv);
+        Cinv->include_boundary_source(false);
+        switch (Cinv->sweep_type())
+        {
+        case Sweep_Operator::Sweep_Type::MOMENT:
+            E = Cinv;
+            break;
+        default: // Sweep_Operator::Sweep_Type::ORDINATE:
+            E = D * Cinv * M;
+            break;
+        }
+    }
+    
+    // Add augments to operators
+    
+    shared_ptr<Vector_Operator> S
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.scattering_);
+    shared_ptr<Vector_Operator> F
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.fission_,
+                                          true); // Only one of S or F needs to include the augments
+    shared_ptr<Vector_Operator> I
+        = make_shared<Identity_Operator>(ki_.phi_size() + ki_.number_of_augments());
+    
+    // Create combined operators
+    
+    shared_ptr<Vector_Operator> Op;
+
+    if (ki_.preconditioned_)
+    {
+        Op = (I + E * S) * (I - T * (S + F));
+    }
+    else
+    {
+        Op = I - T * (S + F);
+    }
+    
+    (*Op)(x);
 }
