@@ -202,7 +202,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
                    vector<double> &x)
 {
     k_eigenvalue = 1.0;
-    x.resize(phi_size() + number_of_augments(), 0);
+    x.resize(phi_size() + number_of_augments(), 1.0);
 
     shared_ptr<Vector_Operator> D
         = make_shared<Augmented_Operator>(number_of_augments(),
@@ -241,7 +241,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
     double k_eigenvalue_old;
     vector<double> x_old;
     
-    print_name("Source iteration");
+    print_name("Power iteration");
     
     for (int it = 0; it < max_iterations_; ++it)
     {
