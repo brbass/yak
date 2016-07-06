@@ -2,6 +2,7 @@
 
 #include "Check.hh"
 #include "DFEM_Sweep_1D.hh"
+#include "Diffusion_Synthetic_Acceleration.hh"
 #include "Discrete_To_Moment.hh"
 #include "Fission.hh"
 #include "Krylov_Iteration.hh"
@@ -9,6 +10,7 @@
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
+#include "Preconditioner.hh"
 #include "Sweep_Operator.hh"
 #include "RBF_Sweep_1D.hh"
 #include "Scattering.hh"
@@ -68,8 +70,11 @@ parse_source_iteration()
     shared_ptr<Vector_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
     shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
-    shared_ptr<Vector_Operator> scattering = parse_scattering();
-    shared_ptr<Vector_Operator> fission = parse_fission();
+    shared_ptr<Scattering_Operator> scattering = parse_scattering();
+    shared_ptr<Scattering_Operator> fission = parse_fission();
+    shared_ptr<Vector_Operator> preconditioner = parse_preconditioner(solver_node,
+                                                                      scattering,
+                                                                      fission);
     
     return make_shared<Source_Iteration>(max_iterations,
                                          solver_print,
@@ -83,7 +88,8 @@ parse_source_iteration()
                                          discrete_to_moment,
                                          moment_to_discrete,
                                          scattering,
-                                         fission);
+                                         fission,
+                                         preconditioner);
 }
 
 shared_ptr<Krylov_Iteration> Solver_Parser::
@@ -95,11 +101,14 @@ parse_krylov_iteration()
     int kspace = XML_Functions::child_value<int>(solver_node, "kspace");
     int solver_print = XML_Functions::child_value<int>(solver_node, "solver_print");
     double tolerance = XML_Functions::child_value<double>(solver_node, "tolerance");
-    shared_ptr<Vector_Operator> sweeper = parse_sweeper();
+    shared_ptr<Sweep_Operator> sweeper = parse_sweeper();
     shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
     shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
-    shared_ptr<Vector_Operator> scattering = parse_scattering();
-    shared_ptr<Vector_Operator> fission = parse_fission();
+    shared_ptr<Scattering_Operator> scattering = parse_scattering();
+    shared_ptr<Scattering_Operator> fission = parse_fission();
+    shared_ptr<Vector_Operator> preconditioner = parse_preconditioner(solver_node,
+                                                                      scattering,
+                                                                      fission);
     
     return make_shared<Krylov_Iteration>(max_iterations,
                                          kspace,
@@ -114,7 +123,8 @@ parse_krylov_iteration()
                                          discrete_to_moment,
                                          moment_to_discrete,
                                          scattering,
-                                         fission);
+                                         fission,
+                                         preconditioner);
 }
 
 shared_ptr<Sweep_Operator> Solver_Parser::
@@ -252,3 +262,40 @@ parse_fission()
                                 nuclear_);
 }
 
+shared_ptr<Preconditioner> Solver_Parser::
+parse_preconditioner(pugi::xml_node solver_node,
+                     shared_ptr<Scattering_Operator> scattering,
+                     shared_ptr<Scattering_Operator> fission)
+{
+    string preconditioner_type = XML_Functions::child_value<string>(solver_node,
+                                                                    "preconditioner",
+                                                                    false);
+
+    if (preconditioner_type == "none" || preconditioner_type == "")
+    {
+        return shared_ptr<Preconditioner>();
+    }
+    else if (preconditioner_type == "dsa_multigroup")
+    {
+        shared_ptr<Sweep_Operator> sweeper = make_shared<Local_RBF_Diffusion>(spatial_,
+                                                                              angular_,
+                                                                              energy_,
+                                                                              nuclear_,
+                                                                              source_);
+        
+        return make_shared<Diffusion_Synthetic_Acceleration>(Diffusion_Synthetic_Acceleration::DSA_Type::MULTIGROUP,
+                                                             spatial_,
+                                                             angular_,
+                                                             energy_,
+                                                             nuclear_,
+                                                             source_,
+                                                             sweeper,
+                                                             scattering,
+                                                             fission);
+    }
+    else
+    {
+        AssertMsg(false, "preconditioner type \"" + preconditioner_type + "\" not found");
+        return shared_ptr<Preconditioner>();
+    }
+}

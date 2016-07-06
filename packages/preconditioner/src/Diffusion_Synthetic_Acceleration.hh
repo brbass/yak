@@ -51,7 +51,6 @@ private:
     int kspace_ = 10;
     double tolerance_ = 1e-5;
     DSA_Type dsa_type_;
-    shared_ptr<Sweep_Operator> sweeper_;
     shared_ptr<Scattering_Operator> scattering_;
     shared_ptr<Scattering_Operator> fission_;
 

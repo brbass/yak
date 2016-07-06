@@ -9,6 +9,7 @@
 #include "Identity_Operator.hh"
 #include "Multiplicative_Operator.hh"
 #include "Nuclear_Data.hh"
+#include "Preconditioner.hh"
 #include "Sweep_Operator.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
@@ -339,11 +340,12 @@ apply(vector<double> &x) const
     shared_ptr<Vector_Operator> E;
     if (si_.preconditioned_)
     {
-        shared_ptr<Sweep_Operator> Cinv;
-        Cinv = dynamic_pointer_cast<Sweep_Operator>(si_.preconditioner_);
+        shared_ptr<Preconditioner> Cinv
+            = dynamic_pointer_cast<Preconditioner>(si_.preconditioner_);
         Assert(Cinv);
-        Cinv->include_boundary_source(true);
-        switch (Cinv->sweep_type())
+        shared_ptr<Sweep_Operator> sweeper = Cinv->sweeper();
+        sweeper->include_boundary_source(false);
+        switch (sweeper->sweep_type())
         {
         case Sweep_Operator::Sweep_Type::MOMENT:
             E = Cinv;
@@ -435,11 +437,12 @@ apply(vector<double> &x) const
     shared_ptr<Vector_Operator> E;
     if (si_.preconditioned_)
     {
-        shared_ptr<Sweep_Operator> Cinv;
-        Cinv = dynamic_pointer_cast<Sweep_Operator>(si_.preconditioner_);
+        shared_ptr<Preconditioner> Cinv
+            = dynamic_pointer_cast<Preconditioner>(si_.preconditioner_);
         Assert(Cinv);
-        Cinv->include_boundary_source(false);
-        switch (Cinv->sweep_type())
+        shared_ptr<Sweep_Operator> sweeper = Cinv->sweeper();
+        sweeper->include_boundary_source(false);
+        switch (sweeper->sweep_type())
         {
         case Sweep_Operator::Sweep_Type::MOMENT:
             E = Cinv;

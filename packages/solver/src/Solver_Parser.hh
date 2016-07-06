@@ -11,9 +11,11 @@ class Krylov_Iteration;
 class Local_RBF_Diffusion;
 class Local_RBF_Sweep;
 class Moment_To_Discrete;
+class Preconditioner;
 class Sweep_Operator;
 class RBF_Sweep_1D;
 class Scattering;
+class Scattering_Operator;
 class Source_Iteration;
 
 /*
@@ -70,6 +72,11 @@ public:
     // Parse the fission operator
     shared_ptr<Fission> parse_fission();
 
+    // Parse the preconditioner
+    shared_ptr<Preconditioner> parse_preconditioner(pugi::xml_node solver_node,
+                                                    shared_ptr<Scattering_Operator> scattering,
+                                                    shared_ptr<Scattering_Operator> fission);
+    
 private:
     
     shared_ptr<Solver> solver_;

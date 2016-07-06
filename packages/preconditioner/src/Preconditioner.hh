@@ -6,6 +6,8 @@
 
 #include "Vector_Operator.hh"
 
+#include "Sweep_Operator.hh"
+
 class Angular_Discretization;
 class Energy_Discretization;
 class Nuclear_Data;
@@ -29,7 +31,13 @@ public:
                    shared_ptr<Angular_Discretization> angular_discretization,
                    shared_ptr<Energy_Discretization> energy_discretization,
                    shared_ptr<Nuclear_Data> nuclear_data,
-                   shared_ptr<Source_Data> source_data);
+                   shared_ptr<Source_Data> source_data,
+                   shared_ptr<Sweep_Operator> sweeper);
+
+    shared_ptr<Sweep_Operator> sweeper()
+    {
+        return sweeper_;
+    }
     
 protected:
 
@@ -40,6 +48,7 @@ protected:
     shared_ptr<Energy_Discretization> energy_discretization_;
     shared_ptr<Nuclear_Data> nuclear_data_;
     shared_ptr<Source_Data> source_data_;
+    shared_ptr<Sweep_Operator> sweeper_;
 };
 
 #endif

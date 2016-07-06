@@ -7,6 +7,7 @@
 #include "Nuclear_Data.hh"
 #include "Source_Data.hh"
 #include "Spatial_Discretization.hh"
+#include "Sweep_Operator.hh"
 
 using namespace std;
 
@@ -17,14 +18,16 @@ Preconditioner(int row_size,
                shared_ptr<Angular_Discretization> angular_discretization,
                shared_ptr<Energy_Discretization> energy_discretization,
                shared_ptr<Nuclear_Data> nuclear_data,
-               shared_ptr<Source_Data> source_data):
+               shared_ptr<Source_Data> source_data,
+               shared_ptr<Sweep_Operator> sweeper):
     Vector_Operator(row_size,
                     column_size),
     spatial_discretization_(spatial_discretization),
     angular_discretization_(angular_discretization),
     energy_discretization_(energy_discretization),
     nuclear_data_(nuclear_data),
-    source_data_(source_data)
+    source_data_(source_data),
+    sweeper_(sweeper)
 {
 }
 

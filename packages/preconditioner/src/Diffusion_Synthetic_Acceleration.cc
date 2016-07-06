@@ -38,9 +38,9 @@ Diffusion_Synthetic_Acceleration(DSA_Type dsa_type,
                    angular_discretization,
                    energy_discretization,
                    nuclear_data,
-                   source_data),
+                   source_data,
+                   sweeper),
     dsa_type_(dsa_type),
-    sweeper_(sweeper),
     scattering_(scattering),
     fission_(fission)
 {

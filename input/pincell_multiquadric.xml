@@ -10,6 +10,7 @@
     <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
+    <!-- <preconditioner>dsa_multigroup</preconditioner> -->
     
     <sweeper>
       <type>rbf_local</type>
