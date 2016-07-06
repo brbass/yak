@@ -23,7 +23,7 @@ using std::vector;
 class Solver
 {
 public:
-
+    
     // Constructor
     Solver(int solver_print,
            shared_ptr<Spatial_Discretization> spatial_discretization,
@@ -31,16 +31,16 @@ public:
            shared_ptr<Energy_Discretization> energy_discretization,
            shared_ptr<Nuclear_Data> nuclear_data,
            shared_ptr<Source_Data> source_data);
-
+    
     // Solve fixed source problem
     virtual void solve_steady_state(vector<double> &x) = 0;
-
+    
     // Solve k-eigenvalue problem
     virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) = 0;
-
+    
     // Solve time-dependent problem
     virtual void solve_time_dependent(vector<double> &x) = 0;
-
+    
     // Ouput data to XML file
     virtual void output(pugi::xml_node &output_node) const;
 

@@ -47,10 +47,16 @@ public:
     {
         return sweep_type_;
     }
+
+    virtual void use_removal(bool use)
+    {
+        use_removal_ = use;
+    }
     
 protected:
 
     bool include_boundary_source_;
+    bool use_removal_;
     Sweep_Type sweep_type_;
     
     shared_ptr<Spatial_Discretization> spatial_discretization_;

@@ -23,7 +23,7 @@ using std::shared_ptr;
 class Krylov_Iteration : public Solver
 {
 public:
-
+    
     // Constructor
     Krylov_Iteration(int max_iterations,
                      int kspace, // Number of past guesses to store
@@ -40,23 +40,23 @@ public:
                      shared_ptr<Vector_Operator> scattering,
                      shared_ptr<Vector_Operator> fission,
                      shared_ptr<Vector_Operator> preconditioner = shared_ptr<Vector_Operator>());
-
+    
     // Solve fixed source problem
     virtual void solve_steady_state(vector<double> &x) override;
-
+    
     // Solve k-eigenvalue problem
     virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) override;
-
+    
     // Solve time-dependent problem
     virtual void solve_time_dependent(vector<double> &x) override;
-
+    
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const override;
-
+    
     // Check for convergence based on pointwise error in scalar flux
     bool check_phi_convergence(vector<double> const &x, 
                                vector<double> const &x_old);
-
+    
     // Size of moment representation of flux
     int phi_size() const
     {

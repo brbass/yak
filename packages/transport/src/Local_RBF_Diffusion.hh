@@ -18,14 +18,14 @@ using std::shared_ptr;
 class Local_RBF_Diffusion : public Sweep_Operator
 {
 public:
-
+    
     // Type of matrix solver
     enum class Solver_Type
     {
         AMESOS,
         AZTECOO
     };
-
+    
     // Constructor
     Local_RBF_Diffusion(shared_ptr<Spatial_Discretization> spatial_discretization,
                         shared_ptr<Angular_Discretization> angular_discretization,

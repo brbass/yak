@@ -1,8 +1,8 @@
-set(library_name solver)
+set(library_name transport)
 
 set(library_include_directories ${global_include_directories} ${global_trilinos_include_directories})
 set(library_link_directories ${global_trilinos_link_directories})
-set(library_dependencies external utilities discretization_angular discretization_energy discretization_spatial data operator transport preconditioner ${global_trilinos_link_libraries})
+set(library_dependencies external utilities discretization_angular discretization_energy discretization_spatial data operator ${global_trilinos_link_libraries})
 
 file(GLOB src *.cc *.hh)
 
