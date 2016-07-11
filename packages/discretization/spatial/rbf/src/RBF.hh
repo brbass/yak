@@ -51,6 +51,8 @@ public:
 
     // Return (shape \cdot (r - position))^2
     virtual double get_distance_squared(vector<double> const &r) const;
+
+    virtual void multiply_shape_parameter(double t);
     
 protected:
 

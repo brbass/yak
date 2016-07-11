@@ -92,6 +92,11 @@ public:
     {
         return number_of_neighbors_;
     }
+
+    virtual Basis_Type basis_type() const
+    {
+        return basis_type_;
+    }
     
     // Which nodes are on the boundary for the boundary cells
     // Should always be true, as number_of_nodes = 1
@@ -140,6 +145,11 @@ public:
     {
         return boundary_normal_;
     }
+
+    virtual vector<double> const &positions() const
+    {
+        return point_positions_;
+    }
     
     // Basis function for a certain point
     virtual shared_ptr<RBF> const &basis_function(int point) const
@@ -157,6 +167,8 @@ public:
     
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const override;
+
+    virtual void set_shape_multiplier(double shape_multiplier);
     
 protected:
 

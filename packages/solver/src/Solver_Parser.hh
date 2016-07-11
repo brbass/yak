@@ -80,7 +80,7 @@ public:
 private:
     
     shared_ptr<Solver> solver_;
-
+    
     shared_ptr<Spatial_Discretization> spatial_;
     shared_ptr<Angular_Discretization> angular_;
     shared_ptr<Energy_Discretization> energy_;

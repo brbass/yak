@@ -233,3 +233,26 @@ output(pugi::xml_node &output_node) const
     XML_Functions::append_child(rbf, shape_parameter_, "shape_parameter", "dimension-point");
 }
 
+void RBF_Mesh::
+set_shape_multiplier(double shape_multiplier)
+{
+    double old_shape_multiplier = shape_multiplier_;
+    shape_multiplier_ = shape_multiplier;
+
+    double mult = shape_multiplier / old_shape_multiplier;
+    
+    for (int i = 0; i < number_of_points_; ++i)
+    {
+        for (int d = 0; d < dimension_; ++d)
+        {
+            int k_sm = d + dimension_ * i;
+            
+            shape_parameter_[k_sm] = shape_parameter_[k_sm] * mult;
+        }
+    }
+
+    for (int i = 0; i < number_of_points_; ++i)
+    {
+        basis_functions_[i]->multiply_shape_parameter(mult);
+    }
+}

@@ -4,7 +4,8 @@ import xml.etree.ElementTree as et
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
 
-def plot_flux_2d(file_path):
+def plot_flux_2d(file_path,
+                 file_out = ""):
     output_xml = et.parse(file_path).getroot()
     
     dimension = int(output_xml.findtext("./rbf_mesh/dimension"))
@@ -34,11 +35,23 @@ def plot_flux_2d(file_path):
         plt.axis('equal')
         plt.tight_layout()
         
-    plt.show()
 
-if (len(sys.argv) != 2):
+    if (file_out == ""):
+        plt.show()
+    else:
+        for g in range(num_groups):
+            plt.figure(g)
+            plt.savefig(file_out + "_flux_2d_" + str(g) + ".pdf")
+
+if (len(sys.argv) != 2 and len(sys.argv) != 3):
     sys.exit()
 
 file_path = sys.argv[1]
 
-plot_flux_2d(file_path)
+if (len(sys.argv) == 3):
+    file_out = sys.argv[2]
+
+    plot_flux_2d(file_path,
+                 file_out)
+else:
+    plot_flux_2d(file_path)

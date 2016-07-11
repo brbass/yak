@@ -185,7 +185,7 @@ get_distance_squared(vector<double> const &r) const
 
     double sum = 0;
     
-    for (int i=0; i<number_of_dimensions(); ++i)
+    for (int i = 0; i < number_of_dimensions(); ++i)
     {
         double dist = shape_[i] * (r[i] - position_[i]);
         
@@ -193,4 +193,13 @@ get_distance_squared(vector<double> const &r) const
     }
 
     return sum;
+}
+
+void RBF::
+multiply_shape_parameter(double t)
+{
+    for (int d = 0; d < number_of_dimensions_; ++d)
+    {
+        shape_[d] = shape_[d] * t;
+    }
 }

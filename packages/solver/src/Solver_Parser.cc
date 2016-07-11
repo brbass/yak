@@ -7,6 +7,7 @@
 #include "Fission.hh"
 #include "Krylov_Iteration.hh"
 #include "Local_RBF_Diffusion.hh"
+#include "Local_RBF_Mesh.hh"
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
@@ -277,14 +278,40 @@ parse_preconditioner(pugi::xml_node solver_node,
     }
     else if (preconditioner_type == "dsa_multigroup")
     {
-        shared_ptr<Sweep_Operator> sweeper = make_shared<Local_RBF_Diffusion>(spatial_,
-                                                                              angular_,
-                                                                              energy_,
-                                                                              nuclear_,
-                                                                              source_);
+        double shape_multiplier = XML_Functions::child_value<double>(solver_node,
+                                                                     "preconditioner_shape_multiplier");
+
+        shared_ptr<Local_RBF_Mesh> spatial = dynamic_pointer_cast<Local_RBF_Mesh>(spatial);
+        Assert(spatial);
+        
+        shared_ptr<Local_RBF_Mesh> preconditioner_spatial
+            = make_shared<Local_RBF_Mesh>(spatial->dimension(),
+                                          spatial->number_of_points(),
+                                          spatial->number_of_boundary_points(),
+                                          spatial->number_of_internal_points(),
+                                          spatial->number_of_neighbors(),
+                                          shape_multiplier,
+                                          spatial->geometry(),
+                                          spatial->basis_type(),
+                                          spatial->coefficient_type(),
+                                          spatial->material(),
+                                          spatial->boundary_cells(),
+                                          spatial->internal_cells(),
+                                          spatial->positions(),
+                                          spatial->boundary_normal(),
+                                          spatial->surface(),
+                                          spatial->region(),
+                                          spatial->solid_geometry());
+        
+        shared_ptr<Sweep_Operator> sweeper
+            = make_shared<Local_RBF_Diffusion>(preconditioner_spatial,
+                                               angular_,
+                                               energy_,
+                                               nuclear_,
+                                               source_);
         
         return make_shared<Diffusion_Synthetic_Acceleration>(Diffusion_Synthetic_Acceleration::DSA_Type::MULTIGROUP,
-                                                             spatial_,
+                                                             preconditioner_spatial,
                                                              angular_,
                                                              energy_,
                                                              nuclear_,

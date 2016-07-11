@@ -5,12 +5,10 @@
   
   <solution_method>
     <type>krylov_iteration</type>
-    <!-- <type>null_solver</type> -->
     <max_iterations>5000</max_iterations>
     <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
-    <!-- <preconditioner>dsa_multigroup</preconditioner> -->
     
     <sweeper>
       <type>rbf_diffusion</type>
@@ -23,83 +21,56 @@
     <local>1</local>
     <coefficient_type>phi</coefficient_type>
     <number_of_neighbors>100</number_of_neighbors>
-    <shape_multiplier>0.5</shape_multiplier>
+    <shape_multiplier>1.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
-    <min_distance_internal>0.05</min_distance_internal>
-    <min_distance_boundary>0.05</min_distance_boundary>
-    <bounding_radius>3.0</bounding_radius>
-    <bounding_origin>0 0</bounding_origin>
+    <min_distance_boundary>0.2</min_distance_boundary>
+    <min_distance_internal>0.2</min_distance_internal>
+    <bounding_radius>3.1</bounding_radius>
+    <bounding_origin>0 0 0</bounding_origin>
     
     <solid_geometry>
-      <dimension>2</dimension>
+      <dimension>3</dimension>
       <surfaces>
         <surface>
           <number>0</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>-2 0</origin>
-          <normal>-1 0</normal>
+          <shape>sphere</shape>
+          <type>internal</type>
+          <origin>0 0 0</origin>
+          <radius>1.0</radius>
         </surface>
+        
         <surface>
           <number>1</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>2 0</origin>
-          <normal>1 0</normal>
-        </surface>
-        <surface>
-          <number>2</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>0 -2</origin>
-          <normal>0 -1</normal>
-        </surface>
-        <surface>
-          <number>3</number>
-          <shape>line</shape>
-          <type>reflective_boundary</type>
-          <origin>0 2</origin>
-          <normal>0 1</normal>
-        </surface>
-        <surface>
-          <number>4</number>
-          <shape>circle</shape>
-          <type>internal</type>
-          <origin>0 0</origin>
-          <radius>1</radius>
+          <shape>sphere</shape>
+          <type>vacuum_boundary</type>
+          <origin>0 0 0</origin>
+          <radius>3.0</radius>
         </surface>
       </surfaces>
+
       <regions>
         <region>
           <number>0</number>
-          <material>1</material>
+          <material>0</material>
+
           <surface_relation>
             <surface>0</surface>
             <relation>inside</relation>
           </surface_relation>
-          <surface_relation>
-            <surface>1</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>2</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>3</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <region_relation>
-            <region>1</region>
-            <relation>outside</relation>
-          </region_relation>
         </region>
+
         <region>
           <number>1</number>
-          <material>0</material>
+          <material>1</material>
+
           <surface_relation>
-            <surface>4</surface>
+            <surface>0</surface>
+            <relation>outside</relation>
+          </surface_relation>
+
+          <surface_relation>
+            <surface>1</surface>
             <relation>inside</relation>
           </surface_relation>
         </region>
@@ -108,7 +79,7 @@
   </spatial_discretization>
   
   <angular_discretization>
-    <dimension>2</dimension>
+    <dimension>3</dimension>
     <number_of_moments>1</number_of_moments>
     <rule>1</rule>
   </angular_discretization>
@@ -146,6 +117,6 @@
   <source_data>
     <internal_source_type>isotropic</internal_source_type>
     <boundary_source_type>surface_isotropic</boundary_source_type>
-    <boundary_source>0 0 0 0 0 0 0 0 0 0</boundary_source>
+    <boundary_source>0 0 0 0</boundary_source>
   </source_data>
 </input>
