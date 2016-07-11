@@ -10,7 +10,7 @@
     <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
-    <!-- <preconditioner>dsa_multigroup</preconditioner> -->
+    <preconditioner>dsa_multigroup</preconditioner>
     
     <sweeper>
       <type>rbf_diffusion</type>
@@ -23,7 +23,7 @@
     <local>1</local>
     <coefficient_type>phi</coefficient_type>
     <number_of_neighbors>100</number_of_neighbors>
-    <shape_multiplier>0.5</shape_multiplier>
+    <shape_multiplier>0.4</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
     <min_distance_internal>0.05</min_distance_internal>

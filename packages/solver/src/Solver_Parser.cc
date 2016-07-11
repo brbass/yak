@@ -281,7 +281,7 @@ parse_preconditioner(pugi::xml_node solver_node,
         double shape_multiplier = XML_Functions::child_value<double>(solver_node,
                                                                      "preconditioner_shape_multiplier");
 
-        shared_ptr<Local_RBF_Mesh> spatial = dynamic_pointer_cast<Local_RBF_Mesh>(spatial);
+        shared_ptr<Local_RBF_Mesh> spatial = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_);
         Assert(spatial);
         
         shared_ptr<Local_RBF_Mesh> preconditioner_spatial

@@ -1,0 +1,18 @@
+
+yak:29710 terminated with signal 6 at PC=3c74c32625 SP=7ffc0cb34a18.  Backtrace:
+/lib64/libc.so.6(gsignal+0x35)[0x3c74c32625]
+/lib64/libc.so.6(abort+0x175)[0x3c74c33e05]
+/usr/cac/rhel6/gcc-4.7.2/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x11d)[0x2b1882655d6d]
+/usr/cac/rhel6/gcc-4.7.2/lib64/libstdc++.so.6(+0x5de66)[0x2b1882653e66]
+/usr/cac/rhel6/gcc-4.7.2/lib64/libstdc++.so.6(+0x5de93)[0x2b1882653e93]
+/usr/cac/rhel6/gcc-4.7.2/lib64/libstdc++.so.6(+0x5e0be)[0x2b18826540be]
+/home/brbass/research/yak/bin/yak(_ZN5ch_ns5checkESsSsSsi+0x11d)[0x5b36b5]
+/home/brbass/research/yak/bin/yak(_ZN13XML_Functions11child_valueISsEET_RN4pugi8xml_nodeESsb+0x11d)[0x52cb70]
+/home/brbass/research/yak/bin/yak(_ZN13Solver_Parser13parse_sweeperEv+0x1c6)[0x52ef22]
+/home/brbass/research/yak/bin/yak(_ZN13Solver_Parser22parse_krylov_iterationEv+0x214)[0x52e96c]
+/home/brbass/research/yak/bin/yak(_ZN13Solver_ParserC2ERN4pugi8xml_nodeESt10shared_ptrI22Spatial_DiscretizationES3_I22Angular_DiscretizationES3_I21Energy_DiscretizationES3_I12Nuclear_DataES3_I11Source_DataE+0x21b)[0x52df0f]
+/home/brbass/research/yak/bin/yak(_ZN6Driver11run_problemEv+0x43a)[0x52a802]
+/home/brbass/research/yak/bin/yak(_ZN6DriverC1ESs+0x7b)[0x52a37f]
+/home/brbass/research/yak/bin/yak(main+0xad)[0x525ef9]
+/lib64/libc.so.6(__libc_start_main+0xfd)[0x3c74c1ed5d]
+/home/brbass/research/yak/bin/yak[0x525d19]
