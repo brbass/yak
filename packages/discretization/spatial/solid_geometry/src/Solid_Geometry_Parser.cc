@@ -97,9 +97,9 @@ get_surfaces(pugi::xml_node &surfaces_node,
             vector<double> origin = XML_Functions::child_vector<double>(surface_node, "origin", dimension);
             vector<double> normal = XML_Functions::child_vector<double>(surface_node, "normal", dimension);
             
-            surface = make_shared<Line>(surface_type,
-                                        origin,
-                                        normal);
+            surface = make_shared<Plane>(surface_type,
+                                         origin,
+                                         normal);
         }
         else if (shape == "sphere")
         {
