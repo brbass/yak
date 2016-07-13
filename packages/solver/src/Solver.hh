@@ -49,6 +49,7 @@ protected:
     virtual void print_name(string solution_type);
     virtual void print_iteration(int iteration);
     virtual void print_convergence();
+    virtual void print_error(double error, string description);
     virtual void print_failure();
 
     int solver_print_;

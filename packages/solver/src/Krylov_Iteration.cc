@@ -94,8 +94,12 @@ solve_steady_state(vector<double> &x)
             q_old = q;
             
             (*SI)(q);
+
+            double error;
+            bool converged = check_phi_convergence(q, q_old, error);
+            print_error(error, "phi");
             
-            if (check_phi_convergence(q, q_old))
+            if (converged)
             {
                 source_iterations_ = it + 1;
 
@@ -162,7 +166,8 @@ solve_steady_state(vector<double> &x)
 
 bool Krylov_Iteration::
 check_phi_convergence(vector<double> const &x, 
-                      vector<double> const &x_old)
+                      vector<double> const &x_old,
+                      double &error)
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
@@ -179,8 +184,10 @@ check_phi_convergence(vector<double> const &x,
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
                     int k = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+
+                    error = abs(x[k] - x_old[k]) / (abs(x_old[k]) + tolerance_ * tolerance_);
                     
-                    if (abs(x[k] - x_old[k]) / (abs(x_old[k]) + tolerance_ * tolerance_) > tolerance_)
+                    if (error > tolerance_)
                     {
                         return false;
                     }

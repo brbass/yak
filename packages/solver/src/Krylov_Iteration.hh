@@ -55,7 +55,8 @@ public:
     
     // Check for convergence based on pointwise error in scalar flux
     bool check_phi_convergence(vector<double> const &x, 
-                               vector<double> const &x_old);
+                               vector<double> const &x_old,
+                               double &error);
     
     // Size of moment representation of flux
     int phi_size() const

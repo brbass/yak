@@ -1,6 +1,7 @@
 #include "Solver.hh"
 
 #include <iostream>
+#include <string>
 
 #include "Angular_Discretization.hh"
 #include "Energy_Discretization.hh"
@@ -58,7 +59,7 @@ print_iteration(int iteration)
     {
         cout << "\t\titer:\t";
         cout << iteration;
-        cout << endl;
+        cout << "\t";
     }
 }
 
@@ -80,6 +81,20 @@ print_failure()
     {
         cout << endl;
         cout << "\t\tFailed to converge";
+        cout << endl;
+    }
+}
+
+void Solver::
+print_error(double error,
+            string type)
+{
+    if (solver_print_)
+    {
+        cout << "error in ";
+        cout << type;
+        cout << ":\t";
+        cout << error;
         cout << endl;
     }
 }

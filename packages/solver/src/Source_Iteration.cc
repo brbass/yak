@@ -85,8 +85,12 @@ solve_steady_state(vector<double> &x)
             q_old = q;
             
             (*SI)(q);
+
+            double error;
+            bool converged = check_phi_convergence(q, q_old, error);
+            print_error(error, "phi");
             
-            if (check_phi_convergence(q, q_old))
+            if (converged)
             {
                 source_iterations_ = it + 1;
                 
@@ -113,7 +117,7 @@ solve_steady_state(vector<double> &x)
     
     x.resize(phi_size() + number_of_augments(), 0);
     vector<double> x_old;
-
+    
     print_name("Source iteration");
     
     for (int it = 0; it < max_iterations_; ++it)
@@ -128,11 +132,15 @@ solve_steady_state(vector<double> &x)
         {
             x[i] += q[i]; // add source
         }
+
+        double error;
+        bool converged = check_phi_convergence(x, x_old, error);
+        print_error(error, "phi");
         
-        if (check_phi_convergence(x, x_old))
+        if (converged)
         {
             total_iterations_ = it + 1;
-            
+
             print_convergence();
             
             break;
@@ -151,7 +159,8 @@ solve_steady_state(vector<double> &x)
 */
 bool Source_Iteration::
 check_phi_convergence(vector<double> const &x, 
-                      vector<double> const &x_old)
+                      vector<double> const &x_old,
+                      double &error)
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
@@ -168,8 +177,9 @@ check_phi_convergence(vector<double> const &x,
                 for (int n = 0; n < number_of_nodes; ++n)
                 {
                     int k = n + number_of_nodes * (g + number_of_groups * (m + number_of_moments * i));
+                    error = abs(x[k] - x_old[k]) / (abs(x_old[k]) + tolerance_ * tolerance_);
                     
-                    if (abs(x[k] - x_old[k]) / (abs(x_old[k]) + tolerance_ * tolerance_) > tolerance_)
+                    if (error > tolerance_)
                     {
                         return false;
                     }
@@ -186,9 +196,12 @@ check_phi_convergence(vector<double> const &x,
 */
 bool Source_Iteration::
 check_k_convergence(double k,
-                    double k_old)
+                    double k_old,
+                    double &error)
 {
-    if (abs(k - k_old) / (abs(k_old) + tolerance_ * tolerance_) > tolerance_)
+    error = abs(k - k_old) / (abs(k_old) + tolerance_ * tolerance_);
+    
+    if (error > tolerance_)
     {
         return false;
     }
@@ -264,11 +277,15 @@ solve_k_eigenvalue(double &k_eigenvalue,
         double x_old_mag = Vector_Functions::magnitude(x2);
         
         k_eigenvalue = x_mag / x_old_mag * k_eigenvalue_old;
+
+        double error;
+        bool converged = check_k_convergence(k_eigenvalue, k_eigenvalue_old, error);
+        print_error(error, "k-eff");
         
-        if (check_k_convergence(k_eigenvalue, k_eigenvalue_old))
+        if (converged)
         {
             total_iterations_ = it + 1;
-            
+
             print_convergence();
             
             break;

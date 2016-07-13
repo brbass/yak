@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<input>
+  <problem_type>k_eigenvalue</problem_type>
+  
+  <solution_method>
+    <type>source_iteration</type>
+    <max_iterations>5000</max_iterations>
+    <kspace>15</kspace>
+    <solver_print>1</solver_print>
+    <tolerance>1e-6</tolerance>
+    
+    <sweeper>
+      <type>dfem</type>
+    </sweeper>
+  </solution_method>
+  
+  <spatial_discretization>
+    <type>finite_element</type>
+    <element_type>dfem</element_type>
+    <dimension>1</dimension>
+    <number_of_elements>2000</number_of_elements>a
+    <number_of_nodes>2</number_of_nodes>
+    <geometry>slab</geometry>
+    
+    <regions>
+      <number_of_regions>2</number_of_regions>
+      <region>
+        <number_of_elements>2000</number_of_elements>
+        <material>0</material>
+        <length>4.0</length>
+      </region>
+    </regions>
+  </spatial_discretization>
+  
+  <angular_discretization>
+    <dimension>1</dimension>
+    <number_of_moments>1</number_of_moments>
+    <number_of_ordinates>16</number_of_ordinates>
+  </angular_discretization>
+  
+  <energy_discretization>
+    <number_of_groups>2</number_of_groups>
+  </energy_discretization>
+  
+  <nuclear_data>
+    <materials>
+      <number_of_materials>1</number_of_materials>
+      
+      <material>
+        <material_number>0</material_number>
+        <sigma_t>20.0 40.0</sigma_t>
+        <sigma_s>10.4 0.0 8.9 19.0</sigma_s>
+        <nu>2.4 2.4</nu>
+        <sigma_f>0.03 11.0</sigma_f>
+        <chi>1.0 0.0</chi>
+        <internal_source>1.0 0.0</internal_source>
+      </material>
+    </materials>
+  </nuclear_data>
+  
+  <source_data>
+    <internal_source_type>isotropic</internal_source_type>
+    <boundary_source_type>cellwise_isotropic</boundary_source_type>
+    <boundary_source>0.0 0.0 0.0 0.0</boundary_source>
+    <alpha>0.0 0.0</alpha>
+  </source_data>
+</input>

@@ -10,7 +10,7 @@
     <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
-
+    
     <sweeper>
       <type>rbf_diffusion</type>
       <solver>amesos</solver>
@@ -25,9 +25,9 @@
     <shape_multiplier>2.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
-    <min_distance_internal>0.3</min_distance_internal>
     <min_distance_boundary>0.3</min_distance_boundary>
-    <bounding_radius>3.0</bounding_radius>
+    <min_distance_internal>0.3</min_distance_internal>
+    <bounding_radius>2.1</bounding_radius>
     <bounding_origin>0 0 0</bounding_origin>
     
     <solid_geometry>
@@ -35,73 +35,20 @@
       <surfaces>
         <surface>
           <number>0</number>
-          <shape>plane</shape>
+          <shape>sphere</shape>
           <type>vacuum_boundary</type>
-          <origin>-2 0 0</origin>
-          <normal>-1 0 0</normal>
-        </surface>
-        <surface>
-          <number>1</number>
-          <shape>plane</shape>
-          <type>vacuum_boundary</type>
-          <origin>2 0 0</origin>
-          <normal>1 0 0</normal>
-        </surface>
-        <surface>
-          <number>2</number>
-          <shape>plane</shape>
-          <type>vacuum_boundary</type>
-          <origin>0 -2 0</origin>
-          <normal>0 -1 0</normal>
-        </surface>
-        <surface>
-          <number>3</number>
-          <shape>plane</shape>
-          <type>vacuum_boundary</type>
-          <origin>0 2 0</origin>
-          <normal>0 1 0</normal>
-        </surface>
-        <surface>
-          <number>4</number>
-          <shape>plane</shape>
-          <type>vacuum_boundary</type>
-          <origin>0 0 -2</origin>
-          <normal>0 0 -1</normal>
-        </surface>
-        <surface>
-          <number>5</number>
-          <shape>plane</shape>
-          <type>vacuum_boundary</type>
-          <origin>0 0 2</origin>
-          <normal>0 0 1</normal>
+          <origin>0 0 0</origin>
+          <radius>2.0</radius>
         </surface>
       </surfaces>
+
       <regions>
         <region>
           <number>0</number>
           <material>0</material>
+
           <surface_relation>
             <surface>0</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>1</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>2</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>3</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>4</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <surface_relation>
-            <surface>5</surface>
             <relation>inside</relation>
           </surface_relation>
         </region>
@@ -142,12 +89,13 @@
       <!--   <chi>1.0 0.0</chi> -->
       <!--   <internal_source>1.0 0.0</internal_source> -->
       <!-- </material> -->
+
     </materials>
   </nuclear_data>
   
   <source_data>
     <internal_source_type>isotropic</internal_source_type>
     <boundary_source_type>surface_isotropic</boundary_source_type>
-    <boundary_source>0 0 0 0 0 0 0 0 0 0 0 0</boundary_source>
+    <boundary_source>0 0</boundary_source>
   </source_data>
 </input>
