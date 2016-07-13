@@ -49,7 +49,7 @@ private:
     int phi_size_;
     int max_iterations_ = 200;
     int kspace_ = 10;
-    double tolerance_ = 1e-5;
+    double tolerance_ = 1e-6;
     DSA_Type dsa_type_;
     shared_ptr<Scattering_Operator> scattering_;
     shared_ptr<Scattering_Operator> fission_;
