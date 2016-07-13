@@ -57,9 +57,9 @@
       <material>
         <material_number>0</material_number>
         <sigma_t>2.0</sigma_t>
-        <sigma_s>1.9</sigma_s>
+        <sigma_s>1.9999</sigma_s>
         <nu>2.4</nu>
-        <sigma_f>0.03</sigma_f>
+        <sigma_f>0.0</sigma_f>
         <chi>1.0</chi>
         <internal_source>1.0</internal_source>
       </material>
