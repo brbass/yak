@@ -32,7 +32,6 @@
 #include "XML_Functions.hh"
 
 typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> Anasazi_Eigenproblem;
-// typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator> Anasazi_SolverManager;
 typedef Anasazi::GeneralizedDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator> Anasazi_SolverManager;
 typedef Anasazi::Eigensolution<double, Epetra_MultiVector> Anasazi_Eigensolution;
 
@@ -272,7 +271,6 @@ solve_k_eigenvalue(double &k_eigenvalue,
     params->set("Maximum Iterations", max_iterations_);
     params->set("Block Size", block_size);
     params->set("Convergence Tolerance", tolerance_);
-    // params->set("Which", "LM");
     params->set("Which", "LR");
     params->set("Maximum Restarts", 20);
     params->set("Relative Convergence Tolerance", true);
@@ -281,13 +279,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
         params->set("Verbosity", Anasazi::IterationDetails + Anasazi::TimingDetails + Anasazi::FinalSummary);
         params->set("Output Frequency", 1);
     }
-
-    // BlockKrylovSchur parameters
-    // params->set("Num Blocks", num_blocks);
-    // params->set("Extra NEV Blocks", 3);
-    // params->set("Dynamic Extra NEV", false);
     
-    // GeneralizedDavidson parameters
     params->set("Maximum Subspace Dimension", kspace_);
     params->set("Restart Dimension", int(ceil(kspace_ / 3)));
     params->set("Initial Guess", "User");
@@ -595,7 +587,6 @@ apply(vector<double> &x) const
                                      false); // don't include fission
     shared_ptr<Vector_Operator> NI
         = make_shared<Fission_Iterator>(ki_);
-    
     
     (*NI)(x);
     
