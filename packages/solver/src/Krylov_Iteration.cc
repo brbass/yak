@@ -4,12 +4,18 @@
 #include <iomanip>
 #include <iostream>
 
+#include <AnasaziBlockKrylovSchurSolMgr.hpp>
+#include <AnasaziBasicEigenproblem.hpp>
+#include <AnasaziEpetraAdapter.hpp>
+#include <AnasaziGeneralizedDavidsonSolMgr.hpp>
 #include <AztecOO.h>
 #include <mpi.h>
+#include <Epetra_MultiVector.h>
 #include <Epetra_MpiComm.h>
 #include <Epetra_Map.h>
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
+#include "Teuchos_RCPStdSharedPtrConversions.hpp"
 
 #include "Angular_Discretization.hh"
 #include "Augmented_Operator.hh"
@@ -25,7 +31,17 @@
 #include "Vector_Operator_Functions.hh"
 #include "XML_Functions.hh"
 
+typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> Anasazi_Eigenproblem;
+// typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator> Anasazi_SolverManager;
+typedef Anasazi::GeneralizedDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator> Anasazi_SolverManager;
+typedef Anasazi::Eigensolution<double, Epetra_MultiVector> Anasazi_Eigensolution;
+
 using namespace std;
+using Teuchos::RCP;
+using Teuchos::rcp;
+using Teuchos::ParameterList;
+using Teuchos::parameterList;
+using Teuchos::get_shared_ptr;
 
 Krylov_Iteration::
 Krylov_Iteration(int max_iterations,
@@ -128,7 +144,7 @@ solve_steady_state(vector<double> &x)
     }
 
     x.resize(phi_size() + number_of_augments(), 0);
-  
+    
     shared_ptr<Epetra_Comm> comm = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     shared_ptr<Epetra_Map> map = make_shared<Epetra_Map>(phi_size() + number_of_augments(), 0, *comm);
     shared_ptr<Epetra_Vector> lhs = make_shared<Epetra_Vector>(*map);
@@ -203,7 +219,103 @@ void Krylov_Iteration::
 solve_k_eigenvalue(double &k_eigenvalue, 
                    vector<double> &x)
 {
-    AssertMsg(false, "not implemented");
+    shared_ptr<Epetra_Comm> comm = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
+    shared_ptr<Epetra_Map> map = make_shared<Epetra_Map>(phi_size() + number_of_augments(), 0, *comm);
+    
+    shared_ptr<Vector_Operator> FI
+        = make_shared<Flux_Iterator>(*this,
+                                     false); // don't include fission
+    shared_ptr<Vector_Operator> NI
+        = make_shared<Fission_Iterator>(*this);
+    shared_ptr<Vector_Operator> EI
+        = make_shared<Eigenvalue_Iterator>(*this,
+                                           comm,
+                                           map);
+    
+    // shared_ptr<Epetra_Operator> A
+    //     = make_shared<Epetra_Operator_Interface>(comm,
+    //                                              map,
+    //                                              NI);
+    // shared_ptr<Epetra_Operator> M
+    //     = make_shared<Epetra_Operator_Interface>(comm,
+    //                                              map,
+    //                                              FI);
+    shared_ptr<Epetra_Operator> Op
+        = make_shared<Epetra_Operator_Interface>(comm,
+                                                 map,
+                                                 EI);
+
+    int nev = 1; // number of eigenvalues requested
+    int block_size = 1;
+    int num_blocks = kspace_;
+    
+    shared_ptr<Epetra_MultiVector> init
+        = make_shared<Epetra_MultiVector>(*map,
+                                          block_size);
+    init->PutScalar(1.0);
+    
+    shared_ptr<Anasazi_Eigenproblem> problem
+        = make_shared<Anasazi_Eigenproblem>();
+    problem->setOperator(rcp(Op));
+    // problem->setA(rcp(A)); // causes problem to stall
+    // problem->setM(rcp(M)); // causes problem to stall
+    problem->setInitVec(rcp(init));
+    problem->setNEV(nev);
+    problem->setHermitian(false);
+    Check(problem->setProblem());
+    
+    shared_ptr<ParameterList> params
+        = get_shared_ptr(parameterList());
+        // = make_shared<ParameterList>();
+
+    // General parameters
+    params->set("Maximum Iterations", max_iterations_);
+    params->set("Block Size", block_size);
+    params->set("Convergence Tolerance", tolerance_);
+    // params->set("Which", "LM");
+    params->set("Which", "LR");
+    params->set("Maximum Restarts", 20);
+    params->set("Relative Convergence Tolerance", true);
+    if (solver_print_)
+    {
+        params->set("Verbosity", Anasazi::IterationDetails + Anasazi::TimingDetails + Anasazi::FinalSummary);
+        params->set("Output Frequency", 1);
+    }
+
+    // BlockKrylovSchur parameters
+    // params->set("Num Blocks", num_blocks);
+    // params->set("Extra NEV Blocks", 3);
+    // params->set("Dynamic Extra NEV", false);
+    
+    // GeneralizedDavidson parameters
+    params->set("Maximum Subspace Dimension", kspace_);
+    params->set("Restart Dimension", int(ceil(kspace_ / 3)));
+    params->set("Initial Guess", "User");
+    
+    shared_ptr<Anasazi_SolverManager> solver
+        = make_shared<Anasazi_SolverManager>(rcp(problem), *params);
+    
+    if (solver->solve() != Anasazi::ReturnType::Converged)
+    {
+        cerr << "Eigenvalue solve did not converge" << endl;
+    }
+    
+    total_iterations_ = solver->getNumIters();
+    
+    shared_ptr<Anasazi_Eigensolution const> solution
+        = make_shared<Anasazi_Eigensolution> (problem->getSolution());
+    
+    k_eigenvalue = solution->Evals[0].realpart;
+    
+    shared_ptr<Epetra_MultiVector> sol
+        = get_shared_ptr(solution->Evecs);
+    
+    x.resize(map->NumMyElements());
+    
+    sol->ExtractCopy(&x[0],
+                     map->NumMyElements());
+    
+    x.resize(phi_size()); // remove augments
 }
 
 void Krylov_Iteration::
@@ -324,9 +436,11 @@ apply(vector<double> &x) const
 }
 
 Krylov_Iteration::Flux_Iterator::
-Flux_Iterator(Krylov_Iteration const &ki):
+Flux_Iterator(Krylov_Iteration const &ki,
+              bool include_fission):
     Vector_Operator(ki.phi_size() + ki.number_of_augments(),
                     ki.phi_size() + ki.number_of_augments()),
+    include_fission_(include_fission),
     ki_(ki)
 {
     
@@ -382,10 +496,22 @@ apply(vector<double> &x) const
     shared_ptr<Vector_Operator> S
         = make_shared<Augmented_Operator>(ki_.number_of_augments(),
                                           ki_.scattering_);
-    shared_ptr<Vector_Operator> F
-        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
-                                          ki_.fission_,
-                                          true); // Only one of S or F needs to include the augments
+    shared_ptr<Vector_Operator> SF;
+    
+    if (include_fission_)
+    {
+        shared_ptr<Vector_Operator> F
+            = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                              ki_.fission_,
+                                              true); // Only one of S or F needs to include the augments
+        
+        SF = S + F;
+    }
+    else
+    {
+        SF = S;
+    }
+
     shared_ptr<Vector_Operator> I
         = make_shared<Identity_Operator>(ki_.phi_size() + ki_.number_of_augments());
     
@@ -395,12 +521,118 @@ apply(vector<double> &x) const
 
     if (ki_.preconditioned_)
     {
-        Op = (I + E * S) * (I - T * (S + F));
+        Op = (I + E * SF) * (I - T * SF);
     }
     else
     {
-        Op = I - T * (S + F);
+        Op = I - T * SF;
     }
     
     (*Op)(x);
 }
+
+Krylov_Iteration::Fission_Iterator::
+Fission_Iterator(Krylov_Iteration const &ki):
+    Vector_Operator(ki.phi_size() + ki.number_of_augments(),
+                    ki.phi_size() + ki.number_of_augments()),
+    ki_(ki)
+{
+}
+
+void Krylov_Iteration::Fission_Iterator::
+apply(vector<double> &x) const
+{
+    shared_ptr<Vector_Operator> D
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.discrete_to_moment_);
+    shared_ptr<Vector_Operator> M
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.moment_to_discrete_);
+    
+    shared_ptr<Sweep_Operator> Linv =
+        dynamic_pointer_cast<Sweep_Operator>(ki_.sweeper_);
+    Assert(Linv);
+    Linv->include_boundary_source(false);
+    
+    shared_ptr<Vector_Operator> T;
+    switch (Linv->sweep_type())
+    {
+    case Sweep_Operator::Sweep_Type::MOMENT:
+        T = Linv;
+        break;
+    default: // Sweep_Operator::Sweep_Type::ORDINATE:
+        T = D * Linv * M;
+        break;
+    }
+    
+    shared_ptr<Vector_Operator> F
+        = make_shared<Augmented_Operator>(ki_.number_of_augments(),
+                                          ki_.fission_);
+    
+    shared_ptr<Vector_Operator> Op
+        = T * F;
+
+    (*Op)(x);
+}
+
+Krylov_Iteration::Eigenvalue_Iterator::
+Eigenvalue_Iterator(Krylov_Iteration const &ki,
+                    shared_ptr<Epetra_Comm> comm,
+                    shared_ptr<Epetra_Map> map):
+    Vector_Operator(ki.phi_size() + ki.number_of_augments(),
+                    ki.phi_size() + ki.number_of_augments()),
+    ki_(ki),
+    comm_(comm),
+    map_(map)
+{
+}
+
+void Krylov_Iteration::Eigenvalue_Iterator::
+apply(vector<double> &x) const
+{
+    shared_ptr<Vector_Operator> FI
+        = make_shared<Flux_Iterator>(ki_,
+                                     false); // don't include fission
+    shared_ptr<Vector_Operator> NI
+        = make_shared<Fission_Iterator>(ki_);
+    
+    
+    (*NI)(x);
+    
+    shared_ptr<Epetra_Vector> lhs
+        = make_shared<Epetra_Vector>(*map_);
+    shared_ptr<Epetra_Vector> rhs
+        = make_shared<Epetra_Vector>(Copy,
+                                     *map_,
+                                     &x[0]);
+    shared_ptr<Epetra_Operator> oper
+        = make_shared<Epetra_Operator_Interface>(comm_,
+                                                 map_,
+                                                 FI);
+    shared_ptr<Epetra_LinearProblem> problem
+        = make_shared<Epetra_LinearProblem>(oper.get(),
+                                            lhs.get(),
+                                            rhs.get());
+    shared_ptr<AztecOO> solver
+        = make_shared<AztecOO>(*problem);
+    
+    solver->SetAztecOption(AZ_precond, AZ_none);
+    solver->SetAztecOption(AZ_solver, AZ_gmres);
+    solver->SetAztecOption(AZ_kspace, ki_.kspace_);
+    solver->SetAztecOption(AZ_conv, AZ_rhs);
+    if (ki_.solver_print_ && false)
+    {
+        solver->SetAztecOption(AZ_output, AZ_all);
+    }
+    else
+    {
+        solver->SetAztecOption(AZ_output, AZ_none);
+    }
+    
+    lhs->PutScalar(1.0);
+    
+    solver->Iterate(ki_.max_iterations_, ki_.tolerance_);
+    
+    lhs->ExtractCopy(&x[0]);
+}
+

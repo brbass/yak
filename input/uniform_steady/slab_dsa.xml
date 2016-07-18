@@ -4,7 +4,7 @@
   <problem_type>steady_state</problem_type>
   
   <solution_method>
-    <type>krylov_iteration</type>
+    <type>source_iteration</type>
     <max_iterations>5000</max_iterations>
     <kspace>15</kspace>
     <solver_print>1</solver_print>
@@ -64,7 +64,7 @@
         <internal_source>1.0 0.0</internal_source>
       </material>
     </materials>
-  </nuclear_data>
+v  </nuclear_data>
   
   <source_data>
     <internal_source_type>isotropic</internal_source_type>

@@ -7,6 +7,9 @@
 #include "Source_Data.hh"
 #include "Vector_Operator.hh"
 
+class Epetra_Comm;
+class Epetra_Map;
+
 using std::shared_ptr;
 
 /*
@@ -126,13 +129,55 @@ private:
     public:
 
         // Constructor
-        Flux_Iterator(Krylov_Iteration const &krylov_iteration);
+        Flux_Iterator(Krylov_Iteration const &krylov_iteration,
+                      bool include_fission = true);
+        
+    private:
+        
+        virtual void apply(vector<double> &x) const override;
+
+        bool include_fission_;
+        Krylov_Iteration const &ki_;
+    };
+
+    /* 
+       Represents the fission operator for an eigenvalue calculation,
+       D Linv M F,
+    */
+    class Fission_Iterator : public Vector_Operator
+    {
+    public:
+
+        // Constructor
+        Fission_Iterator(Krylov_Iteration const &krylov_iteration);
         
     private:
         
         virtual void apply(vector<double> &x) const override;
         
         Krylov_Iteration const &ki_;
+    };
+
+    /* 
+       Represents the eigenvalue operator,
+       (I - D Linv M S)inv D Linv M F
+    */
+    class Eigenvalue_Iterator : public Vector_Operator
+    {
+    public:
+
+        // Constructor
+        Eigenvalue_Iterator(Krylov_Iteration const &krylov_iteration,
+                            shared_ptr<Epetra_Comm> comm,
+                            shared_ptr<Epetra_Map> map);
+        
+    private:
+        
+        virtual void apply(vector<double> &x) const override;
+        
+        Krylov_Iteration const &ki_;
+        shared_ptr<Epetra_Comm> comm_;
+        shared_ptr<Epetra_Map> map_;
     };
 };
 

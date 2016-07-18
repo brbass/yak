@@ -21,8 +21,8 @@
     <local>1</local>
     <dimension>1</dimension>
     <coefficient_type>phi</coefficient_type>
-    <number_of_points>202</number_of_points>
-    <number_of_neighbors>100</number_of_neighbors>
+    <number_of_points>102</number_of_points>
+    <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.2</shape_multiplier>
     <geometry>slab</geometry>
     <basis_type>multiquadric</basis_type>
@@ -30,7 +30,7 @@
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>200</number_of_points>
+        <number_of_points>100</number_of_points>
         <material>0</material>
         <length>4.0</length>
       </region>
