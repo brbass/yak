@@ -19,6 +19,8 @@
 
 using namespace std;
 
+namespace vf = Vector_Functions;
+
 Source_Iteration::
 Source_Iteration(int max_iterations,
                  int solver_print,
@@ -160,7 +162,7 @@ solve_steady_state(vector<double> &x)
 bool Source_Iteration::
 check_phi_convergence(vector<double> const &x, 
                       vector<double> const &x_old,
-                      double &error)
+                      double &error) const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
     int number_of_nodes = spatial_discretization_->number_of_nodes();
@@ -197,7 +199,7 @@ check_phi_convergence(vector<double> const &x,
 bool Source_Iteration::
 check_k_convergence(double k,
                     double k_old,
-                    double &error)
+                    double &error) const
 {
     error = abs(k - k_old) / (abs(k_old) + tolerance_ * tolerance_);
     
@@ -255,7 +257,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
     double k_eigenvalue_old;
     vector<double> x_old;
     
-    print_name("Power iteration");
+    print_name("Fixed point iteration");
     
     for (int it = 0; it < max_iterations_; ++it)
     {
@@ -268,16 +270,10 @@ solve_k_eigenvalue(double &k_eigenvalue,
         
         (*Op)(x);
         
-        vector<double> x1(x.begin(), x.begin() + phi_size());
-        vector<double> x2(x_old.begin(), x_old.begin() + phi_size());
-        (*fission_)(x1);
-        (*fission_)(x2);
+        k_eigenvalue = update_k(k_eigenvalue_old,
+                                x,
+                                x_old);
         
-        double x_mag = Vector_Functions::magnitude(x1);
-        double x_old_mag = Vector_Functions::magnitude(x2);
-        
-        k_eigenvalue = x_mag / x_old_mag * k_eigenvalue_old;
-
         double error;
         bool converged = check_k_convergence(k_eigenvalue, k_eigenvalue_old, error);
         print_error(error, "k-eff");
@@ -287,6 +283,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
             total_iterations_ = it + 1;
 
             print_convergence();
+            print_eigenvalue(k_eigenvalue);
             
             break;
         }
@@ -303,6 +300,31 @@ void Source_Iteration::
 solve_time_dependent(vector<double> &x)
 {
     AssertMsg(false, "not implemented");
+}
+
+double Source_Iteration::
+update_k(double k_eigenvalue_old,
+         vector<double> const &x,
+         vector<double> const &x_old) const
+{
+    vector<double> fis(x.begin(), x.begin() + phi_size());
+    vector<double> fis_old(x_old.begin(), x_old.begin() + phi_size());
+    vector<double> sca(x.begin(), x.begin() + phi_size());
+    vector<double> sca_old(x_old.begin(), x_old.begin() + phi_size());
+    
+    (*fission_)(fis);
+    (*fission_)(fis_old);
+    (*scattering_)(sca);
+    (*scattering_)(sca_old);
+
+    double num = vf::magnitude(fis);
+    // double den = vf::magnitude(fis_old) / k_eigenvalue_old;
+    double den = vf::magnitude(vf::subtract(vf::multiply(fis_old,
+                                                         1. / k_eigenvalue_old),
+                                            vf::subtract(sca,
+                                                         sca_old)));
+    
+    return num / den;
 }
 
 void Source_Iteration::
@@ -493,3 +515,4 @@ apply(vector<double> &x) const
     
     (*Op)(x);
 }
+

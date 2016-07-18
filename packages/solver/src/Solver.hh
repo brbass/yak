@@ -46,12 +46,13 @@ public:
 
 protected:
 
-    virtual void print_name(string solution_type);
-    virtual void print_iteration(int iteration);
-    virtual void print_convergence();
-    virtual void print_error(double error, string description);
-    virtual void print_failure();
-
+    virtual void print_name(string solution_type) const;
+    virtual void print_iteration(int iteration) const;
+    virtual void print_convergence() const;
+    virtual void print_error(double error, string description) const;
+    virtual void print_failure() const;
+    virtual void print_eigenvalue(double eigenvalue) const;
+    
     int solver_print_;
     shared_ptr<Spatial_Discretization> spatial_discretization_;
     shared_ptr<Angular_Discretization> angular_discretization_;

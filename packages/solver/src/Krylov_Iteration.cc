@@ -276,10 +276,12 @@ solve_k_eigenvalue(double &k_eigenvalue,
     params->set("Relative Convergence Tolerance", true);
     if (solver_print_)
     {
-        params->set("Verbosity", Anasazi::IterationDetails + Anasazi::TimingDetails + Anasazi::FinalSummary);
+        int verbosity = Anasazi::IterationDetails + Anasazi::TimingDetails + Anasazi::FinalSummary;
+        params->set("Verbosity", verbosity);
         params->set("Output Frequency", 1);
     }
-    
+
+    // GeneralizedDavidson parameters
     params->set("Maximum Subspace Dimension", kspace_);
     params->set("Restart Dimension", int(ceil(kspace_ / 3)));
     params->set("Initial Guess", "User");

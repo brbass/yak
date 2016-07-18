@@ -11,6 +11,7 @@
 #include "Local_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
+#include "Power_Iteration.hh"
 #include "Preconditioner.hh"
 #include "Sweep_Operator.hh"
 #include "RBF_Sweep_1D.hh"
@@ -44,6 +45,10 @@ Solver_Parser(pugi::xml_node &input_file,
     else if (solver_type == "krylov_iteration")
     {
         solver_ = parse_krylov_iteration();
+    }
+    else if (solver_type == "power_iteration")
+    {
+        solver_ = parse_power_iteration();
     }
     else if (solver_type == "null_solver")
     {
@@ -126,6 +131,41 @@ parse_krylov_iteration()
                                          scattering,
                                          fission,
                                          preconditioner);
+}
+
+shared_ptr<Power_Iteration> Solver_Parser::
+parse_power_iteration()
+{
+    pugi::xml_node solver_node = input_file_.child("solution_method");
+    
+    int max_iterations = XML_Functions::child_value<int>(solver_node, "max_iterations");
+    int kspace = XML_Functions::child_value<int>(solver_node, "kspace");
+    int solver_print = XML_Functions::child_value<int>(solver_node, "solver_print");
+    double tolerance = XML_Functions::child_value<double>(solver_node, "tolerance");
+    shared_ptr<Sweep_Operator> sweeper = parse_sweeper();
+    shared_ptr<Vector_Operator> discrete_to_moment = parse_discrete_to_moment();
+    shared_ptr<Vector_Operator> moment_to_discrete = parse_moment_to_discrete();
+    shared_ptr<Scattering_Operator> scattering = parse_scattering();
+    shared_ptr<Scattering_Operator> fission = parse_fission();
+    shared_ptr<Vector_Operator> preconditioner = parse_preconditioner(solver_node,
+                                                                      scattering,
+                                                                      fission);
+    
+    return make_shared<Power_Iteration>(max_iterations,
+                                        kspace,
+                                        solver_print,
+                                        tolerance,
+                                        spatial_,
+                                        angular_,
+                                        energy_,
+                                        nuclear_,
+                                        source_,
+                                        sweeper,
+                                        discrete_to_moment,
+                                        moment_to_discrete,
+                                        scattering,
+                                        fission,
+                                        preconditioner);
 }
 
 shared_ptr<Sweep_Operator> Solver_Parser::

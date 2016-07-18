@@ -11,6 +11,7 @@ class Krylov_Iteration;
 class Local_RBF_Diffusion;
 class Local_RBF_Sweep;
 class Moment_To_Discrete;
+class Power_Iteration;
 class Preconditioner;
 class Sweep_Operator;
 class RBF_Sweep_1D;
@@ -45,6 +46,9 @@ public:
     // Parse Krylov iteration
     shared_ptr<Krylov_Iteration> parse_krylov_iteration();
 
+    // Parse power iteration
+    shared_ptr<Power_Iteration> parse_power_iteration();
+    
     // Parse the Sweep_Operator
     shared_ptr<Sweep_Operator> parse_sweeper();
 

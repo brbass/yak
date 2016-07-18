@@ -1,5 +1,5 @@
-#ifndef Source_Iteration_hh
-#define Source_Iteration_hh
+#ifndef Power_Iteration_hh
+#define Power_Iteration_hh
 
 #include <memory>
 
@@ -7,25 +7,32 @@
 #include "Source_Data.hh"
 #include "Vector_Operator.hh"
 
+class Epetra_Comm;
+class Epetra_Map;
+
 using std::shared_ptr;
 
 /*
-  Uses source iteration to solve the problem
-  phi = D Linv M S phi + D Linv q
-
+  Uses power iteration to solve the problem 
+  (I - D Linv M S) phi = D Linv M F phi / k
+  
+  I: Identity
   D: Discrete to moment
   Linv: Inverse of transport operator
   M: Moment to discrete
   phi: Moment representation of the angular flux
-  q: Discrete representation of the internal source
+  S: Scattering
+  F: Fission
+  k: k-eigenvalue
 */
-class Source_Iteration : public Solver
+class Power_Iteration : public Solver
 {
 public:
-
+    
     // Constructor
-    Source_Iteration(int max_iterations,
-                     int solver_print,
+    Power_Iteration(int max_iterations,
+                     int kspace, // Number of past guesses to store
+                     int solver_print, 
                      double tolerance,
                      shared_ptr<Spatial_Discretization> spatial_discretization,
                      shared_ptr<Angular_Discretization> angular_discretization,
@@ -41,22 +48,27 @@ public:
     
     // Solve fixed source problem
     virtual void solve_steady_state(vector<double> &x) override;
-
+    
     // Solve k-eigenvalue problem
     virtual void solve_k_eigenvalue(double &k_eigenvalue, vector<double> &x) override;
-
+    
     // Solve time-dependent problem
     virtual void solve_time_dependent(vector<double> &x) override;
-
+    
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const override;
-
+    
+    // Check for convergence based on pointwise error in scalar flux
+    bool check_phi_convergence(vector<double> const &x, 
+                               vector<double> const &x_old,
+                               double &error);
+    
     // Size of moment representation of flux
     int phi_size() const
     {
         return moment_to_discrete_->column_size();
     }
-
+    
     // Number of data values to store for reflection
     int number_of_augments() const
     {
@@ -64,11 +76,6 @@ public:
     }
 
 private:
-
-    // Check for convergence based on pointwise error in scalar flux
-    bool check_phi_convergence(vector<double> const &x, 
-                               vector<double> const &x_old,
-                               double &error) const;
 
     bool check_k_convergence(double k,
                              double k_old,
@@ -80,6 +87,7 @@ private:
     
     bool preconditioned_;
     int max_iterations_;
+    int kspace_;
     int total_iterations_;
     int source_iterations_;
     double tolerance_;
@@ -92,32 +100,10 @@ private:
     shared_ptr<Vector_Operator> preconditioner_;
     
     /*
-      Computes the first-flight flux, including boundary sources, via source iteration
-      b = D Linv q
+      Iteratively computes the moments of the flux using Power methods
+      (I - D Linv M S) phi = b
 
-      D: Discrete to moment
-      Linv: Inverse of transport operator
-      M: Moment to discrete
-      q: Discrete representation of the internal source
-      b: Moment representation of the first-flight flux
-    */
-    class Source_Iterator : public Vector_Operator
-    {
-    public:
-        
-        Source_Iterator(Source_Iteration const &source_iteration);
-        
-    private:
-        
-        virtual void apply(vector<double> &x) const override;
-        
-        Source_Iteration const &si_;
-    };
-    
-    /*
-      Computes the moments of the flux via source iteration
-      phi = D Linv M S phi + b
-      
+      I: Identity
       D: Discrete to moment
       Linv: Inverse of transport operator
       M: Moment to discrete
@@ -129,13 +115,55 @@ private:
     public:
 
         // Constructor
-        Flux_Iterator(Source_Iteration const &source_iteration);
+        Flux_Iterator(Power_Iteration const &power_iteration,
+                      bool include_fission = true);
+        
+    private:
+        
+        virtual void apply(vector<double> &x) const override;
+
+        bool include_fission_;
+        Power_Iteration const &pi_;
+    };
+
+    /* 
+       Represents the fission operator for an eigenvalue calculation,
+       D Linv M F,
+    */
+    class Fission_Iterator : public Vector_Operator
+    {
+    public:
+
+        // Constructor
+        Fission_Iterator(Power_Iteration const &power_iteration);
         
     private:
         
         virtual void apply(vector<double> &x) const override;
         
-        Source_Iteration const &si_;
+        Power_Iteration const &pi_;
+    };
+    
+    /* 
+       Represents the eigenvalue operator,
+       (I - D Linv M S)inv D Linv M F
+    */
+    class Eigenvalue_Iterator : public Vector_Operator
+    {
+    public:
+
+        // Constructor
+        Eigenvalue_Iterator(Power_Iteration const &power_iteration,
+                            shared_ptr<Epetra_Comm> comm,
+                            shared_ptr<Epetra_Map> map);
+        
+    private:
+        
+        virtual void apply(vector<double> &x) const override;
+        
+        Power_Iteration const &pi_;
+        shared_ptr<Epetra_Comm> comm_;
+        shared_ptr<Epetra_Map> map_;
     };
 };
 

@@ -1,5 +1,6 @@
 #include "Solver.hh"
 
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -38,7 +39,7 @@ output(pugi::xml_node &output_node) const
 }
 
 void Solver::
-print_name(string solution_type)
+print_name(string solution_type) const
 {
     if (solver_print_)
     {
@@ -53,7 +54,7 @@ print_name(string solution_type)
 }
 
 void Solver::
-print_iteration(int iteration)
+print_iteration(int iteration) const
 {
     if (solver_print_)
     {
@@ -64,7 +65,7 @@ print_iteration(int iteration)
 }
 
 void Solver::
-print_convergence()
+print_convergence() const
 {
     if (solver_print_)
     {
@@ -75,7 +76,7 @@ print_convergence()
 }
 
 void Solver::
-print_failure()
+print_failure() const
 {
     if (solver_print_)
     {
@@ -87,7 +88,7 @@ print_failure()
 
 void Solver::
 print_error(double error,
-            string type)
+            string type) const
 {
     if (solver_print_)
     {
@@ -95,6 +96,19 @@ print_error(double error,
         cout << type;
         cout << ":\t";
         cout << error;
+        cout << endl;
+    }
+}
+
+void Solver::
+print_eigenvalue(double eigenvalue) const
+{
+    if (solver_print_)
+    {
+        cout << endl;
+        cout << "\t\tk_eigenvalue:\t";
+        cout << setprecision(10);
+        cout << eigenvalue;
         cout << endl;
     }
 }
