@@ -2,6 +2,7 @@
 #define XML_Functions_hh
 
 #include <algorithm>
+#include <iomanip>
 #include <iterator>
 #include <sstream>
 #include <string>
@@ -12,22 +13,25 @@
 
 #include "Check.hh"
 
-using std::string;
-using std::vector;
+#define XML_PRECISION 10
 
 namespace XML_Functions
 {
+    using std::setprecision;
+    using std::string;
+    using std::vector;
+    
     /*
       Functions to make using the XML parser more intuitive
     */
-
+    
     // Convert a string to a vector
     template<class T> void 
     string_to_vector(string const &data_string,
                      vector<T> &data)
     {
         std::istringstream iss(data_string);
-    
+        
         data = vector<T>{std::istream_iterator<T>(iss), std::istream_iterator<double>()};
     }
 
@@ -37,8 +41,9 @@ namespace XML_Functions
                      vector<T> const &data)
     {
         std::ostringstream oss;
+        oss << setprecision(XML_PRECISION);
         std::copy(data.begin(), data.end(), std::ostream_iterator<T>(oss, " "));
-
+        
         data_string = oss.str();
     }
 
@@ -78,7 +83,7 @@ namespace XML_Functions
     {
         return stof(child_value<string>(node, description, required));
     }
-
+    
     // Get a vector of values from the node
     template<typename T> vector<T> 
     child_vector(pugi::xml_node &node,
@@ -95,7 +100,7 @@ namespace XML_Functions
     
         return value;
     }
-
+    
     // Append a child to the XML file
     template<typename T> void
     append_child(pugi::xml_node &node,
@@ -104,15 +109,16 @@ namespace XML_Functions
                  unsigned precision = 0)
     {
         std::stringstream ss;
+        ss << setprecision(XML_PRECISION);
         ss << data;
-
+        
         string data_string = ss.str();
-
+        
         pugi::xml_node child = node.append_child(description.c_str());
-    
+        
         child.append_child(pugi::node_pcdata).set_value(data_string.c_str());
     }
-
+    
     template<typename T> void
     append_child(pugi::xml_node &node,
                  vector<T> const &data,
