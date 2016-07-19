@@ -340,7 +340,8 @@ apply(vector<double> &x) const
     shared_ptr<Vector_Operator> F
         = make_shared<Augmented_Operator>(pi_.number_of_augments(),
                                           pi_.fission_,
-                                          true);
+                                          true); // zero out augments for fission source
+    
     
     shared_ptr<Vector_Operator> Op
         = T * F;
