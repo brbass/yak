@@ -30,7 +30,7 @@ find_neighbors(int index,
                vector<int> &indices,
                vector<double> &distances) const
 {
-    Check(number_of_neighbors < number_of_points_);
+    Check(number_of_neighbors <= number_of_points_);
     
     indices.resize(number_of_neighbors);
     distances.resize(number_of_neighbors);

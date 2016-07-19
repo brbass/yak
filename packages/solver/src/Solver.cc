@@ -87,14 +87,22 @@ print_failure() const
 }
 
 void Solver::
-print_error(double error,
-            string type) const
+print_value(double value) const
 {
     if (solver_print_)
     {
-        cout << "error in ";
-        cout << type;
-        cout << ":\t";
+        cout << "value:\t";
+        cout << value;
+        cout << "\t";
+    }
+}
+
+void Solver::
+print_error(double error) const
+{
+    if (solver_print_)
+    {
+        cout << "error:\t";
         cout << error;
         cout << endl;
     }

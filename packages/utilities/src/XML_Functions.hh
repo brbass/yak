@@ -13,7 +13,7 @@
 
 #include "Check.hh"
 
-#define XML_PRECISION 10
+#define XML_PRECISION 12
 
 namespace XML_Functions
 {

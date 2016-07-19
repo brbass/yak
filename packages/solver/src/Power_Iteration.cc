@@ -110,7 +110,7 @@ solve_k_eigenvalue(double &k_eigenvalue,
     double k_eigenvalue_old;
     vector<double> x_old;
     
-    print_name("Fixed point iteration");
+    print_name("Power iteration");
     
     for (int it = 0; it < max_iterations_; ++it)
     {
@@ -128,7 +128,8 @@ solve_k_eigenvalue(double &k_eigenvalue,
                                 x_old);
         double error;
         bool converged = check_k_convergence(k_eigenvalue, k_eigenvalue_old, error);
-        print_error(error, "k-eff");
+        print_value(k_eigenvalue);
+        print_error(error);
         
         if (converged)
         {
@@ -338,7 +339,8 @@ apply(vector<double> &x) const
     
     shared_ptr<Vector_Operator> F
         = make_shared<Augmented_Operator>(pi_.number_of_augments(),
-                                          pi_.fission_);
+                                          pi_.fission_,
+                                          true);
     
     shared_ptr<Vector_Operator> Op
         = T * F;

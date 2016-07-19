@@ -49,7 +49,8 @@ protected:
     virtual void print_name(string solution_type) const;
     virtual void print_iteration(int iteration) const;
     virtual void print_convergence() const;
-    virtual void print_error(double error, string description) const;
+    virtual void print_value(double value) const;
+    virtual void print_error(double error) const;
     virtual void print_failure() const;
     virtual void print_eigenvalue(double eigenvalue) const;
     

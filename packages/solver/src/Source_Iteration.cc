@@ -90,7 +90,7 @@ solve_steady_state(vector<double> &x)
 
             double error;
             bool converged = check_phi_convergence(q, q_old, error);
-            print_error(error, "phi");
+            print_error(error);
             
             if (converged)
             {
@@ -137,7 +137,7 @@ solve_steady_state(vector<double> &x)
 
         double error;
         bool converged = check_phi_convergence(x, x_old, error);
-        print_error(error, "phi");
+        print_error(error);
         
         if (converged)
         {
@@ -276,7 +276,8 @@ solve_k_eigenvalue(double &k_eigenvalue,
         
         double error;
         bool converged = check_k_convergence(k_eigenvalue, k_eigenvalue_old, error);
-        print_error(error, "k-eff");
+        print_value(k_eigenvalue);
+        print_error(error);
         
         if (converged)
         {

@@ -112,7 +112,7 @@ solve_steady_state(vector<double> &x)
 
             double error;
             bool converged = check_phi_convergence(q, q_old, error);
-            print_error(error, "phi");
+            print_error(error);
             
             if (converged)
             {
@@ -126,7 +126,7 @@ solve_steady_state(vector<double> &x)
         for (int i = phi_size(); i < phi_size() + number_of_augments(); ++i)
         {
             q[i] = 0;
-        }        
+        }
         if (source_iterations_ == max_iterations_)
         {
             print_failure();
@@ -561,7 +561,8 @@ apply(vector<double> &x) const
     
     shared_ptr<Vector_Operator> F
         = make_shared<Augmented_Operator>(ki_.number_of_augments(),
-                                          ki_.fission_);
+                                          ki_.fission_,
+                                          true);
     
     shared_ptr<Vector_Operator> Op
         = T * F;

@@ -4,29 +4,33 @@
   <problem_type>k_eigenvalue</problem_type>
   
   <solution_method>
-    <type>power_iteration</type>
+    <type>krylov_iteration</type>
     <max_iterations>5000</max_iterations>
     <kspace>15</kspace>
     <solver_print>1</solver_print>
-    <tolerance>1e-9</tolerance>
+    <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>dfem</type>
+      <type>rbf_local</type>
+      <solver>amesos</solver>
     </sweeper>
   </solution_method>
   
   <spatial_discretization>
-    <type>finite_element</type>
-    <element_type>dfem</element_type>
+    <type>rbf</type>
+    <local>1</local>
     <dimension>1</dimension>
-    <number_of_elements>2000</number_of_elements>
-    <number_of_nodes>2</number_of_nodes>
+    <coefficient_type>phi</coefficient_type>
+    <number_of_points>200</number_of_points>
+    <number_of_neighbors>50</number_of_neighbors>
+    <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
+    <basis_type>multiquadric</basis_type>
     
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_elements>2000</number_of_elements>
+        <number_of_points>198</number_of_points>
         <material>0</material>
         <length>4.0</length>
       </region>
