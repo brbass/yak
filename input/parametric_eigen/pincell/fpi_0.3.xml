@@ -4,7 +4,7 @@
   <problem_type>k_eigenvalue</problem_type>
   
   <solution_method>
-    <type>krylov_iteration</type>
+    <type>source_iteration</type>
     <!-- <type>null_solver</type> -->
     <max_iterations>5000</max_iterations>
     <kspace>15</kspace>

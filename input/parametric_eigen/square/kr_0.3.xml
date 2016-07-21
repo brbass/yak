@@ -10,7 +10,7 @@
     <kspace>15</kspace>
     <solver_print>1</solver_print>
     <tolerance>1e-6</tolerance>
-    
+
     <sweeper>
       <type>rbf_local</type>
       <solver>amesos</solver>
@@ -36,43 +36,36 @@
         <surface>
           <number>0</number>
           <shape>line</shape>
-          <type>reflective_boundary</type>
+          <type>vacuum_boundary</type>
           <origin>-2 0</origin>
           <normal>-1 0</normal>
         </surface>
         <surface>
           <number>1</number>
           <shape>line</shape>
-          <type>reflective_boundary</type>
+          <type>vacuum_boundary</type>
           <origin>2 0</origin>
           <normal>1 0</normal>
         </surface>
         <surface>
           <number>2</number>
           <shape>line</shape>
-          <type>reflective_boundary</type>
+          <type>vacuum_boundary</type>
           <origin>0 -2</origin>
           <normal>0 -1</normal>
         </surface>
         <surface>
           <number>3</number>
           <shape>line</shape>
-          <type>reflective_boundary</type>
+          <type>vacuum_boundary</type>
           <origin>0 2</origin>
           <normal>0 1</normal>
-        </surface>
-        <surface>
-          <number>4</number>
-          <shape>circle</shape>
-          <type>internal</type>
-          <origin>0 0</origin>
-          <radius>1</radius>
         </surface>
       </surfaces>
       <regions>
         <region>
           <number>0</number>
-          <material>1</material>
+          <material>0</material>
           <surface_relation>
             <surface>0</surface>
             <relation>inside</relation>
@@ -87,18 +80,6 @@
           </surface_relation>
           <surface_relation>
             <surface>3</surface>
-            <relation>inside</relation>
-          </surface_relation>
-          <region_relation>
-            <region>1</region>
-            <relation>outside</relation>
-          </region_relation>
-        </region>
-        <region>
-          <number>1</number>
-          <material>0</material>
-          <surface_relation>
-            <surface>4</surface>
             <relation>inside</relation>
           </surface_relation>
         </region>
@@ -118,33 +99,33 @@
   
   <nuclear_data>
     <materials>
-      <number_of_materials>2</number_of_materials>
+      <number_of_materials>1</number_of_materials>
       
       <material>
         <material_number>0</material_number>
-        <sigma_t>1.0 2.0</sigma_t>
-        <sigma_s>0.84 0.0 0.09 0.4</sigma_s>
+        <sigma_t>20.0 40.0</sigma_t>
+        <sigma_s>10.4 0.0 8.9 19.0</sigma_s>
         <nu>2.4 2.4</nu>
-        <sigma_f>0.003 1.10</sigma_f>
+        <sigma_f>0.03 11.0</sigma_f>
         <chi>1.0 0.0</chi>
         <internal_source>1.0 0.0</internal_source>
       </material>
-      
-      <material>
-        <material_number>1</material_number>
-        <sigma_t>1.0 2.0</sigma_t>
-        <sigma_s>0.2 0.0 0.8 1.9</sigma_s>
-        <nu>0.0 0.0</nu>
-        <sigma_f>0.0 0.0</sigma_f>
-        <chi>0.0 0.0</chi>
-        <internal_source>0.0 0.0</internal_source>
-      </material>
+
+      <!-- <material> -->
+      <!--   <material_number>0</material_number> -->
+      <!--   <sigma_t>2.0 4.0</sigma_t> -->
+      <!--   <sigma_s>0.04 0.0 0.89 1.9</sigma_s> -->
+      <!--   <nu>2.4 2.4</nu> -->
+      <!--   <sigma_f>0.003 1.10</sigma_f> -->
+      <!--   <chi>1.0 0.0</chi> -->
+      <!--   <internal_source>1.0 0.0</internal_source> -->
+      <!-- </material> -->
     </materials>
   </nuclear_data>
   
   <source_data>
     <internal_source_type>isotropic</internal_source_type>
     <boundary_source_type>surface_isotropic</boundary_source_type>
-    <boundary_source>0 0 0 0 0 0 0 0 0 0</boundary_source>
+    <boundary_source>0 0 0 0 0 0 0 0</boundary_source>
   </source_data>
 </input>
