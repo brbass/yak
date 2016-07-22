@@ -10,6 +10,7 @@ class Fission;
 class Krylov_Iteration;
 class Local_RBF_Diffusion;
 class Local_RBF_Sweep;
+class Matrix_RBF_Sweep;
 class Moment_To_Discrete;
 class Power_Iteration;
 class Preconditioner;
@@ -64,6 +65,9 @@ public:
 
     // Parse the Local RBF Diffusion
     shared_ptr<Local_RBF_Diffusion> parse_rbf_diffusion(string solver_type);
+
+    // Parse the Matrix RBF Diffusion
+    shared_ptr<Matrix_RBF_Sweep> parse_rbf_matrix(string solver_type);
     
     // Parse the Discrete_To_Moment operator
     shared_ptr<Discrete_To_Moment> parse_discrete_to_moment();

@@ -12,7 +12,7 @@
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>rbf_local</type>
+      <type>rbf_matrix</type>
       <solver>amesos</solver>
     </sweeper>
   </solution_method>

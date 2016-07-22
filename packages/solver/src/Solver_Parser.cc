@@ -9,6 +9,7 @@
 #include "Local_RBF_Diffusion.hh"
 #include "Local_RBF_Mesh.hh"
 #include "Local_RBF_Sweep.hh"
+#include "Matrix_RBF_Sweep.hh"
 #include "Moment_To_Discrete.hh"
 #include "Null_Solver.hh"
 #include "Power_Iteration.hh"
@@ -193,6 +194,10 @@ parse_sweeper()
             return parse_rbf_local(sweeper,
                                    solver_type);
         }
+        else if (sweeper_type == "rbf_matrix")
+        {
+            return parse_rbf_matrix(solver_type);
+        }
         else if (sweeper_type == "rbf_diffusion")
         {
             return parse_rbf_diffusion(solver_type);
@@ -286,6 +291,28 @@ parse_rbf_local(pugi::xml_node sweeper_node,
                                         source_,
                                         solver,
                                         rbf_diffusion);
+}
+
+shared_ptr<Matrix_RBF_Sweep> Solver_Parser::
+parse_rbf_matrix(string solver_type)
+{
+    Matrix_RBF_Sweep::Solver_Type solver;
+
+    if (solver_type == "aztecoo")
+    {
+        solver = Matrix_RBF_Sweep::Solver_Type::AZTECOO;
+    }
+    else
+    {
+        solver = Matrix_RBF_Sweep::Solver_Type::AMESOS;
+    }
+    
+    return make_shared<Matrix_RBF_Sweep>(spatial_,
+                                         angular_,
+                                         energy_,
+                                         nuclear_,
+                                         source_,
+                                         solver);
 }
 
 shared_ptr<Local_RBF_Diffusion> Solver_Parser::

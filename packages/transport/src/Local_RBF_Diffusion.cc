@@ -287,7 +287,7 @@ initialize_trilinos()
     }
     mat_->FillComplete();
     mat_->OptimizeStorage();
-    
+
     problem_ = make_shared<Epetra_LinearProblem>(mat_.get(),
                                                  lhs_.get(),
                                                  rhs_.get());

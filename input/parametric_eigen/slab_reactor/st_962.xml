@@ -11,7 +11,7 @@
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>rbf_local</type>
+      <type>rbf_matrix</type>
       <solver>amesos</solver>
     </sweeper>
   </solution_method>
@@ -21,8 +21,8 @@
     <local>1</local>
     <dimension>1</dimension>
     <coefficient_type>phi</coefficient_type>
-    <number_of_points>26</number_of_points>
-    <number_of_neighbors>26</number_of_neighbors>
+    <number_of_points>962</number_of_points>
+    <number_of_neighbors>50</number_of_neighbors>
     <shape_multiplier>0.5</shape_multiplier>
     <geometry>slab</geometry>
     <basis_type>multiquadric</basis_type>
@@ -30,12 +30,12 @@
     <regions>
       <number_of_regions>2</number_of_regions>
       <region>
-        <number_of_points>8</number_of_points>
+        <number_of_points>320</number_of_points>
         <material>0</material>
         <length>1.0</length>
       </region>
       <region>
-        <number_of_points>16</number_of_points>
+        <number_of_points>640</number_of_points>
         <material>1</material>
         <length>2.0</length>
       </region>
@@ -45,7 +45,7 @@
   <angular_discretization>
     <dimension>1</dimension>
     <number_of_moments>1</number_of_moments>
-    <number_of_ordinates>2</number_of_ordinates>
+    <number_of_ordinates>16</number_of_ordinates>
   </angular_discretization>
   
   <energy_discretization>

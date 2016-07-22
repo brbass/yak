@@ -12,7 +12,7 @@
     <tolerance>1e-6</tolerance>
     
     <sweeper>
-      <type>rbf_local</type>
+      <type>rbf_matrix</type>
       <solver>amesos</solver>
     </sweeper>
   </solution_method>
@@ -25,8 +25,8 @@
     <shape_multiplier>2.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
-    <min_distance_internal>0.1</min_distance_internal>
-    <min_distance_boundary>0.1</min_distance_boundary>
+    <min_distance_internal>0.02</min_distance_internal>
+    <min_distance_boundary>0.02</min_distance_boundary>
     <bounding_radius>3.0</bounding_radius>
     <bounding_origin>0 0</bounding_origin>
     

@@ -1,4 +1,4 @@
-#include "Local_RBF_Sweep.hh"
+#include "Matrix_RBF_Sweep.hh"
 
 #include <limits>
 
@@ -23,22 +23,20 @@
 
 using namespace std;
 
-Local_RBF_Sweep::
-Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
+Matrix_RBF_Sweep::
+Matrix_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
                 shared_ptr<Angular_Discretization> angular_discretization,
                 shared_ptr<Energy_Discretization> energy_discretization,
                 shared_ptr<Nuclear_Data> nuclear_data,
                 shared_ptr<Source_Data> source_data,
-                Solver_Type solver_type,
-                shared_ptr<Local_RBF_Diffusion> rbf_diffusion):
+                 Solver_Type solver_type):
     Sweep_Operator(Sweep_Type::ORDINATE,
                    spatial_discretization,
                    angular_discretization,
                    energy_discretization,
                    nuclear_data,
                    source_data),
-    solver_type_(solver_type),
-    rbf_diffusion_(rbf_diffusion)
+    solver_type_(solver_type)
 {
     reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
@@ -47,7 +45,7 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
     initialize_trilinos();
 }
 
-void Local_RBF_Sweep::
+void Matrix_RBF_Sweep::
 apply(vector<double> &x) const
 {
     int dimension = rbf_mesh_->dimension();
@@ -83,32 +81,32 @@ apply(vector<double> &x) const
                 
                 if (sum < 0)
                 {
-                    add_boundary_point(b, i, o, g, x);
+                    set_boundary_rhs(b, i, o, g, x);
                 }
                 else
                 {
-                    add_internal_point(i, o, g, x);
+                    set_internal_rhs(i, o, g, x);
                 }
             }
             for (int p = 0; p < number_of_internal_points; ++p)
             {
                 int i = internal_points[p];
 
-                add_internal_point(i, o, g, x);
+                set_internal_rhs(i, o, g, x);
             }
+
+            int k = g + number_of_groups * o;
 
             // Perform matrix solve
             switch(solver_type_)
             {
             case Solver_Type::AMESOS:
-                (*amesos_solver_)->NumericFactorization();
-                (*amesos_solver_)->Solve();
+                (*amesos_solver_[k])->Solve();
                 
                 break;
             case Solver_Type::AZTECOO:
             {
-                // aztec_solver_->SetPrecOperator(&*preconditioner_[g]);
-                aztec_solver_->Iterate(max_iterations_, tolerance_);
+                aztec_solver_[k]->Iterate(max_iterations_, tolerance_);
                 
                 break;
             }
@@ -146,12 +144,11 @@ apply(vector<double> &x) const
     }
 }
 
-void Local_RBF_Sweep::
-add_boundary_point(int b,
+void Matrix_RBF_Sweep::
+set_boundary_point(int b,
                    int i,
                    int o,
-                   int g,
-                   vector<double> const &x) const
+                   int g) const
 {
     int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
@@ -160,18 +157,6 @@ add_boundary_point(int b,
     int number_of_augments = source_data_->number_of_augments();
     int number_of_neighbors = rbf_mesh_->number_of_neighbors();
     vector<int> const neighbors = rbf_mesh_->neighbors(i);
-    
-    vector<double> const boundary_source = source_data_->boundary_source();
-    vector<double> const alpha = source_data_->alpha();
-    
-    vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
-    vector<double> local_normal(dimension);
-    for (int d = 0; d < dimension; ++d)
-    {
-        int k_bn = d + dimension * b;
-        
-        local_normal[d] = boundary_normal[k_bn];
-    }
     
     // Replace matrix values
     vector<double> data(number_of_neighbors, 0);
@@ -191,13 +176,39 @@ add_boundary_point(int b,
     }
     Assert(point_found);
     
-    mat_->ReplaceGlobalValues(i,
-                              number_of_neighbors,
-                              &data[0],
-                              &neighbors[0]);
+    int k = g + number_of_groups * o;
     
-    // Replace RHS value
+    mat_[k]->ReplaceGlobalValues(i,
+                                 number_of_neighbors,
+                                 &data[0],
+                                 &neighbors[0]);
+}
+
+void Matrix_RBF_Sweep::
+set_boundary_rhs(int b,
+                 int i,
+                 int o,
+                 int g,
+                 vector<double> const &x) const
+{
+    int dimension = rbf_mesh_->dimension();
+    int number_of_points = rbf_mesh_->number_of_points();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    int number_of_augments = source_data_->number_of_augments();
     int psi_size = row_size() - number_of_augments;
+    
+    vector<double> const boundary_source = source_data_->boundary_source();
+    vector<double> const alpha = source_data_->alpha();
+    
+    vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
+    vector<double> local_normal(dimension);
+    for (int d = 0; d < dimension; ++d)
+    {
+        int k_bn = d + dimension * b;
+        
+        local_normal[d] = boundary_normal[k_bn];
+    }
     
     double rhs = 0;
     if (alpha[b] > reflection_tolerance_)
@@ -212,18 +223,17 @@ add_boundary_point(int b,
     if (include_boundary_source_)
     {
         int k_bs = g + number_of_groups * (o + number_of_ordinates * b);
-
+        
         rhs += boundary_source[k_bs];
     }
     
     (*rhs_)[i] = rhs;
 }
 
-void Local_RBF_Sweep::
-add_internal_point(int i,
+void Matrix_RBF_Sweep::
+set_internal_point(int i,
                    int o,
-                   int g,
-                   vector<double> const &x) const
+                   int g) const
 {
     int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
@@ -235,7 +245,7 @@ add_internal_point(int i,
     vector<int> const neighbors = rbf_mesh_->neighbors(i);
     vector<double> const ordinates = angular_discretization_->ordinates();
     vector<double> const sigma_t = nuclear_data_->sigma_t();
-
+    
     shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
     vector<double> const equation_position = equation_rbf->position();
     
@@ -265,94 +275,179 @@ add_internal_point(int i,
     rbf_mesh_->convert_to_phi(i,
                               data);
     
-    mat_->ReplaceGlobalValues(i,
-                              number_of_neighbors,
-                              &data[0],
-                              &neighbors[0]);
+    int k = g + number_of_groups * o;
+    
+    mat_[k]->ReplaceGlobalValues(i,
+                                 number_of_neighbors,
+                                 &data[0],
+                                 &neighbors[0]);
+}
 
-    // Replace RHS value
+void Matrix_RBF_Sweep::
+set_internal_rhs(int i,
+                 int o,
+                 int g,
+                 vector<double> const &x) const
+{
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
     
     int k_x = g + number_of_groups * (o + number_of_ordinates * i);
-    
+
     (*rhs_)[i] = x[k_x];
 }
 
-void Local_RBF_Sweep::
+void Matrix_RBF_Sweep::
 initialize_trilinos()
 {
+    int dimension = rbf_mesh_->dimension();
     int number_of_points = rbf_mesh_->number_of_points();
     int number_of_neighbors = rbf_mesh_->number_of_neighbors();
-
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    int number_of_boundary_points = rbf_mesh_->number_of_boundary_points();
+    int number_of_internal_points = rbf_mesh_->number_of_internal_points();
+    int number_of_augments = source_data_->number_of_augments();
+    int psi_size = row_size() - number_of_augments;
+    vector<int> const boundary_points = rbf_mesh_->boundary_cells();
+    vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
+    vector<int> const internal_points = rbf_mesh_->internal_cells();
+    vector<double> const ordinates = angular_discretization_->ordinates();
     comm_ = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     map_ = make_shared<Epetra_Map>(number_of_points, 0, *comm_);
     lhs_ = make_shared<Epetra_Vector>(*map_);
     rhs_ = make_shared<Epetra_Vector>(*map_);
-    mat_ = make_shared<Epetra_CrsMatrix>(Copy, *map_, number_of_neighbors, true);
-    
+
     lhs_->PutScalar(1.0);
     rhs_->PutScalar(1.0);
+
+    mat_.resize(number_of_groups * number_of_ordinates);
+    problem_.resize(number_of_groups * number_of_ordinates);
     
-    for (int i = 0; i < number_of_points; ++i)
+    for (int g = 0; g < number_of_groups; ++g)
     {
-        vector<int> const neighbors = rbf_mesh_->neighbors(i);
-        vector<double> ones(number_of_neighbors, 1);
-        
-        mat_->InsertGlobalValues(i, number_of_neighbors, &ones[0], &neighbors[0]);
+        for (int o = 0; o < number_of_ordinates; ++o)
+        {
+            int k = g + number_of_groups * o;
+            
+            mat_[k] = make_shared<Epetra_CrsMatrix>(Copy, *map_, number_of_neighbors, true);
+            
+            for (int i = 0; i < number_of_points; ++i)
+            {
+                vector<int> const neighbors = rbf_mesh_->neighbors(i);
+                vector<double> ones(number_of_neighbors, 1);
+                
+                mat_[k]->InsertGlobalValues(i, number_of_neighbors, &ones[0], &neighbors[0]);
+            }
+            mat_[k]->FillComplete();
+            mat_[k]->OptimizeStorage();
+            
+            problem_[k] = make_shared<Epetra_LinearProblem>(mat_[k].get(),
+                                                            lhs_.get(),
+                                                            rhs_.get());
+        }
     }
-    mat_->FillComplete();
-    mat_->OptimizeStorage();
-    
-    problem_ = make_shared<Epetra_LinearProblem>(mat_.get(),
-                                                 lhs_.get(),
-                                                 rhs_.get());
-    
+
     switch(solver_type_)
     {
     case Solver_Type::AMESOS:
     {
-        Amesos factory;
-        // Serial: Klu, Lapack, Umfpack
-        // Parallel: Mumps, Superludist
-        amesos_solver_ = make_shared<Amesos_BaseSolver*>(factory.Create("Klu", *problem_));
-        
-        if (*amesos_solver_ == NULL)
-        {
-            AssertMsg(false, "specified solver is not available");
-        }
-        
-        (*amesos_solver_)->SymbolicFactorization();
-        
+        amesos_solver_.resize(number_of_groups * number_of_ordinates);
+
         break;
     }
     case Solver_Type::AZTECOO:
     {
-        // int number_of_groups = energy_discretization_->number_of_groups();
-        // preconditioner_.resize(number_of_groups);
-        // preconditioner_matrix_.resize(number_of_groups);
-        
-        // for (int g = 0; g < number_of_groups; ++g)
-        // {
-        //     preconditioner_matrix_[g] = rbf_diffusion_->get_matrix(g);
-        //     preconditioner_[g] = make_shared<Ifpack_Amesos>(&*preconditioner_matrix_[g]);
-        //     preconditioner_[g]->Initialize();
-        //     preconditioner_[g]->Compute();
-        // }
-        aztec_solver_ = make_shared<AztecOO>(*problem_);
-
-        aztec_solver_->SetAztecOption(AZ_precond, AZ_none);
-        // aztec_solver_->SetAztecOption(AZ_precond, AZ_dom_decomp);
-        // aztec_solver_->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
-        // aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
-        // aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
-        aztec_solver_->SetAztecOption(AZ_solver, AZ_gmres);
-        aztec_solver_->SetAztecOption(AZ_kspace, 100);
-        // aztec_solver_->SetAztecOption(AZ_output, AZ_all);
-        // aztec_solver_->SetAztecOption(AZ_output, AZ_last);
-        aztec_solver_->SetAztecOption(AZ_output, AZ_none);
+        aztec_solver_.resize(number_of_groups * number_of_ordinates);
         
         break;
     }
     default:
         AssertMsg(false, "Solver type not implemented");
+    }
+    
+    for (int o = 0; o < number_of_ordinates; ++o)
+    {
+        for (int g = 0; g < number_of_groups; ++g)
+        {
+            for (int b = 0; b < number_of_boundary_points; ++b)
+            {
+                int i = boundary_points[b];
+                
+                double sum = 0;
+                
+                for (int d = 0; d < dimension; ++d)
+                {
+                    int k_bn = d + dimension * b;
+                    int k_ord = d + dimension * o;
+                    
+                    sum += boundary_normal[k_bn] * ordinates[k_ord];
+                }
+                
+                if (sum < 0)
+                {
+                    set_boundary_point(b, i, o, g);
+                }
+                else
+                {
+                    set_internal_point(i, o, g);
+                }
+            }
+            for (int p = 0; p < number_of_internal_points; ++p)
+            {
+                int i = internal_points[p];
+
+                set_internal_point(i, o, g);
+            }
+        }
+    }
+    
+    for (int o = 0; o < number_of_ordinates; ++o)
+    {
+        for (int g = 0; g < number_of_groups; ++g)
+        {
+            int k = g + number_of_groups * o;
+            
+            switch(solver_type_)
+            {
+            case Solver_Type::AMESOS:
+            {
+                Amesos factory;
+                // Serial: Klu, Lapack, Umfpack
+                // Parallel: Mumps, Superludist
+                amesos_solver_[k] = make_shared<Amesos_BaseSolver*>(factory.Create("Klu", *problem_[k]));
+                
+                if (*amesos_solver_[k] == NULL)
+                {
+                    AssertMsg(false, "specified solver is not available");
+                }
+                
+                (*amesos_solver_[k])->SymbolicFactorization();
+                (*amesos_solver_[k])->NumericFactorization();
+                break;
+            }
+            case Solver_Type::AZTECOO:
+            {
+                aztec_solver_[k] = make_shared<AztecOO>(*problem_[k]);
+                
+                // aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_none);
+                aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_dom_decomp);
+                aztec_solver_[k]->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
+                // aztec_solver_[k]->SetAztecOption(AZ_graph>fill, number_of_neighbors);
+                aztec_solver_[k]->SetAztecOption(AZ_solver, AZ_gmres);
+                aztec_solver_[k]->SetAztecOption(AZ_kspace, 100);
+                // aztec_solver_[k]->SetAztecOption(AZ_output, AZ_all);
+                // aztec_solver_[k]->SetAztecOption(AZ_output, AZ_last);
+                aztec_solver_[k]->SetAztecOption(AZ_output, AZ_none);
+                
+                double condition_number;
+                aztec_solver_[k]->ConstructPreconditioner(condition_number);
+                
+                break;
+            }
+            default:
+                AssertMsg(false, "Solver type not implemented");
+            }
+        }
     }
 }
