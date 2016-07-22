@@ -195,7 +195,7 @@ RBF_Mesh(int dimension,
             break;
         }
         default:
-            AssertMsg(false, "no such type of basis function");
+            AssertMsg(false, "no such type of basis function: ");
             break;
         }
 

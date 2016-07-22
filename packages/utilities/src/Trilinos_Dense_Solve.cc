@@ -165,8 +165,9 @@ aztec_dense_solve(vector<double> &a_data,
     
     Epetra_LinearProblem problem(&matrix, &lhs, &rhs);
     AztecOO solver(problem);
-    solver.SetAztecOption(AZ_precond, AZ_Jacobi);
-    solver.SetAztecOption(AZ_poly_ord, 3);
+    solver.SetAztecOption(AZ_precond, AZ_none);
+    // solver.SetAztecOption(AZ_precond, AZ_Jacobi);
+    // solver.SetAztecOption(AZ_poly_ord, 3);
     solver.SetAztecOption(AZ_solver, AZ_gmres);
     solver.SetAztecOption(AZ_kspace, 1000);
     solver.SetAztecOption(AZ_output, AZ_none);

@@ -12,6 +12,8 @@ class Epetra_Comm;
 class Epetra_LinearProblem;
 class Epetra_Map;
 class Epetra_Vector;
+class Ifpack_Preconditioner;
+class Local_RBF_Diffusion;
 
 class Local_RBF_Mesh;
 
@@ -39,7 +41,8 @@ public:
                     shared_ptr<Energy_Discretization> energy_discretization,
                     shared_ptr<Nuclear_Data> nuclear_data,
                     shared_ptr<Source_Data> source_data,
-                    Solver_Type solver_type = Solver_Type::AMESOS);
+                    Solver_Type solver_type = Solver_Type::AZTECOO,
+                    shared_ptr<Local_RBF_Diffusion> rbf_diffusion = shared_ptr<Local_RBF_Diffusion>());
     
 protected:
 
@@ -63,6 +66,10 @@ private:
     double tolerance_ = 1e-6;
     double reflection_tolerance_;
     Solver_Type solver_type_;
+
+    shared_ptr<Local_RBF_Diffusion> rbf_diffusion_;
+    vector<shared_ptr<Epetra_CrsMatrix> > preconditioner_matrix_;
+    vector<shared_ptr<Ifpack_Preconditioner> > preconditioner_;
     
     shared_ptr<Epetra_Comm> comm_;
     shared_ptr<Epetra_Map> map_;

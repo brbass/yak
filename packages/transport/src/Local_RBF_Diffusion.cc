@@ -310,9 +310,11 @@ initialize_trilinos()
         break;
     case Solver_Type::AZTECOO:
         aztec_solver_ = make_shared<AztecOO>(*problem_);
-        
-        aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
-        aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
+
+
+        aztec_solver_->SetAztecOption(AZ_precond, AZ_none);
+        // aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
+        // aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
         // aztec_solver_->SetAztecOption(AZ_precond, AZ_dom_decomp);
         // aztec_solver_->SetAztecOption(AZ_subdomain_solve, AZ_lu);
         aztec_solver_->SetAztecOption(AZ_solver, AZ_gmres);

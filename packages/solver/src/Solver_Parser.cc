@@ -190,7 +190,8 @@ parse_sweeper()
         
         if (sweeper_type == "rbf_local")
         {
-            return parse_rbf_local(solver_type);
+            return parse_rbf_local(sweeper,
+                                   solver_type);
         }
         else if (sweeper_type == "rbf_diffusion")
         {
@@ -226,13 +227,52 @@ parse_rbf()
 }
 
 shared_ptr<Local_RBF_Sweep> Solver_Parser::
-parse_rbf_local(string solver_type)
+parse_rbf_local(pugi::xml_node sweeper_node,
+                string solver_type)
 {
     Local_RBF_Sweep::Solver_Type solver;
-    
+
+    shared_ptr<Local_RBF_Diffusion> rbf_diffusion;
+
     if (solver_type == "aztecoo")
     {
         solver = Local_RBF_Sweep::Solver_Type::AZTECOO;
+    }
+    else if (solver_type == "aztecoo_diffusion")
+    {
+        solver = Local_RBF_Sweep::Solver_Type::AZTECOO;
+        
+        double shape_multiplier = XML_Functions::child_value<double>(sweeper_node,
+                                                                     "preconditioner_shape_multiplier");
+
+        shared_ptr<Local_RBF_Mesh> spatial = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_);
+        Assert(spatial);
+        
+        shared_ptr<Local_RBF_Mesh> preconditioner_spatial
+            = make_shared<Local_RBF_Mesh>(spatial->dimension(),
+                                          spatial->number_of_points(),
+                                          spatial->number_of_boundary_points(),
+                                          spatial->number_of_internal_points(),
+                                          spatial->number_of_neighbors(),
+                                          shape_multiplier,
+                                          spatial->geometry(),
+                                          spatial->basis_type(),
+                                          spatial->coefficient_type(),
+                                          spatial->material(),
+                                          spatial->boundary_cells(),
+                                          spatial->internal_cells(),
+                                          spatial->positions(),
+                                          spatial->boundary_normal(),
+                                          spatial->surface(),
+                                          spatial->region(),
+                                          spatial->solid_geometry());
+        
+        rbf_diffusion
+            = make_shared<Local_RBF_Diffusion>(preconditioner_spatial,
+                                               angular_,
+                                               energy_,
+                                               nuclear_,
+                                               source_);
     }
     else
     {
@@ -244,7 +284,8 @@ parse_rbf_local(string solver_type)
                                         energy_,
                                         nuclear_,
                                         source_,
-                                        solver);
+                                        solver,
+                                        rbf_diffusion);
 }
 
 shared_ptr<Local_RBF_Diffusion> Solver_Parser::

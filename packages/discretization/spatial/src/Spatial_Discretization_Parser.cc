@@ -15,8 +15,12 @@ namespace vf3 = Vector_Functions_3D;
 
 namespace // anonymous
 {
-    Random_Number_Generator<double> mu_rng(-1, 1);
-    Random_Number_Generator<double> theta_rng(0, 2 * M_PI);
+    Random_Number_Generator<double> mu_rng(-1, // lower
+                                           1, // upper
+                                           0); // seed
+    Random_Number_Generator<double> theta_rng(0, // lower
+                                              2 * M_PI, // upper
+                                              1); // seed
     
     // Get a random point inside a cube
     

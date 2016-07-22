@@ -10,10 +10,12 @@
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_Vector.h>
 #include <Epetra_LinearProblem.h>
+#include "Ifpack_Amesos.h"
 
 #include "Angular_Discretization.hh"
 #include "Check.hh"
 #include "Energy_Discretization.hh"
+#include "Local_RBF_Diffusion.hh"
 #include "Local_RBF_Mesh.hh"
 #include "Nuclear_Data.hh"
 #include "Source_Data.hh"
@@ -27,14 +29,16 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
                 shared_ptr<Energy_Discretization> energy_discretization,
                 shared_ptr<Nuclear_Data> nuclear_data,
                 shared_ptr<Source_Data> source_data,
-                Solver_Type solver_type):
+                Solver_Type solver_type,
+                shared_ptr<Local_RBF_Diffusion> rbf_diffusion):
     Sweep_Operator(Sweep_Type::ORDINATE,
                    spatial_discretization,
                    angular_discretization,
                    energy_discretization,
                    nuclear_data,
                    source_data),
-    solver_type_(solver_type)
+    solver_type_(solver_type),
+    rbf_diffusion_(rbf_diffusion)
 {
     reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
@@ -103,6 +107,7 @@ apply(vector<double> &x) const
                 break;
             case Solver_Type::AZTECOO:
             {
+                // aztec_solver_->SetPrecOperator(&*preconditioner_[g]);
                 aztec_solver_->Iterate(max_iterations_, tolerance_);
                 
                 break;
@@ -304,6 +309,7 @@ initialize_trilinos()
     switch(solver_type_)
     {
     case Solver_Type::AMESOS:
+    {
         Amesos factory;
         // Serial: Klu, Lapack, Umfpack
         // Parallel: Mumps, Superludist
@@ -317,16 +323,35 @@ initialize_trilinos()
         (*amesos_solver_)->SymbolicFactorization();
         
         break;
+    }
     case Solver_Type::AZTECOO:
-        aztec_solver_ = make_shared<AztecOO>(*problem_);
+    {
+        // int number_of_groups = energy_discretization_->number_of_groups();
+        // preconditioner_.resize(number_of_groups);
+        // preconditioner_matrix_.resize(number_of_groups);
         
-        aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
-        aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
+        // for (int g = 0; g < number_of_groups; ++g)
+        // {
+        //     preconditioner_matrix_[g] = rbf_diffusion_->get_matrix(g);
+        //     preconditioner_[g] = make_shared<Ifpack_Amesos>(&*preconditioner_matrix_[g]);
+        //     preconditioner_[g]->Initialize();
+        //     preconditioner_[g]->Compute();
+        // }
+        aztec_solver_ = make_shared<AztecOO>(*problem_);
+
+        aztec_solver_->SetAztecOption(AZ_precond, AZ_none);
+        // aztec_solver_->SetAztecOption(AZ_precond, AZ_dom_decomp);
+        // aztec_solver_->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
+        // aztec_solver_->SetAztecOption(AZ_precond, AZ_Jacobi);
+        // aztec_solver_->SetAztecOption(AZ_poly_ord, 3);
         aztec_solver_->SetAztecOption(AZ_solver, AZ_gmres);
-        aztec_solver_->SetAztecOption(AZ_kspace, 10);
+        aztec_solver_->SetAztecOption(AZ_kspace, 100);
+        // aztec_solver_->SetAztecOption(AZ_output, AZ_all);
+        // aztec_solver_->SetAztecOption(AZ_output, AZ_last);
         aztec_solver_->SetAztecOption(AZ_output, AZ_none);
         
         break;
+    }
     default:
         AssertMsg(false, "Solver type not implemented");
     }

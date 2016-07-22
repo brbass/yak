@@ -32,7 +32,7 @@ public:
                         shared_ptr<Energy_Discretization> energy_discretization,
                         shared_ptr<Nuclear_Data> nuclear_data,
                         shared_ptr<Source_Data> source_data,
-                        Solver_Type solver_type = Solver_Type::AMESOS);
+                        Solver_Type solver_type = Solver_Type::AZTECOO);
 
     shared_ptr<Epetra_CrsMatrix> get_matrix(int g);
     

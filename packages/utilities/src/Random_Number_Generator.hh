@@ -12,10 +12,15 @@ template<class T>
 class Random_Number_Generator
 {
 public:
-    
+
     // Constructor
     Random_Number_Generator(T lower_bound,
                             T upper_bound);
+
+    // Constructor
+    Random_Number_Generator(T lower_bound,
+                            T upper_bound,
+                            int seed);
     
     
     // Returns a random scalar
@@ -45,6 +50,14 @@ public:
     {
     }
 
+    Random_Number_Generator(int lower_bound,
+                            int upper_bound,
+                            int seed):
+        generator(seed),
+        distribution(lower_bound, upper_bound)
+    {
+    }
+    
     int scalar()
     {
         return distribution(generator);
@@ -94,6 +107,13 @@ public:
     {
     }
 
+    Random_Number_Generator(double lower_bound,
+                            double upper_bound,
+                            int seed):
+        generator(seed),
+        distribution(lower_bound, upper_bound)
+    {
+    }
     double scalar()
     {
         return distribution(generator);

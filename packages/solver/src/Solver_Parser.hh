@@ -59,7 +59,8 @@ public:
     shared_ptr<RBF_Sweep_1D> parse_rbf();
 
     // Parse the Local RBF Sweeper
-    shared_ptr<Local_RBF_Sweep> parse_rbf_local(string solver_type);
+    shared_ptr<Local_RBF_Sweep> parse_rbf_local(pugi::xml_node sweep_node,
+                                                string solver_type);
 
     // Parse the Local RBF Diffusion
     shared_ptr<Local_RBF_Diffusion> parse_rbf_diffusion(string solver_type);
