@@ -45,8 +45,8 @@ k_values = np.empty(number_of_cases)
 # functions
 
 def run_problem(index):
-    test_description = "{2} / {3}\tDistance: {0}\tShape: {1}".format(output_values[index][1], output_values[index][0], index, number_of_cases)
-    print("Begin test " + test_description)
+    test_description = "\tInd: {2} / {3}\tDist: {0}\tShape: {1}".format(output_values[index][1], output_values[index][0], index, number_of_cases)
+    print("Begin test" + test_description)
     subprocess.call(["{0} {1}".format(command, input_filenames[index])], shell=True)
     try:
         output_xml = et.parse(output_filenames[index]).getroot()
@@ -66,7 +66,7 @@ def run_problem(index):
         
         lock.release()
         
-        print("End test " + test_description)
+        print("End test" + test_description)
     except:
         results_string = str(output_values[index][0]) + "\t" + str(output_values[index][1]) + "\tfailed to execute" + "\n"
         
@@ -79,14 +79,14 @@ def run_problem(index):
         
         lock.release()
         
-        print("Fail test " + test_description)
+        print("Fail test" + test_description)
         
 def init_pool(l):
     global lock
     lock = l
 
 def init_results_file():
-    result_string = "shape\tbasis\terr1\terr2\terr_tot\tsour_iter\tkryl_iter\ttime\n"
+    result_string = "shape\tdist\tk_eff\tkryl_iter\ttime\n"
     
     f = open(results_filename, 'w')
     f.write(result_string)
