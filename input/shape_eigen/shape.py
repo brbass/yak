@@ -1,6 +1,7 @@
 import os, sys, subprocess, itertools, multiprocessing, functools
 import numpy as np
 import xml.etree.ElementTree as et
+from matplotlib import pyplot as plt
 
 ########################################################
 # Run owl in parallel for many values of shape parameter
@@ -23,7 +24,7 @@ results_filename = "output.txt"
 
 # set problem values
 
-shape_values = np.around(np.arange(0.5, 3.1, 0.1), decimals=1)
+shape_values = np.around(np.arange(0.1, 3.1, 0.1), decimals=1)
 distance_values = np.around(np.arange(0.05, 0.40, 0.05), decimals=2)
 input_filenames = [io_folder + "pin_{1}_{0}.xml".format(i, j) for i in shape_values for j in distance_values]
 output_filenames = [io_folder + "pin_{1}_{0}.xml.out".format(i, j) for i in shape_values for j in distance_values]
@@ -103,3 +104,5 @@ if __name__ == '__main__':
     pool.map(run_problem, input_indices)
     pool.close()
     pool.join()
+    
+    plot_vals()
