@@ -9,10 +9,11 @@ def plot_points_2d(file_path):
 
     dimension = int(output_xml.findtext("./rbf_mesh/dimension"))
     num_points = int(output_xml.findtext("./rbf_mesh/number_of_points"))
+    num_materials = int(output_xml.findtext("./rbf_mesh/number_of_materials"))
     points_data = np.fromstring(output_xml.findtext("./rbf_mesh/point_positions"), sep="\t")
     material = np.fromstring(output_xml.findtext("./rbf_mesh/material"), sep="\t")
     points = np.empty((num_points, dimension))
-    colors = cm.rainbow(material)
+    colors = cm.rainbow(1.0 / num_materials * material)
     
     for i in range(num_points):
         for d in range(dimension):

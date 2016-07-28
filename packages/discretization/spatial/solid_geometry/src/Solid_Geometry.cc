@@ -119,6 +119,8 @@ next_intersection(vector<double> const &initial_position,
     int final_surface = NO_SURFACE;
     final_region = NO_REGION;
     distance = numeric_limits<double>::max();
+
+    vector<double> best_position;
     
     for (int i = 0; i < surfaces_.size(); ++i)
     {
@@ -153,11 +155,13 @@ next_intersection(vector<double> const &initial_position,
                     final_surface = i;
                     final_region = plus_region;
                     distance = current_distance;
-                    final_position = current_position;
+                    best_position = current_position;
                 }
             }
         }
     }
+
+    final_position = best_position;
     
     return final_surface;
 }

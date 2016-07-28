@@ -257,12 +257,14 @@ RBF_Mesh(int dimension,
 void RBF_Mesh::
 check_class_invariants() const
 {
-    Assert(number_of_boundary_points_ + number_of_internal_points_ == number_of_points_);
+    Assert(number_of_boundary_points_ + number_of_internal_points_ + number_of_transition_points_ == number_of_points_);
     Assert(boundary_nodes_.size() == number_of_boundary_points_);
     Assert(boundary_points_.size() == number_of_boundary_points_);
     Assert(internal_points_.size() == number_of_internal_points_);
+    Assert(transition_points_.size() == number_of_transition_points_);
     Assert(material_.size() == number_of_points_);
     Assert(boundary_normal_.size() == number_of_boundary_points_ * dimension_);
+    Assert(transition_normal_.size() == number_of_transition_points_ * dimension_);
     Assert(point_positions_.size() == number_of_points_ * dimension_);
     Assert(shape_parameter_.size() == number_of_points_ * dimension_);
     Assert(basis_functions_.size() == number_of_points_);
@@ -278,6 +280,7 @@ output(pugi::xml_node &output_node) const
     XML_Functions::append_child(rbf, number_of_boundary_points_, "number_of_boundary_points");
     XML_Functions::append_child(rbf, number_of_internal_points_, "number_of_internal_points");
     XML_Functions::append_child(rbf, number_of_transition_points_, "number_of_transition_points");
+    XML_Functions::append_child(rbf, number_of_materials_, "number_of_materials");
     XML_Functions::append_child(rbf, boundary_points_, "boundary_points", "point");
     XML_Functions::append_child(rbf, internal_points_, "internal_points", "point");
     XML_Functions::append_child(rbf, transition_points_, "transition_points", "point");
