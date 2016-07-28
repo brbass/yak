@@ -56,6 +56,10 @@ private:
     void set_internal_point(int i,
                             int o,
                             int g) const;
+    void set_transition_point(int p,
+                              int i,
+                              int o,
+                              int g) const;
     void set_boundary_rhs(int b,
                           int i,
                           int o,

@@ -54,11 +54,13 @@ apply(vector<double> &x) const
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     int number_of_boundary_points = rbf_mesh_->number_of_boundary_points();
     int number_of_internal_points = rbf_mesh_->number_of_internal_points();
+    int number_of_transition_points = rbf_mesh_->number_of_transition_points();
     int number_of_augments = source_data_->number_of_augments();
     int psi_size = row_size() - number_of_augments;
     vector<int> const boundary_points = rbf_mesh_->boundary_cells();
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
     vector<int> const internal_points = rbf_mesh_->internal_cells();
+    vector<int> const transition_points = rbf_mesh_->transition_cells();
     vector<double> const ordinates = angular_discretization_->ordinates();
     
     for (int o = 0; o < number_of_ordinates; ++o)
@@ -88,15 +90,23 @@ apply(vector<double> &x) const
                     set_internal_rhs(i, o, g, x);
                 }
             }
+            
             for (int p = 0; p < number_of_internal_points; ++p)
             {
                 int i = internal_points[p];
-
+                
                 set_internal_rhs(i, o, g, x);
             }
-
+            
+            for (int p = 0; p < number_of_transition_points; ++p)
+            {
+                int i = transition_points[p];
+                
+                set_internal_rhs(i, o, g, x);
+            }
+            
             int k = g + number_of_groups * o;
-
+            
             // Perform matrix solve
             switch(solver_type_)
             {
@@ -284,6 +294,84 @@ set_internal_point(int i,
 }
 
 void Matrix_RBF_Sweep::
+set_transition_point(int p,
+                     int i,
+                     int o,
+                     int g) const
+{
+    int dimension = rbf_mesh_->dimension();
+    int number_of_points = rbf_mesh_->number_of_points();
+    int number_of_groups = energy_discretization_->number_of_groups();
+    int number_of_ordinates = angular_discretization_->number_of_ordinates();
+    int number_of_neighbors = rbf_mesh_->number_of_neighbors();
+    int number_of_augments = source_data_->number_of_augments();
+    int psi_size = row_size() - number_of_augments;
+    vector<int> const neighbors = rbf_mesh_->neighbors(i);
+    vector<double> const transition_normal = rbf_mesh_->transition_normal();
+    vector<double> const ordinates = angular_discretization_->ordinates();
+    vector<double> const sigma_t = nuclear_data_->sigma_t();
+    
+    shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
+    vector<double> const equation_position = equation_rbf->position();
+    
+    // Replace matrix values
+    vector<double> data(number_of_neighbors, 0);
+    double sigma_t_val;
+    {
+        double sum = 0;
+        
+        for (int d = 0; d < dimension; ++d)
+        {
+            int k_tn = d + dimension * p;
+            int k_ord = d + dimension * o;
+            
+            sum += transition_normal[k_tn] * ordinates[k_ord];
+        }
+        
+        if (sum > 0)
+        {
+            int k_sig = g + number_of_groups * i;
+            
+            sigma_t_val = sigma_t[k_sig];
+        }
+        else
+        {
+            int k_sig = g + number_of_groups * (number_of_points - 1 + p);
+            
+            sigma_t_val = sigma_t[k_sig];
+        }
+    }
+    
+    for (int n = 0; n < number_of_neighbors; ++n)
+    {
+        int j = neighbors[n];
+        
+        shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
+        
+        double derivative = 0;
+        
+        for (int d = 0; d < dimension; ++d)
+        {
+            int k_ord = d + dimension * o;
+            
+            derivative += ordinates[k_ord] * basis_rbf->dbasis(d, equation_position);
+        }
+        
+        data[n] = derivative + sigma_t_val * basis_rbf->basis(equation_position);
+    }
+    
+    rbf_mesh_->convert_to_phi(i,
+                              data);
+    
+    int k = g + number_of_groups * o;
+    
+    mat_[k]->ReplaceGlobalValues(i,
+                                 number_of_neighbors,
+                                 &data[0],
+                                 &neighbors[0]);
+}
+
+void Matrix_RBF_Sweep::
 set_internal_rhs(int i,
                  int o,
                  int g,
@@ -307,11 +395,13 @@ initialize_trilinos()
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
     int number_of_boundary_points = rbf_mesh_->number_of_boundary_points();
     int number_of_internal_points = rbf_mesh_->number_of_internal_points();
+    int number_of_transition_points = rbf_mesh_->number_of_transition_points();
     int number_of_augments = source_data_->number_of_augments();
     int psi_size = row_size() - number_of_augments;
     vector<int> const boundary_points = rbf_mesh_->boundary_cells();
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
     vector<int> const internal_points = rbf_mesh_->internal_cells();
+    vector<int> const transition_points = rbf_mesh_->transition_points();
     vector<double> const ordinates = angular_discretization_->ordinates();
     comm_ = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     map_ = make_shared<Epetra_Map>(number_of_points, 0, *comm_);
@@ -398,6 +488,12 @@ initialize_trilinos()
                 int i = internal_points[p];
 
                 set_internal_point(i, o, g);
+            }
+            for (int p = 0; p < number_of_transition_points; ++p)
+            {
+                int i = transition_points[p];
+                
+                set_transition_point(p, i, o, g);
             }
         }
     }

@@ -25,6 +25,7 @@ DFEM_Sweep_1D(shared_ptr<Spatial_Discretization> spatial_discretization,
     finite_element_mesh_(dynamic_pointer_cast<Finite_Element_Mesh>(spatial_discretization))
 {
     Assert(finite_element_mesh_);
+    Assert(spatial_discretization->number_of_transition_points() == 0);
 }
 
 void DFEM_Sweep_1D::

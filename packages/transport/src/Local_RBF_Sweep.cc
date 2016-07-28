@@ -43,6 +43,7 @@ Local_RBF_Sweep(shared_ptr<Spatial_Discretization> spatial_discretization,
     reflection_tolerance_ = 1000 * numeric_limits<double>::epsilon();
     rbf_mesh_ = dynamic_pointer_cast<Local_RBF_Mesh>(spatial_discretization);
     Assert(rbf_mesh_);
+    Assert(spatial_discretization->number_of_transition_points() == 0);
     
     initialize_trilinos();
 }
