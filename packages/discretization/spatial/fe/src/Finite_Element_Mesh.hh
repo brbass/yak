@@ -46,6 +46,11 @@ public:
     {
         return number_of_elements_;
     }
+
+    virtual int number_of_materials() override
+    {
+        return number_of_materials_;
+    }
     
     // Number of elements
     virtual int number_of_elements()
@@ -126,6 +131,7 @@ public:
 private:
 
     int number_of_elements_;
+    int number_of_materials_;
     int number_of_nodes_;
     int number_of_points_;
     int number_of_internal_elements_;

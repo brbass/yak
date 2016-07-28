@@ -51,6 +51,27 @@ public:
              vector<int> const &region = vector<int>(),
              shared_ptr<Solid_Geometry> const solid_geometry = shared_ptr<Solid_Geometry>());
     
+    RBF_Mesh(int dimension,
+             int number_of_points,
+             int number_of_boundary_points,
+             int number_of_internal_points,
+             int number_of_transition_points,
+             int number_of_neighbors,
+             int number_of_materials,
+             double shape_multiplier,
+             Geometry geometry,
+             Basis_Type basis_type,
+             vector<int> const &material,
+             vector<int> const &boundary_points,
+             vector<int> const &internal_points,
+             vector<int> const &transition_points,
+             vector<double> const &positions,
+             vector<double> const &boundary_normal,
+             vector<double> const &transition_normal,
+             vector<int> const &surface,
+             vector<int> const &region,
+             shared_ptr<Solid_Geometry> const solid_geometry);
+    
     // Number of points
     virtual int number_of_points() override
     {
@@ -88,11 +109,16 @@ public:
     }
 
     // Number of neighbors for each point
-    virtual int number_of_neighbors() const
+    virtual int number_of_neighbors() 
     {
         return number_of_neighbors_;
     }
 
+    virtual int number_of_materials() override
+    {
+        return number_of_materials_;
+    }
+    
     virtual Basis_Type basis_type() const
     {
         return basis_type_;
@@ -122,6 +148,12 @@ public:
     {
         return internal_points_;
     }
+
+    // Number of transition points
+    virtual vector<int> const &transition_cells() const override
+    {
+        return transition_points_;
+    }
     
     // Surface the boundary point lies on
     virtual vector<int> const &surface() const
@@ -144,6 +176,11 @@ public:
     virtual vector<double> const &boundary_normal() const override
     {
         return boundary_normal_;
+    }
+
+    virtual vector<double> const &transition_normal() const override
+    {
+        return transition_normal_;
     }
 
     virtual vector<double> const &positions() const
@@ -175,7 +212,9 @@ protected:
     int number_of_points_;
     int number_of_boundary_points_;
     int number_of_internal_points_;
+    int number_of_transition_points_;
     int number_of_neighbors_;
+    int number_of_materials_;
 
     double shape_multiplier_;
     
@@ -184,10 +223,12 @@ protected:
     vector<bool> boundary_nodes_;
     vector<int> boundary_points_;
     vector<int> internal_points_;
+    vector<int> transition_points_;
     vector<int> material_;
     vector<int> region_;
     vector<int> surface_;
     vector<double> boundary_normal_;
+    vector<double> transition_normal_;
     vector<double> point_positions_;
     vector<double> shape_parameter_;
     vector<vector<int> > neighbors_;

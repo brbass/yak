@@ -4,11 +4,34 @@
 
 using namespace std;
 
+namespace // anonymous
+{
+    int get_number_of_materials(vector<shared_ptr<Region> > const &regions)
+    {
+        int number_of_regions = regions.size();
+
+        int highest_material = 0;
+
+        for (int r = 0; r < number_of_regions; ++r)
+        {
+            int region_material = regions[r]->material();
+
+            if (region_material > highest_material)
+            {
+                highest_material = region_material;
+            }
+        }
+
+        return highest_material + 1;
+    }
+} // end namespace anonymous
+
 Solid_Geometry::
 Solid_Geometry(int dimension,
                vector<shared_ptr<Surface> > const &surfaces,
                vector<shared_ptr<Region> > const &regions):
     dimension_(dimension),
+    number_of_materials_(get_number_of_materials(regions)),
     surfaces_(surfaces),
     regions_(regions)
 {

@@ -5,6 +5,7 @@
 #include <Epetra_SerialDenseVector.h>
 
 #include "Check.hh"
+#include "Solid_Geometry.hh"
 
 using namespace std;
 
@@ -13,7 +14,9 @@ Local_RBF_Mesh(int dimension,
                int number_of_points,
                int number_of_boundary_points,
                int number_of_internal_points,
+               int number_of_transition_points,
                int number_of_neighbors,
+               int number_of_materials,
                double shape_multiplier,
                Geometry geometry,
                Basis_Type basis_type,
@@ -21,8 +24,10 @@ Local_RBF_Mesh(int dimension,
                vector<int> const &material,
                vector<int> const &boundary_points,
                vector<int> const &internal_points,
+               vector<int> const &transition_points,
                vector<double> const &positions,
                vector<double> const &boundary_normal,
+               vector<double> const &transition_normal,
                vector<int> const &surface,
                vector<int> const &region,
                shared_ptr<Solid_Geometry> const solid_geometry):
@@ -30,22 +35,26 @@ Local_RBF_Mesh(int dimension,
              number_of_points,
              number_of_boundary_points,
              number_of_internal_points,
+             number_of_transition_points,
              number_of_neighbors,
+             number_of_materials,
              shape_multiplier,
              geometry,
              basis_type,
              material,
              boundary_points,
              internal_points,
+             transition_points,
              positions,
              boundary_normal,
+             transition_normal,
              surface,
              region,
              solid_geometry),
     coefficient_type_(coefficient_type)
 {
     // Initialize Trilinos if needed
-
+    
     if (coefficient_type_ == Coefficient_Type::PHI)
     {
         for (int i = 0; i < number_of_points_; ++i)
@@ -80,6 +89,48 @@ Local_RBF_Mesh(int dimension,
             solvers_.push_back(solver);
         }
     }
+}
+
+Local_RBF_Mesh::
+Local_RBF_Mesh(int dimension,
+               int number_of_points,
+               int number_of_boundary_points,
+               int number_of_internal_points,
+               int number_of_neighbors,
+               double shape_multiplier,
+               Geometry geometry,
+               Basis_Type basis_type,
+               Coefficient_Type coefficient_type,
+               vector<int> const &material,
+               vector<int> const &boundary_points,
+               vector<int> const &internal_points,
+               vector<double> const &positions,
+               vector<double> const &boundary_normal,
+               vector<int> const &surface,
+               vector<int> const &region,
+               shared_ptr<Solid_Geometry> const solid_geometry):
+    Local_RBF_Mesh(dimension,
+                   number_of_points,
+                   number_of_boundary_points,
+                   number_of_internal_points,
+                   0, // number_of_transition_points
+                   number_of_neighbors,
+                   solid_geometry->number_of_materials(),
+                   shape_multiplier,
+                   geometry,
+                   basis_type,
+                   coefficient_type,
+                   material,
+                   boundary_points,
+                   internal_points,
+                   vector<int>(),
+                   positions,
+                   boundary_normal,
+                   vector<double>(),
+                   surface,
+                   region,
+                   solid_geometry)
+{
 }
 
 /*

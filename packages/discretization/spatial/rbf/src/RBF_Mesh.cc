@@ -55,15 +55,19 @@ RBF_Mesh(int dimension,
          int number_of_points,
          int number_of_boundary_points,
          int number_of_internal_points,
+         int number_of_transition_points,
          int number_of_neighbors,
+         int number_of_materials,
          double shape_multiplier,
          Geometry geometry,
          Basis_Type basis_type,
          vector<int> const &material,
          vector<int> const &boundary_points,
          vector<int> const &internal_points,
+         vector<int> const &transition_points,
          vector<double> const &positions,
          vector<double> const &boundary_normal,
+         vector<double> const &transition_normal,
          vector<int> const &surface,
          vector<int> const &region,
          shared_ptr<Solid_Geometry> const solid_geometry):
@@ -72,15 +76,19 @@ RBF_Mesh(int dimension,
     number_of_points_(number_of_points),
     number_of_boundary_points_(number_of_boundary_points),
     number_of_internal_points_(number_of_internal_points),
+    number_of_transition_points_(number_of_transition_points),
     number_of_neighbors_(number_of_neighbors),
+    number_of_materials_(number_of_materials),
     shape_multiplier_(shape_multiplier),
     material_(material),
     boundary_points_(boundary_points),
     internal_points_(internal_points),
+    transition_points_(transition_points),
     surface_(surface),
     region_(region),
     point_positions_(positions),
     boundary_normal_(boundary_normal),
+    transition_normal_(transition_normal),
     boundary_nodes_(number_of_boundary_points, true),
     solid_geometry_(solid_geometry)
 {
@@ -105,7 +113,7 @@ RBF_Mesh(int dimension,
                                  distances);
         
         neighbors_[i] = neighbors;
-
+        
         double shape_parameter = get_shape_parameter(number_of_neighbors_,
                                                      dimension_,
                                                      shape_multiplier_,
@@ -128,7 +136,7 @@ RBF_Mesh(int dimension,
             position[d] = positions[d + dimension_ * i];
             shape[d] = shape_parameter_[d];
         }
-
+        
         shared_ptr<RBF> rbf;
         
         switch(basis_type)
@@ -203,6 +211,47 @@ RBF_Mesh(int dimension,
     }
     
     check_class_invariants();
+}
+
+
+RBF_Mesh::
+RBF_Mesh(int dimension,
+         int number_of_points,
+         int number_of_boundary_points,
+         int number_of_internal_points,
+         int number_of_neighbors,
+         double shape_multiplier,
+         Geometry geometry,
+         Basis_Type basis_type,
+         vector<int> const &material,
+         vector<int> const &boundary_points,
+         vector<int> const &internal_points,
+         vector<double> const &positions,
+         vector<double> const &boundary_normal,
+         vector<int> const &surface,
+         vector<int> const &region,
+         shared_ptr<Solid_Geometry> const solid_geometry):
+    RBF_Mesh(dimension,
+             number_of_points,
+             number_of_boundary_points,
+             number_of_internal_points,
+             0, // number_of_transition_points
+             number_of_neighbors,
+             solid_geometry->number_of_materials(),
+             shape_multiplier,
+             geometry,
+             basis_type,
+             material,
+             boundary_points,
+             internal_points,
+             vector<int>(), // transition_points
+             positions,
+             boundary_normal,
+             vector<double>(), // transition_normal
+             surface,
+             region,
+             solid_geometry)
+{
 }
 
 void RBF_Mesh::

@@ -39,6 +39,12 @@ public:
     // Number of spatial points on the boundary
     virtual int number_of_boundary_points() = 0;
 
+    // Number of cells transitioning from one material to another
+    virtual int number_of_transition_points()
+    {
+        return 0;
+    }
+    
     // Number of cells
     virtual int number_of_cells() = 0;
 
@@ -53,7 +59,9 @@ public:
     {
         return dimension_;
     }
-
+    
+    virtual int number_of_materials() = 0;
+    
     // Geometry of problem
     virtual Geometry geometry()
     {
@@ -69,11 +77,22 @@ public:
     // Spatial points not on the problem boundary
     virtual vector<int> const &internal_cells() const = 0;
 
+    // Spatial points transitioning from one material to another
+    virtual vector<int> const &transition_cells() const
+    {
+        return empty_int_;
+    }
+    
     // Material number for each cell
     virtual vector<int> const &material() const = 0;
 
     // Surface normal values
     virtual vector<double> const &boundary_normal() const = 0;
+
+    virtual vector<double> const &transition_normal() const
+    {
+        return empty_double_;
+    }
     
     // Output data to XML file
     virtual void output(pugi::xml_node &output_node) const = 0;
@@ -82,6 +101,9 @@ protected:
     
     int dimension_;
     Geometry geometry_;
+
+    vector<int> empty_int_;
+    vector<double> empty_double_;
 };
 
 #endif

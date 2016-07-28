@@ -230,14 +230,14 @@ namespace // anonymous
                 
                 // See if ray intersects with a problem boundary
                 // Move particle to the problem boundary
-
+                
                 surface = solid_geometry->next_boundary(position,
                                                         direction,
                                                         boundary_region,
                                                         distance,
                                                         position);
             }
-
+            
             // Find all intersections of the ray
             
             while(surface != Solid_Geometry::NO_SURFACE)
@@ -251,12 +251,11 @@ namespace // anonymous
                                 positions))
                 {
                     surfaces.push_back(surface);
-                    material.push_back(solid_geometry->region(boundary_region)->material());
-                    boundary_points.push_back(current_point);
-                    
-                    // Find normal vector
                     Check(solid_geometry->surface(surface)->normal_direction(position,
                                                                              normal));
+                    
+                    material.push_back(solid_geometry->region(boundary_region)->material());
+                    boundary_points.push_back(current_point);
                     
                     for (int d = 0; d < dimension; ++d)
                     {
@@ -286,6 +285,231 @@ namespace // anonymous
                                                         boundary_region,
                                                         distance,
                                                         position);
+            }
+        }
+        
+        // Get internal points
+        
+        num_attempts = 0;
+        while (num_attempts < max_attempts)
+        {
+            int region = Solid_Geometry::NO_REGION;
+            vector<double> point;
+            
+            while(region == Solid_Geometry::NO_REGION)
+            {
+                // Find random point
+
+                get_point(dimension,
+                          bounding_radius,
+                          bounding_origin,
+                          point);
+                
+                region = solid_geometry->find_region(point);
+            }
+            
+            if (point_works(current_point,
+                            dimension,
+                            min_distance_internal,
+                            point,
+                            positions))
+            {
+                regions.push_back(region);
+                material.push_back(solid_geometry->region(region)->material());
+                internal_points.push_back(current_point);
+
+                for (int d = 0; d < dimension; ++d)
+                {
+                    positions.push_back(point[d]);
+                }
+                
+                current_point += 1;
+                current_internal_point += 1;
+            }
+            else
+            {
+                num_attempts += 1;
+            }
+        }
+        
+        number_of_points = current_point;
+        number_of_boundary_points = current_boundary_point;
+        number_of_internal_points = current_internal_point;
+    }
+
+    void get_solid_points(shared_ptr<Solid_Geometry> solid_geometry,
+                          pugi::xml_node &spatial,
+                          int &dimension,
+                          int &number_of_materials,
+                          int &number_of_points,
+                          int &number_of_boundary_points,
+                          int &number_of_internal_points,
+                          vector<int> &surfaces,
+                          vector<int> &regions,
+                          vector<int> &material,
+                          vector<int> &boundary_points,
+                          vector<int> &internal_points,
+                          vector<int> &transition_points,
+                          vector<double> &positions,
+                          vector<double> &boundary_normal,
+                          vector<double> &transition_normal)
+    {
+        dimension = solid_geometry->dimension();
+        number_of_materials = solid_geometry->number_of_materials();
+        
+        surfaces.resize(0);
+        regions.resize(0);
+        material.resize(0);
+        boundary_points.resize(0);
+        internal_points.resize(0);
+        transition_points.resize(0);
+        positions.resize(0);
+        boundary_normal.resize(0);
+        transition_normal.resize(0);
+        
+        // Get parameters for bounding sphere
+        
+        int max_attempts = XML_Functions::child_value<int>(spatial, "max_attempts");
+        double min_distance_boundary = XML_Functions::child_value<double>(spatial, "min_distance_boundary");
+        double min_distance_internal = XML_Functions::child_value<double>(spatial, "min_distance_internal");
+        double bounding_radius = XML_Functions::child_value<double>(spatial, "bounding_radius");
+        vector<double> bounding_origin = XML_Functions::child_vector<double>(spatial, "bounding_origin", dimension);
+        
+        // Find boundary points
+
+        int current_boundary_point = 0;
+        int current_point = 0;
+        int current_internal_point = 0;
+        int current_transition_point = 0;
+        int num_attempts = 0;
+        
+        while (num_attempts < max_attempts)
+        {
+            vector<double> position;
+            vector<double> direction;
+            vector<double> normal;
+            
+            int surface = Solid_Geometry::NO_SURFACE;
+            int boundary_region = Solid_Geometry::NO_REGION;
+            double distance;
+            
+            // Find ray that intersects with problem
+            
+            while (surface == Solid_Geometry::NO_SURFACE)
+            {
+                // Get random ray in random inward-facing direction
+                
+                get_ray(dimension,
+                        bounding_radius,
+                        bounding_origin,
+                        position,
+                        direction);
+                
+                // See if ray intersects with a problem boundary
+                // Move particle to the problem boundary
+                
+                surface = solid_geometry->next_intersection(position,
+                                                            direction,
+                                                            boundary_region,
+                                                            distance,
+                                                            position);
+            }
+            
+            // Find all intersections of the ray
+            
+            while(surface != Solid_Geometry::NO_SURFACE)
+            {
+                // Check whether point is too close to others
+                
+                if (point_works(current_point,
+                                dimension,
+                                min_distance_boundary,
+                                position,
+                                positions))
+                {
+                    surfaces.push_back(surface);
+                    Check(solid_geometry->surface(surface)->normal_direction(position,
+                                                                             normal));
+
+                    vector<double> position_positive;
+                    vector<double> position_negative;
+                    double delta_distance = solid_geometry->delta_distance();
+                        
+                    solid_geometry->new_position(delta_distance,
+                                                 position,
+                                                 normal,
+                                                 position_positive);
+                    solid_geometry->new_position(-delta_distance,
+                                                 position,
+                                                 normal,
+                                                 position_negative);
+                        
+                    int region_positive = solid_geometry->find_region(position_positive);
+                    int region_negative = solid_geometry->find_region(position_negative);
+
+                    if (region_positive == Solid_Geometry::Geometry_Errors::NO_REGION)
+                    {
+                        material.push_back(solid_geometry->region(region_negative)->material());
+                        boundary_points.push_back(current_point);
+                            
+                        for (int d = 0; d < dimension; ++d)
+                        {
+                            positions.push_back(position[d]);
+                            boundary_normal.push_back(normal[d]);
+                        }
+                        
+                        current_boundary_point += 1;
+                    }
+                    else if (region_negative == Solid_Geometry::Geometry_Errors::NO_REGION)
+                    {
+                        material.push_back(solid_geometry->region(region_positive)->material());
+                        boundary_points.push_back(current_point);
+                        
+                        for (int d = 0; d < dimension; ++d)
+                        {
+                            positions.push_back(position[d]);
+                            boundary_normal.push_back(normal[d]);
+                        }
+                        
+                        current_boundary_point += 1;
+                    }
+                    else
+                    {
+                        int material_positive = solid_geometry->region(region_positive)->material();
+                        int material_negative = solid_geometry->region(region_negative)->material();
+                        material.push_back(material_positive + number_of_materials * material_negative);
+                        transition_points.push_back(current_point);
+
+                        for (int d = 0; d < dimension; ++d)
+                        {
+                            positions.push_back(position[d]);
+                            transition_normal.push_back(normal[d]);
+                        }
+                            
+                        current_transition_point += 1;
+                    }
+                    
+                    current_point += 1;
+                }
+                else
+                {
+                    num_attempts += 1;
+                }
+                
+                // Move particle ahead slightly to avoid finding the same boundary again
+                
+                solid_geometry->new_position(solid_geometry->delta_distance(),
+                                             position,
+                                             direction,
+                                             position);
+                
+                // Find the next boundary
+                
+                surface = solid_geometry->next_intersection(position,
+                                                            direction,
+                                                            boundary_region,
+                                                            distance,
+                                                            position);
             }
         }
         
@@ -523,7 +747,7 @@ get_rbf_1d(pugi::xml_node &spatial)
     {
         AssertMsg(false, "basis_type \"" + basis_str + "\" not found");
     }
-
+    
     pugi::xml_node regions = spatial.child("regions");
 
     int number_of_regions = XML_Functions::child_value<int>(regions, "number_of_regions");

@@ -33,6 +33,10 @@ public:
     {
         return regions_.size();
     }
+    int number_of_materials() const
+    {
+        return number_of_materials_;
+    }
     double delta_distance() const
     {
         return delta_distance_;
@@ -67,7 +71,7 @@ public:
                                     vector<double> const &initial_direction,
                                     double &distance,
                                     vector<double> &final_position) const;
-
+    
     void new_position(double distance,
                       vector<double> const &initial_position,
                       vector<double> const &initial_direction,
@@ -76,6 +80,7 @@ public:
 private:
 
     int dimension_;
+    int number_of_materials_;
     double delta_distance_;
     vector<shared_ptr<Surface> > surfaces_;
     vector<shared_ptr<Region> > regions_;

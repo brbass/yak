@@ -8,6 +8,25 @@
 
 using namespace std;
 
+namespace // anonymous
+{
+    int get_number_of_materials(int number_of_elements,
+                                vector<int> const &material)
+    {
+        int highest_material = 0;
+
+        for (int i = 0; i < number_of_elements; ++i)
+        {
+            if (material[i] > highest_material)
+            {
+                highest_material = material[i];
+            }
+        }
+
+        return highest_material + 1;
+    }
+}
+
 Finite_Element_Mesh::
 Finite_Element_Mesh(int dimension, 
                     int number_of_elements,
@@ -20,6 +39,8 @@ Finite_Element_Mesh(int dimension,
                            geometry),
     number_of_elements_(number_of_elements),
     number_of_nodes_(number_of_nodes),
+    number_of_materials_(get_number_of_materials(number_of_elements,
+                                                 material)),
     number_of_internal_elements_(number_of_elements - 2),
     number_of_boundary_elements_(2),
     element_type_(element_type),

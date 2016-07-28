@@ -10,6 +10,7 @@ Simple_Spatial_Discretization(int dimension,
                            geometry),
     number_of_cells_(number_of_cells),
     number_of_nodes_(number_of_nodes),
+    number_of_materials_(1),
     number_of_boundary_cells_(number_of_boundary_cells)
 {
     boundary_nodes_.assign(number_of_boundary_cells * number_of_nodes, true);

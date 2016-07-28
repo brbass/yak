@@ -46,6 +46,11 @@ public:
         return number_of_nodes_;
     }
 
+    virtual int number_of_materials() override
+    {
+        return number_of_materials_;
+    }
+
     virtual vector<bool> const &boundary_nodes() const override
     {
         return boundary_nodes_;
@@ -80,6 +85,7 @@ private:
     int number_of_cells_;
     int number_of_nodes_;
     int number_of_boundary_cells_;
+    int number_of_materials_;
     
     vector<bool> boundary_nodes_;
     vector<int> boundary_cells_;
