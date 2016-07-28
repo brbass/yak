@@ -275,9 +275,15 @@ output(pugi::xml_node &output_node) const
     
     XML_Functions::append_child(rbf, dimension_, "dimension");
     XML_Functions::append_child(rbf, number_of_points_, "number_of_points");
+    XML_Functions::append_child(rbf, number_of_boundary_points_, "number_of_boundary_points");
+    XML_Functions::append_child(rbf, number_of_internal_points_, "number_of_internal_points");
+    XML_Functions::append_child(rbf, number_of_transition_points_, "number_of_transition_points");
     XML_Functions::append_child(rbf, boundary_points_, "boundary_points", "point");
     XML_Functions::append_child(rbf, internal_points_, "internal_points", "point");
+    XML_Functions::append_child(rbf, transition_points_, "transition_points", "point");
     XML_Functions::append_child(rbf, material_, "material", "point");
+    XML_Functions::append_child(rbf, boundary_normal_, "boundary_normal", "point-dimension");
+    XML_Functions::append_child(rbf, transition_normal_, "transition_normal", "point-dimension");
     XML_Functions::append_child(rbf, point_positions_, "point_positions", "dimension-point");
     XML_Functions::append_child(rbf, shape_parameter_, "shape_parameter", "dimension-point");
 }

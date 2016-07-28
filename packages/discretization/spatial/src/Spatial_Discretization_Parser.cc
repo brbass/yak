@@ -344,6 +344,7 @@ namespace // anonymous
                           int &number_of_points,
                           int &number_of_boundary_points,
                           int &number_of_internal_points,
+                          int &number_of_transition_points,
                           vector<int> &surfaces,
                           vector<int> &regions,
                           vector<int> &material,
@@ -443,7 +444,7 @@ namespace // anonymous
                                                  position,
                                                  normal,
                                                  position_negative);
-                        
+                    
                     int region_positive = solid_geometry->find_region(position_positive);
                     int region_negative = solid_geometry->find_region(position_negative);
 
@@ -479,13 +480,13 @@ namespace // anonymous
                         int material_negative = solid_geometry->region(region_negative)->material();
                         material.push_back(material_positive + number_of_materials * material_negative);
                         transition_points.push_back(current_point);
-
+                        
                         for (int d = 0; d < dimension; ++d)
                         {
                             positions.push_back(position[d]);
                             transition_normal.push_back(normal[d]);
                         }
-                            
+                        
                         current_transition_point += 1;
                     }
                     
@@ -558,6 +559,7 @@ namespace // anonymous
         }
         
         number_of_points = current_point;
+        number_of_transition_points = current_transition_point;
         number_of_boundary_points = current_boundary_point;
         number_of_internal_points = current_internal_point;
     }
@@ -865,40 +867,69 @@ get_rbf_solid(pugi::xml_node &spatial)
     Solid_Geometry_Parser solid_geometry_parser(spatial);
 
     shared_ptr<Solid_Geometry> solid_geometry = solid_geometry_parser.get_ptr();
-
+    
     int dimension;
     int number_of_points;
+    int number_of_materials = solid_geometry->number_of_materials();
     int number_of_boundary_points;
     int number_of_internal_points;
+    int number_of_transition_points = 0;
     vector<int> material;
     vector<int> boundary_points;
     vector<int> internal_points;
+    vector<int> transition_points;
     vector<int> surface;
     vector<int> region;
     vector<double> positions;
     vector<double> boundary_normal;
+    vector<double> transition_normal;
+
+    int include_transition_points = XML_Functions::child_value<int>(spatial, "include_transition_points");
     
-    get_solid_points(solid_geometry,
-                     spatial,
-                     dimension,
-                     number_of_points,
-                     number_of_boundary_points,
-                     number_of_internal_points,
-                     surface,
-                     region,
-                     material,
-                     boundary_points,
-                     internal_points,
-                     positions,
-                     boundary_normal);
+    if (include_transition_points)
+    {
+        get_solid_points(solid_geometry,
+                         spatial,
+                         dimension,
+                         number_of_materials,
+                         number_of_points,
+                         number_of_boundary_points,
+                         number_of_internal_points,
+                         number_of_transition_points,
+                         surface,
+                         region,
+                         material,
+                         boundary_points,
+                         internal_points,
+                         transition_points,
+                         positions,
+                         boundary_normal,
+                         transition_normal);
+    }
+    else
+    {
+        get_solid_points(solid_geometry,
+                         spatial,
+                         dimension,
+                         number_of_points,
+                         number_of_boundary_points,
+                         number_of_internal_points,
+                         surface,
+                         region,
+                         material,
+                         boundary_points,
+                         internal_points,
+                         positions,
+                         boundary_normal);
+    }
     
     int local = XML_Functions::child_value<int>(spatial, "local");
     int number_of_neighbors = XML_Functions::child_value<int>(spatial, "number_of_neighbors");
     double shape_multiplier = XML_Functions::child_value<double>(spatial, "shape_multiplier");
     string basis_str = XML_Functions::child_value<string>(spatial, "basis_type");
-
+    
     Spatial_Discretization::Geometry geometry = Spatial_Discretization::Geometry::CARTESIAN;
-
+    
     RBF_Mesh::Basis_Type basis_type;
     
     if (basis_str == "gaussian")
@@ -951,43 +982,96 @@ get_rbf_solid(pugi::xml_node &spatial)
         {
             AssertMsg(false, "coefficient type \"" + coefficient_str + "\" not found");
         }
-        
-        return make_shared<Local_RBF_Mesh>(dimension,
-                                           number_of_points,
-                                           number_of_boundary_points,
-                                           number_of_internal_points,
-                                           number_of_neighbors,
-                                           shape_multiplier,
-                                           geometry,
-                                           basis_type,
-                                           coefficient_type,
-                                           material,
-                                           boundary_points,
-                                           internal_points,
-                                           positions,
-                                           boundary_normal,
-                                           surface,
-                                           region,
-                                           solid_geometry);
+
+        if (include_transition_points)
+        {
+            return make_shared<Local_RBF_Mesh>(dimension,
+                                               number_of_points,
+                                               number_of_boundary_points,
+                                               number_of_internal_points,
+                                               number_of_transition_points,
+                                               number_of_neighbors,
+                                               number_of_materials,
+                                               shape_multiplier,
+                                               geometry,
+                                               basis_type,
+                                               coefficient_type,
+                                               material,
+                                               boundary_points,
+                                               internal_points,
+                                               transition_points,
+                                               positions,
+                                               boundary_normal,
+                                               transition_normal,
+                                               surface,
+                                               region,
+                                               solid_geometry);
+        }
+        else
+        {
+            return make_shared<Local_RBF_Mesh>(dimension,
+                                               number_of_points,
+                                               number_of_boundary_points,
+                                               number_of_internal_points,
+                                               number_of_neighbors,
+                                               shape_multiplier,
+                                               geometry,
+                                               basis_type,
+                                               coefficient_type,
+                                               material,
+                                               boundary_points,
+                                               internal_points,
+                                               positions,
+                                               boundary_normal,
+                                               surface,
+                                               region,
+                                               solid_geometry);
+        }
     }
     else
     {
-        return make_shared<RBF_Mesh>(dimension,
-                                     number_of_points,
-                                     number_of_boundary_points,
-                                     number_of_internal_points,
-                                     number_of_neighbors,
-                                     shape_multiplier,
-                                     geometry,
-                                     basis_type,
-                                     material,
-                                     boundary_points,
-                                     internal_points,
-                                     positions,
-                                     boundary_normal,
-                                     surface,
-                                     region,
-                                     solid_geometry);
+        if (include_transition_points)
+        {
+            return make_shared<RBF_Mesh>(dimension,
+                                         number_of_points,
+                                         number_of_boundary_points,
+                                         number_of_internal_points,
+                                         number_of_transition_points,
+                                         number_of_neighbors,
+                                         number_of_materials,
+                                         shape_multiplier,
+                                         geometry,
+                                         basis_type,
+                                         material,
+                                         boundary_points,
+                                         internal_points,
+                                         transition_points,
+                                         positions,
+                                         boundary_normal,
+                                         transition_normal,
+                                         surface,
+                                         region,
+                                         solid_geometry);
+        }
+        else
+        {
+            return make_shared<RBF_Mesh>(dimension,
+                                         number_of_points,
+                                         number_of_boundary_points,
+                                         number_of_internal_points,
+                                         number_of_neighbors,
+                                         shape_multiplier,
+                                         geometry,
+                                         basis_type,
+                                         material,
+                                         boundary_points,
+                                         internal_points,
+                                         positions,
+                                         boundary_normal,
+                                         surface,
+                                         region,
+                                         solid_geometry);
+        }
     }
 }
 
