@@ -122,6 +122,11 @@ public:
         return elements_[element];
     }
 
+    virtual vector<Cell_Type> const &cell_type() const override
+    {
+        return cell_type_;
+    }
+    
     // Check class invariants
     virtual void check_class_invariants() const;
 
@@ -147,6 +152,7 @@ private:
     Element_Type element_type_;
     
     vector<Finite_Element> elements_;
+    vector<Cell_Type> cell_type_;
 };
 
 #endif

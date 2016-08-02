@@ -26,6 +26,65 @@ Fission(shared_ptr<Spatial_Discretization> spatial_discretization,
 }
 
 void Fission::
+calculate_cross_sections(vector<double> &chi,
+                         vector<double> &nu,
+                         vector<double> &sigma_f) const
+{
+    int number_of_cells = spatial_discretization_->number_of_cells();
+    int number_of_groups = energy_discretization_->number_of_groups();
+
+    chi.resize(number_of_cells * number_of_groups);
+    nu.resize(number_of_cells * number_of_groups);
+    sigma_f.resize(number_of_cells * number_of_groups);
+    
+    vector<double> const chi_data = nuclear_data_->chi();
+    vector<double> const nu_data = nuclear_data_->nu();
+    vector<double> const sigma_f_data = nuclear_data_->sigma_f();
+
+    int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
+    int number_of_transition_cells = spatial_discretization_->number_of_transition_points();
+    int number_of_internal_cells = number_of_cells - number_of_boundary_cells - number_of_transition_cells;
+    
+    vector<int> boundary_cells = spatial_discretization_->boundary_cells();
+    vector<int> internal_cells = spatial_discretization_->internal_cells();
+    vector<int> transition_cells = spatial_discretization_->transition_cells();
+    
+    for (int g = 0; g < number_of_groups; ++g)
+    {
+        for (int c = 0; c < number_of_boundary_cells; ++c)
+        {
+            int i = boundary_cells[c];
+            int k = g + number_of_groups * i;
+                
+            nu[k] = nu_data[k];
+            sigma_f[k] = sigma_f_data[k];
+            chi[k] = chi_data[k];
+        }
+            
+        for (int c = 0; c < number_of_internal_cells; ++c)
+        {
+            int i = internal_cells[c];
+            int k = g + number_of_groups * i;
+                    
+            nu[k] = nu_data[k];
+            sigma_f[k] = sigma_f_data[k];
+            chi[k] = chi_data[k];
+        }
+            
+        for (int c = 0; c < number_of_transition_cells; ++c)
+        {
+            int i = transition_cells[c];
+            int k = g + number_of_groups * i;
+            int k_trans = g + number_of_groups * (number_of_cells + c);
+                
+            nu[k] = 0.5 * (nu_data[k] + nu_data[k_trans]);
+            sigma_f[k] = 0.5 * (sigma_f_data[k] + sigma_f_data[k_trans]);
+            chi[k] = 0.5 * (chi_data[k] + chi_data[k_trans]);
+        }
+    }
+}
+
+void Fission::
 apply_full(vector<double> &x) const
 {
     int number_of_cells = spatial_discretization_->number_of_cells();
@@ -33,9 +92,14 @@ apply_full(vector<double> &x) const
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    vector<double> const nu = nuclear_data_->nu();
-    vector<double> const sigma_f = nuclear_data_->sigma_f();
-    vector<double> const chi = nuclear_data_->chi();
+    
+    vector<double> chi;
+    vector<double> nu;
+    vector<double> sigma_f;
+    
+    calculate_cross_sections(chi,
+                             nu,
+                             sigma_f);
     
     // Calculate fission source
     vector<double> z(number_of_cells * number_of_nodes, 0); // fission source
@@ -110,9 +174,14 @@ apply_coherent(vector<double> &x) const
     int number_of_groups = energy_discretization_->number_of_groups();
     int number_of_moments = angular_discretization_->number_of_moments();
     int number_of_ordinates = angular_discretization_->number_of_ordinates();
-    vector<double> const nu = nuclear_data_->nu();
-    vector<double> const sigma_f = nuclear_data_->sigma_f();
-    vector<double> const chi = nuclear_data_->chi();
+
+    vector<double> chi;
+    vector<double> nu;
+    vector<double> sigma_f;
+
+    calculate_cross_sections(chi,
+                             nu,
+                             sigma_f);
     
     // Apply within-group fission to zeroth moment
     {

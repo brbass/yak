@@ -26,6 +26,13 @@ public:
         CARTESIAN
     };
 
+    enum class Cell_Type
+    {
+        INTERNAL,
+        BOUNDARY,
+        TRANSITION
+    };
+    
     // Constructor
     Spatial_Discretization(int dimension,
                            Geometry geometry);
@@ -82,6 +89,8 @@ public:
     {
         return empty_int_;
     }
+
+    virtual vector<Cell_Type> const &cell_type() const = 0;
     
     // Material number for each cell
     virtual vector<int> const &material() const = 0;
@@ -104,6 +113,8 @@ protected:
 
     vector<int> empty_int_;
     vector<double> empty_double_;
+
+    virtual void get_cell_type(vector<Cell_Type> &cell_type);
 };
 
 #endif

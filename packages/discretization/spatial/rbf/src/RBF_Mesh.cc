@@ -211,6 +211,8 @@ RBF_Mesh(int dimension,
     }
     
     check_class_invariants();
+
+    get_cell_type(cell_type_);
 }
 
 

@@ -95,7 +95,7 @@ apply(vector<double> &x) const
             {
                 int i = internal_points[p];
                 
-                set_internal_rhs(i, o, g, x);
+                set_internal_rhs(i, o, g, x); // transition same as internal for RHS
             }
             
             for (int p = 0; p < number_of_transition_points; ++p)
@@ -336,7 +336,7 @@ set_transition_point(int p,
         }
         else
         {
-            int k_sig = g + number_of_groups * (number_of_points - 1 + p);
+            int k_sig = g + number_of_groups * (number_of_points + p);
             
             sigma_t_val = sigma_t[k_sig];
         }
@@ -401,7 +401,7 @@ initialize_trilinos()
     vector<int> const boundary_points = rbf_mesh_->boundary_cells();
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
     vector<int> const internal_points = rbf_mesh_->internal_cells();
-    vector<int> const transition_points = rbf_mesh_->transition_points();
+    vector<int> const transition_points = rbf_mesh_->transition_cells();
     vector<double> const ordinates = angular_discretization_->ordinates();
     comm_ = make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     map_ = make_shared<Epetra_Map>(number_of_points, 0, *comm_);

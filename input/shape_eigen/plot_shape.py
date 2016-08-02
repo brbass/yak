@@ -12,7 +12,9 @@ for i in range(len(dist_values)):
     local_data = local_data[np.argsort(local_data[:, 0])]
     
     plt.plot(local_data[:, 0], local_data[:, 2], label=str(dist_values[i]))
-plt.legend()
+plt.legend(title="min distance")
+plt.xlabel("shape parameter")
+plt.ylabel("k eigenvalue")
 plt.show()
     
 

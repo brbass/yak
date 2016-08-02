@@ -90,6 +90,11 @@ public:
         return number_of_boundary_points_;
     }
 
+    virtual int number_of_transition_points() override
+    {
+        return number_of_transition_points_;
+    }
+    
     // Number of points
     virtual int number_of_cells() override
     {
@@ -188,6 +193,11 @@ public:
         return point_positions_;
     }
     
+    virtual vector<Cell_Type> const &cell_type() const override
+    {
+        return cell_type_;
+    }
+    
     // Basis function for a certain point
     virtual shared_ptr<RBF> const &basis_function(int point) const
     {
@@ -232,7 +242,9 @@ protected:
     vector<double> point_positions_;
     vector<double> shape_parameter_;
     vector<vector<int> > neighbors_;
-
+    
+    vector<Cell_Type> cell_type_;
+    
     shared_ptr<KD_Tree> kd_tree_;
     shared_ptr<Solid_Geometry> solid_geometry_;
     

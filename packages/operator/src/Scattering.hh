@@ -30,6 +30,8 @@ private:
 
     // Apply only within-group scattering
     virtual void apply_coherent(vector<double> &x) const override;
+
+    void calculate_sigma_s(vector<double> &sigma_s) const;
 };
 
 #endif

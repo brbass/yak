@@ -30,6 +30,10 @@ private:
 
     // Apply only within-group fission
     virtual void apply_coherent(vector<double> &x) const override;
+
+    void calculate_cross_sections(vector<double> &chi,
+                                  vector<double> &nu,
+                                  vector<double> &sigma_f) const;
 };
 
 #endif

@@ -6,10 +6,10 @@
   <solution_method>
     <type>krylov_iteration</type>
     <!-- <type>null_solver</type> -->
-    <max_iterations>200</max_iterations>
+    <max_iterations>5000</max_iterations>
     <kspace>15</kspace>
-    <solver_print>0</solver_print>
-    <tolerance>1e-9</tolerance>
+    <solver_print>1</solver_print>
+    <tolerance>1e-6</tolerance>
     
     <sweeper>
       <type>rbf_matrix</type>
@@ -20,14 +20,14 @@
   <spatial_discretization>
     <type>rbf_solid</type>
     <local>1</local>
-    <include_transition_points>1</include_transition_points>
     <coefficient_type>phi</coefficient_type>
     <number_of_neighbors>100</number_of_neighbors>
     <shape_multiplier>2.0</shape_multiplier>
     <basis_type>multiquadric</basis_type>
     <max_attempts>100000</max_attempts>
-    <min_distance_internal>0.2</min_distance_internal>
-    <min_distance_boundary>0.2</min_distance_boundary>
+    <min_distance_internal>0.3</min_distance_internal>
+    <min_distance_boundary>0.3</min_distance_boundary>
+    <include_transition_points>0</include_transition_points>
     <bounding_radius>3.0</bounding_radius>
     <bounding_origin>0 0</bounding_origin>
     
@@ -37,28 +37,28 @@
         <surface>
           <number>0</number>
           <shape>line</shape>
-          <type>vacuum_boundary</type>
+          <type>reflective_boundary</type>
           <origin>-2 0</origin>
           <normal>-1 0</normal>
         </surface>
         <surface>
           <number>1</number>
           <shape>line</shape>
-          <type>vacuum_boundary</type>
+          <type>reflective_boundary</type>
           <origin>2 0</origin>
           <normal>1 0</normal>
         </surface>
         <surface>
           <number>2</number>
           <shape>line</shape>
-          <type>vacuum_boundary</type>
+          <type>reflective_boundary</type>
           <origin>0 -2</origin>
           <normal>0 -1</normal>
         </surface>
         <surface>
           <number>3</number>
           <shape>line</shape>
-          <type>vacuum_boundary</type>
+          <type>reflective_boundary</type>
           <origin>0 2</origin>
           <normal>0 1</normal>
         </surface>

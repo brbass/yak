@@ -153,16 +153,16 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
     {
         int i = transition_cells[c];
         int a = material[i];
-
+        
         int a2 = a % number_of_materials;
-        int a1 = a - number_of_materials * a1;
+        int a1 = a - number_of_materials * a2;
         
         for (int g = 0; g < number_of_groups; ++g)
         {
             int k_a1 = g + number_of_groups * a2;
             int k_i1 = g + number_of_groups * i;
             int k_a2 = g + number_of_groups * a2;
-            int k_i2 = g + number_of_groups * (number_of_cells - 1 + c);
+            int k_i2 = g + number_of_groups * (number_of_cells + c);
             
             sigma_t[k_i1] = sigma_t_m[k_a1];
             nu[k_i1] = nu_m[k_a1];
@@ -184,7 +184,7 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
                     int k_a1 = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * a1));
                     int k_i1 = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * i));
                     int k_a2 = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * a2));
-                    int k_i2 = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * (number_of_cells - 1 + c)));
+                    int k_i2 = gf + number_of_groups * (gt + number_of_groups * (m + number_of_moments * (number_of_cells + c)));
                     
                     sigma_s[k_i1] = sigma_s_m[k_a1];
                     sigma_s[k_i2] = sigma_s_m[k_a2];

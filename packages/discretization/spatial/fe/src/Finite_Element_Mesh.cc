@@ -95,6 +95,8 @@ Finite_Element_Mesh(int dimension,
     surface_normal_[0] = -1;
     surface_normal_[1] = 1;
     
+    get_cell_type(cell_type_);
+    
     check_class_invariants();
 }
 
