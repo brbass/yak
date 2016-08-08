@@ -1,5 +1,7 @@
 #include "Nuclear_Data_Parser.hh"
 
+#include <iostream>
+
 #include "Angular_Discretization.hh"
 #include "Energy_Discretization.hh"
 #include "Spatial_Discretization.hh"
@@ -154,8 +156,8 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
         int i = transition_cells[c];
         int a = material[i];
         
-        int a2 = a % number_of_materials;
-        int a1 = a - number_of_materials * a2;
+        int a1 = a % number_of_materials;
+        int a2 = (a - a1) / number_of_materials;
         
         for (int g = 0; g < number_of_groups; ++g)
         {
@@ -168,7 +170,7 @@ Nuclear_Data_Parser(pugi::xml_node &input_file,
             nu[k_i1] = nu_m[k_a1];
             sigma_f[k_i1] = sigma_f_m[k_a1];
             chi[k_i1] = chi_m[k_a1];
-
+            
             sigma_t[k_i2] = sigma_t_m[k_a2];
             nu[k_i2] = nu_m[k_a2];
             sigma_f[k_i2] = sigma_f_m[k_a2];

@@ -95,14 +95,14 @@ apply(vector<double> &x) const
             {
                 int i = internal_points[p];
                 
-                set_internal_rhs(i, o, g, x); // transition same as internal for RHS
+                set_internal_rhs(i, o, g, x);
             }
             
             for (int p = 0; p < number_of_transition_points; ++p)
             {
                 int i = transition_points[p];
                 
-                set_internal_rhs(i, o, g, x);
+                set_internal_rhs(i, o, g, x);  // transition same as internal for RHS
             }
             
             int k = g + number_of_groups * o;
@@ -492,7 +492,7 @@ initialize_trilinos()
             for (int p = 0; p < number_of_transition_points; ++p)
             {
                 int i = transition_points[p];
-                
+
                 set_transition_point(p, i, o, g);
             }
         }

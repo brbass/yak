@@ -1,5 +1,6 @@
 #include "Scattering.hh"
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -34,7 +35,7 @@ calculate_sigma_s(vector<double> &sigma_s) const
     
     sigma_s.resize(number_of_cells * number_of_groups * number_of_groups * number_of_scattering_moments);
     vector<double> const sigma_s_data = nuclear_data_->sigma_s();
-    
+
     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
     int number_of_transition_cells = spatial_discretization_->number_of_transition_points();
     int number_of_internal_cells = number_of_cells - number_of_boundary_cells - number_of_transition_cells;

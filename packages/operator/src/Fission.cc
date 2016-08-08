@@ -41,6 +41,11 @@ calculate_cross_sections(vector<double> &chi,
     vector<double> const nu_data = nuclear_data_->nu();
     vector<double> const sigma_f_data = nuclear_data_->sigma_f();
 
+    // chi = chi_data;
+    // nu = nu_data;
+    // sigma_f = sigma_f_data;
+    // return;
+    
     int number_of_boundary_cells = spatial_discretization_->number_of_boundary_cells();
     int number_of_transition_cells = spatial_discretization_->number_of_transition_points();
     int number_of_internal_cells = number_of_cells - number_of_boundary_cells - number_of_transition_cells;
