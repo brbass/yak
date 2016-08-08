@@ -1,5 +1,9 @@
-set(subdirectories src)
+set(executable_name yak)
+set(executable_dependencies driver)
 
-foreach(subdirectory ${subdirectories})
-    add_subdirectory(${subdirectory})
-endforeach()
+include_directories(${global_include_directories})
+
+file(GLOB src *.cc *.hh)
+add_executable(${executable_name} ${src})
+target_link_libraries(${executable_name} ${executable_dependencies})
+install(TARGETS ${executable_name} DESTINATION ${CMAKE_INSTALL_PREFIX})

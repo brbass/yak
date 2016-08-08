@@ -1,5 +1,5 @@
-set(subdirectories src)
+set(library_name external)
 
-foreach(subdirectory ${subdirectories})
-    add_subdirectory(${subdirectory})
-endforeach()
+file(GLOB src *.cc *hh)
+add_library(${library_name} ${src}) 
+install(TARGETS ${library_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

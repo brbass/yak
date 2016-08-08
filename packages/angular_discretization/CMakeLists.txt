@@ -1,4 +1,4 @@
-set(library_name discretization_energy)
+set(library_name angular_discretization)
 set(library_dependencies external utilities)
 
 include_directories(${global_include_directories})
