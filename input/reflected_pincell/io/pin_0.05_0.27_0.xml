@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+
+<input>
+  <problem_type>k_eigenvalue</problem_type>
+  
+  <solution_method>
+    <type>krylov_iteration</type>
+    <!-- <type>null_solver</type> -->
+    <max_iterations>1000</max_iterations>
+    <kspace>15</kspace>
+    <solver_print>0</solver_print>
+    <tolerance>1e-7</tolerance>
+    
+    <sweeper>
+      <type>rbf_matrix</type>
+      <solver>amesos</solver>
+    </sweeper>
+  </solution_method>
+  
+  <spatial_discretization>
+    <type>rbf_solid</type>
+    <local>1</local>
+    <include_transition_points>0</include_transition_points>
+    <coefficient_type>phi</coefficient_type>
+    <number_of_neighbors>100</number_of_neighbors>
+    <shape_multiplier>0.27</shape_multiplier>
+    <basis_type>multiquadric</basis_type>
+    <max_attempts>100000</max_attempts>
+    <min_distance_internal>0.05</min_distance_internal>
+    <min_distance_boundary>0.05</min_distance_boundary>
+    <bounding_radius>3.0</bounding_radius>
+    <bounding_origin>0 0</bounding_origin>
+    
+    <solid_geometry>
+      <dimension>2</dimension>
+      <surfaces>
+        <surface>
+          <number>0</number>
+          <shape>line</shape>
+          <type>reflective_boundary</type>
+          <origin>-2 0</origin>
+          <normal>-1 0</normal>
+        </surface>
+        <surface>
+          <number>1</number>
+          <shape>line</shape>
+          <type>reflective_boundary</type>
+          <origin>2 0</origin>
+          <normal>1 0</normal>
+        </surface>
+        <surface>
+          <number>2</number>
+          <shape>line</shape>
+          <type>reflective_boundary</type>
+          <origin>0 -2</origin>
+          <normal>0 -1</normal>
+        </surface>
+        <surface>
+          <number>3</number>
+          <shape>line</shape>
+          <type>reflective_boundary</type>
+          <origin>0 2</origin>
+          <normal>0 1</normal>
+        </surface>
+        <surface>
+          <number>4</number>
+          <shape>circle</shape>
+          <type>internal</type>
+          <origin>0 0</origin>
+          <radius>1</radius>
+        </surface>
+      </surfaces>
+
+      <regions>
+        <region>
+          <number>0</number>
+          <material>1</material>
+          <surface_relation>
+            <surface>0</surface>
+            <relation>inside</relation>
+          </surface_relation>
+          <surface_relation>
+            <surface>1</surface>
+            <relation>inside</relation>
+          </surface_relation>
+          <surface_relation>
+            <surface>2</surface>
+            <relation>inside</relation>
+          </surface_relation>
+          <surface_relation>
+            <surface>3</surface>
+            <relation>inside</relation>
+          </surface_relation>
+          <region_relation>
+            <region>1</region>
+            <relation>outside</relation>
+          </region_relation>
+        </region>
+        <region>
+          <number>1</number>
+          <material>0</material>
+          <surface_relation>
+            <surface>4</surface>
+            <relation>inside</relation>
+          </surface_relation>
+        </region>
+      </regions>
+    </solid_geometry>
+  </spatial_discretization>
+  
+  <angular_discretization>
+    <dimension>2</dimension>
+    <number_of_moments>1</number_of_moments>
+    <rule>1</rule>
+  </angular_discretization>
+  
+  <energy_discretization>
+    <number_of_groups>1</number_of_groups>
+  </energy_discretization>
+  
+  <nuclear_data>
+    <materials>
+      <number_of_materials>2</number_of_materials>
+      
+      <material>
+        <material_number>0</material_number>
+        <sigma_t>1.0</sigma_t>
+        <sigma_s>0.84</sigma_s>
+        <nu>2.4</nu>
+        <sigma_f>0.1</sigma_f>
+        <chi>1.0</chi>
+        <internal_source>0.0</internal_source>
+      </material>
+      
+      <material>
+        <material_number>1</material_number>
+        <sigma_t>2.0</sigma_t>
+        <sigma_s>1.9</sigma_s>
+        <nu>0.0</nu>
+        <sigma_f>0.0</sigma_f>
+        <chi>0.0</chi>
+        <internal_source>0.0</internal_source>
+      </material>
+    </materials>
+  </nuclear_data>
+  
+  <source_data>
+    <internal_source_type>isotropic</internal_source_type>
+    <boundary_source_type>surface_isotropic</boundary_source_type>
+    <boundary_source>0 0 0 0 0</boundary_source>
+  </source_data>
+</input>
