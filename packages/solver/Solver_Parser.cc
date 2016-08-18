@@ -259,6 +259,7 @@ parse_rbf_local(pugi::xml_node sweeper_node,
                                           spatial->number_of_boundary_points(),
                                           spatial->number_of_internal_points(),
                                           spatial->number_of_neighbors(),
+                                          spatial->number_of_materials(),
                                           shape_multiplier,
                                           spatial->geometry(),
                                           spatial->basis_type(),
@@ -302,9 +303,13 @@ parse_rbf_matrix(string solver_type)
     {
         solver = Matrix_RBF_Sweep::Solver_Type::AZTECOO;
     }
-    else
+    else if (solver_type == "amesos")
     {
         solver = Matrix_RBF_Sweep::Solver_Type::AMESOS;
+    }
+    else
+    {
+        AssertMsg(false, "solver type " + solver_type + " not found");
     }
     
     return make_shared<Matrix_RBF_Sweep>(spatial_,
@@ -398,6 +403,7 @@ parse_preconditioner(pugi::xml_node solver_node,
                                           spatial->number_of_boundary_points(),
                                           spatial->number_of_internal_points(),
                                           spatial->number_of_neighbors(),
+                                          spatial->number_of_materials(),
                                           shape_multiplier,
                                           spatial->geometry(),
                                           spatial->basis_type(),

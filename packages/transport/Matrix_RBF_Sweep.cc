@@ -117,7 +117,7 @@ apply(vector<double> &x) const
             case Solver_Type::AZTECOO:
             {
                 aztec_solver_[k]->Iterate(max_iterations_, tolerance_);
-                
+
                 break;
             }
             default:
@@ -526,19 +526,15 @@ initialize_trilinos()
             {
                 aztec_solver_[k] = make_shared<AztecOO>(*problem_[k]);
                 
-                // aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_none);
-                aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_dom_decomp);
-                aztec_solver_[k]->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
-                // aztec_solver_[k]->SetAztecOption(AZ_graph>fill, number_of_neighbors);
                 aztec_solver_[k]->SetAztecOption(AZ_solver, AZ_gmres);
                 aztec_solver_[k]->SetAztecOption(AZ_kspace, 100);
-                // aztec_solver_[k]->SetAztecOption(AZ_output, AZ_all);
+                aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_none);
+                // aztec_solver_[k]->SetAztecOption(AZ_precond, AZ_dom_decomp);
+                // aztec_solver_[k]->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
+                
+                aztec_solver_[k]->SetAztecOption(AZ_output, AZ_all);
                 // aztec_solver_[k]->SetAztecOption(AZ_output, AZ_last);
-                aztec_solver_[k]->SetAztecOption(AZ_output, AZ_none);
-                
-                double condition_number;
-                aztec_solver_[k]->ConstructPreconditioner(condition_number);
-                
+                // aztec_solver_[k]->SetAztecOption(AZ_output, AZ_none);
                 break;
             }
             default:

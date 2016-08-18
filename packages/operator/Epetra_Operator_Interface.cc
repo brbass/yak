@@ -22,18 +22,36 @@ Apply(Epetra_MultiVector const &X,
       Epetra_MultiVector &Y) const
 {
     Assert(X.NumVectors() == Y.NumVectors());
-    Assert(X.NumVectors() == 1);
+    
     int const size = oper_->row_size();
+    int const number_of_vectors = X.NumVectors();
     
     vector<double> x(size);
     X.ExtractCopy(&x[0], X.Stride());
     
-    (*oper_)(x);
-
-    for (int i = 0; i < size; ++i)
+    if (number_of_vectors > 1)
     {
-        Y.ReplaceMyValue(i, 0, x[i]);
+        for (int i = 0; i < number_of_vectors; ++i)
+        {
+            vector<double> x1(x.begin() + i * size, x.begin() + (i + 1) * size);
+            
+            (*oper_)(x1);
+            
+            for (int j = 0; j < size; ++j)
+            {
+                Y.ReplaceGlobalValue(j, i, x1[j]);
+            }
+        }
     }
-
+    else
+    {
+        (*oper_)(x);
+        
+        for (int i = 0; i < size; ++i)
+        {
+            Y.ReplaceGlobalValue(i, 0, x[i]);
+        }
+    }
+    
     return 0;
 }

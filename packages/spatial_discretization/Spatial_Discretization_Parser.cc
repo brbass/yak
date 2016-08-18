@@ -759,6 +759,8 @@ get_rbf_1d(pugi::xml_node &spatial)
 
     int point = 0;
     int region_x = 0;
+
+    int highest_material = 0;
     
     for (pugi::xml_node region = regions.child("region"); region; region = region.next_sibling("region"))
     {
@@ -766,6 +768,11 @@ get_rbf_1d(pugi::xml_node &spatial)
         int region_material = XML_Functions::child_value<int>(region, "material");
         double region_length = XML_Functions::child_value<double>(region, "length");
         double dx = region_length / region_points;
+
+        if (region_material > highest_material)
+        {
+            highest_material = region_material;
+        }
         
         if (point == 0)
         {
@@ -795,6 +802,8 @@ get_rbf_1d(pugi::xml_node &spatial)
     }
     Assert(point == number_of_points);
 
+    int number_of_materials = highest_material + 1;
+    
     int number_of_boundary_points = 2;
     int number_of_internal_points = number_of_points - 2;
     vector<int> boundary_points;
@@ -833,6 +842,7 @@ get_rbf_1d(pugi::xml_node &spatial)
                                            number_of_boundary_points,
                                            number_of_internal_points,
                                            number_of_neighbors,
+                                           number_of_materials,
                                            shape_multiplier,
                                            geometry,
                                            basis_type,
@@ -850,6 +860,7 @@ get_rbf_1d(pugi::xml_node &spatial)
                                      number_of_boundary_points,
                                      number_of_internal_points,
                                      number_of_neighbors,
+                                     number_of_materials,
                                      shape_multiplier,
                                      geometry,
                                      basis_type,
@@ -1014,6 +1025,7 @@ get_rbf_solid(pugi::xml_node &spatial)
                                                number_of_boundary_points,
                                                number_of_internal_points,
                                                number_of_neighbors,
+                                               number_of_materials,
                                                shape_multiplier,
                                                geometry,
                                                basis_type,
@@ -1060,6 +1072,7 @@ get_rbf_solid(pugi::xml_node &spatial)
                                          number_of_boundary_points,
                                          number_of_internal_points,
                                          number_of_neighbors,
+                                         number_of_materials,
                                          shape_multiplier,
                                          geometry,
                                          basis_type,

@@ -39,6 +39,7 @@ public:
              int number_of_boundary_points,
              int number_of_internal_points,
              int number_of_neighbors,
+             int number_of_materials,
              double shape_multiplier,
              Geometry geometry,
              Basis_Type basis_type,
