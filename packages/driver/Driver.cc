@@ -133,10 +133,10 @@ output(pugi::xml_node &output_node) const
 {
     pugi::xml_node timing = output_node.append_child("timing");
     
-    XML_Functions::append_child(output_node, total_time_, "total");
-    XML_Functions::append_child(output_node, discretization_parser_time_, "discretization_parser");
-    XML_Functions::append_child(output_node, data_parser_time_, "data_parser");
-    XML_Functions::append_child(output_node, solver_parser_time_, "solver_parser");
-    XML_Functions::append_child(output_node, transport_parser_time_, "transport_parser");
-    XML_Functions::append_child(output_node, solution_time_, "solution");
+    XML_Functions::append_child(timing, total_time_, "total");
+    XML_Functions::append_child(timing, discretization_parser_time_, "discretization_parser");
+    XML_Functions::append_child(timing, data_parser_time_, "data_parser");
+    XML_Functions::append_child(timing, solver_parser_time_, "solver_parser");
+    XML_Functions::append_child(timing, transport_parser_time_, "transport_parser");
+    XML_Functions::append_child(timing, solution_time_, "solution");
 }
