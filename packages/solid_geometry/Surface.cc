@@ -41,8 +41,8 @@ reflected_direction(vector<double> const &position,
         case 2:
             new_direction = vf2::subtract(old_direction,
                                           vf2::multiply(normal,
-                                                        vf2::dot(old_direction,
-                                                                 normal)));
+                                                        2 * vf2::dot(old_direction,
+                                                                     normal)));
             
             break;
         case 3:
