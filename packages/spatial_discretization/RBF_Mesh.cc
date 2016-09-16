@@ -17,28 +17,16 @@ using namespace std;
 namespace // anonymous
 {
     double get_shape_parameter(int number_of_neighbors,
+                               int number_to_average,
                                int dimension,
                                double shape_multiplier,
                                vector<double> const &distance)
     {
-        // double average_distance = 0;
-        
-        // for (int i = 0; i < number_of_neighbors; ++i)
-        // {
-        //     average_distance += sqrt(distance[i]);
-        // }
-        
-        // average_distance /= number_of_neighbors;
-        
-        // return number_of_neighbors * shape_multiplier / (4 * average_distance);
-        
         double average_distance = 0;
         
-        int number_to_average = 2 * dimension;
+        number_to_average = number_to_average > number_of_neighbors - 1 ? number_of_neighbors - 1 : number_to_average;
         
-        number_to_average = number_to_average > number_of_neighbors ? number_of_neighbors : number_to_average;
-        
-        for (int i = 0; i < number_to_average; ++i)
+        for (int i = 1; i < number_to_average + 1; ++i)
         {
             average_distance += sqrt(distance[i]);
         }
@@ -94,6 +82,7 @@ RBF_Mesh(int dimension,
 {
     Check(0 < number_of_neighbors <= number_of_points);
 
+    get_cell_type(cell_type_);
     
     kd_tree_ = make_shared<KD_Tree>(dimension,
                                     number_of_points,
@@ -113,8 +102,11 @@ RBF_Mesh(int dimension,
                                  distances);
         
         neighbors_[i] = neighbors;
+
+        int number_to_average = 1;
         
         double shape_parameter = get_shape_parameter(number_of_neighbors_,
+                                                     number_to_average,
                                                      dimension_,
                                                      shape_multiplier_,
                                                      distances);
@@ -211,8 +203,6 @@ RBF_Mesh(int dimension,
     }
     
     check_class_invariants();
-
-    get_cell_type(cell_type_);
 }
 
 
