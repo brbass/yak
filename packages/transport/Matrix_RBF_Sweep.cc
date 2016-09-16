@@ -56,6 +56,7 @@ apply(vector<double> &x) const
     int number_of_internal_points = rbf_mesh_->number_of_internal_points();
     int number_of_transition_points = rbf_mesh_->number_of_transition_points();
     int number_of_augments = source_data_->number_of_augments();
+    int number_of_neighbors = rbf_mesh_->number_of_neighbors();
     int psi_size = row_size() - number_of_augments;
     vector<int> const boundary_points = rbf_mesh_->boundary_cells();
     vector<double> const boundary_normal = rbf_mesh_->boundary_normal();
@@ -125,12 +126,37 @@ apply(vector<double> &x) const
             }
             
             // Update values for this group and ordinate
-            
-            for (int i = 0; i < number_of_points; ++i)
+
+            switch(rbf_mesh_->coefficient_type())
             {
-                int k_x = g + number_of_groups * (o + number_of_ordinates * i);
-                
-                x[k_x] = (*lhs_)[i];
+            case Local_RBF_Mesh::Coefficient_Type::PHI:
+                for (int i = 0; i < number_of_points; ++i)
+                {
+                    int k_x = g + number_of_groups * (o + number_of_ordinates * i);
+                    
+                    x[k_x] = (*lhs_)[i];
+                }
+                break;
+            case Local_RBF_Mesh::Coefficient_Type::ALPHA:
+                for (int i = 0; i < number_of_points; ++i)
+                {
+                    vector<int> const neighbors = rbf_mesh_->neighbors(i);
+                    shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
+                    vector<double> const equation_position = equation_rbf->position();
+
+                    double sum = 0;
+                    
+                    for (int n = 0; n < number_of_neighbors; ++n)
+                    {
+                        int j = neighbors[n];
+                        
+                        sum += (*lhs_)[j] * equation_rbf->basis(equation_position);
+                    }
+                    
+                    int k_x = g + number_of_groups * (o + number_of_ordinates * i);
+                    
+                    x[k_x] = sum;
+                }
             }
         }
     }
@@ -147,7 +173,7 @@ apply(vector<double> &x) const
             {
                 int k_b = psi_size + g + number_of_groups * (o + number_of_ordinates * b);
                 int k_psi = g + number_of_groups * (o + number_of_ordinates * i);
-                    
+                
                 x[k_b] = x[k_psi];
             }
         }
@@ -170,22 +196,43 @@ set_boundary_point(int b,
     
     // Replace matrix values
     vector<double> data(number_of_neighbors, 0);
-    
-    bool point_found = false;
-    for (int n = 0; n < number_of_neighbors; ++n)
+
+    switch(rbf_mesh_->coefficient_type())
     {
-        int j = neighbors[n];
-        
-        if (j == i)
+    case Local_RBF_Mesh::Coefficient_Type::PHI:
+    {
+        bool point_found = false;
+        for (int n = 0; n < number_of_neighbors; ++n)
         {
-            data[n] = 1;
+            int j = neighbors[n];
             
-            point_found = true;
-            break;
+            if (j == i)
+            {
+                data[n] = 1;
+            
+                point_found = true;
+                break;
+            }
         }
+        Assert(point_found);
+        break;
     }
-    Assert(point_found);
-    
+    case Local_RBF_Mesh::Coefficient_Type::ALPHA:
+    {
+        shared_ptr<RBF> equation_rbf = rbf_mesh_->basis_function(i);
+        vector<double> const equation_position = equation_rbf->position();
+        
+        for (int n = 0; n < number_of_neighbors; ++n)
+        {
+            int j = neighbors[n];
+            
+            shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
+            
+            data[n] = basis_rbf->basis(equation_position);
+        }
+        break;
+    }
+    }
     int k = g + number_of_groups * o;
     
     mat_[k]->ReplaceGlobalValues(i,
@@ -193,7 +240,6 @@ set_boundary_point(int b,
                                  &data[0],
                                  &neighbors[0]);
 }
-
 void Matrix_RBF_Sweep::
 set_boundary_rhs(int b,
                  int i,
@@ -269,7 +315,6 @@ set_internal_point(int i,
         
         shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
         
-        
         double derivative = 0;
         
         for (int d = 0; d < dimension; ++d)
@@ -281,9 +326,16 @@ set_internal_point(int i,
         
         data[n] = derivative + sigma_t[k_sig] * basis_rbf->basis(equation_position);
     }
-    
-    rbf_mesh_->convert_to_phi(i,
-                              data);
+
+    switch(rbf_mesh_->coefficient_type())
+    {
+    case Local_RBF_Mesh::Coefficient_Type::PHI:
+        rbf_mesh_->convert_to_phi(i,
+                                  data);
+        break;
+    case Local_RBF_Mesh::Coefficient_Type::ALPHA:
+        break;
+    }
     
     int k = g + number_of_groups * o;
     
@@ -360,8 +412,15 @@ set_transition_point(int p,
         data[n] = derivative + sigma_t_val * basis_rbf->basis(equation_position);
     }
     
-    rbf_mesh_->convert_to_phi(i,
-                              data);
+    switch(rbf_mesh_->coefficient_type())
+    {
+    case Local_RBF_Mesh::Coefficient_Type::PHI:
+        rbf_mesh_->convert_to_phi(i,
+                                  data);
+        break;
+    case Local_RBF_Mesh::Coefficient_Type::ALPHA:
+        break;
+    }
     
     int k = g + number_of_groups * o;
     
@@ -497,7 +556,7 @@ initialize_trilinos()
             }
         }
     }
-    
+
     for (int o = 0; o < number_of_ordinates; ++o)
     {
         for (int g = 0; g < number_of_groups; ++g)

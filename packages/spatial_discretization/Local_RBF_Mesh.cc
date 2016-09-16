@@ -54,9 +54,10 @@ Local_RBF_Mesh(int dimension,
     coefficient_type_(coefficient_type)
 {
     // Initialize Trilinos if needed
-    
-    if (coefficient_type_ == Coefficient_Type::PHI)
+
+    switch(coefficient_type_)
     {
+    case Coefficient_Type::PHI:
         for (int i = 0; i < number_of_points_; ++i)
         {
             vector<int> const local_neighbors = neighbors(i);
@@ -88,6 +89,9 @@ Local_RBF_Mesh(int dimension,
             matrices_.push_back(mat);
             solvers_.push_back(solver);
         }
+        break;
+    case Coefficient_Type::ALPHA:
+        break;
     }
 }
 

@@ -134,7 +134,7 @@ RBF_Mesh(int dimension,
         for (int d = 0; d < dimension_; ++d)
         {
             position[d] = positions[d + dimension_ * i];
-            shape[d] = shape_parameter_[d];
+            shape[d] = shape_parameter_[d + dimension_ * i];
         }
         
         shared_ptr<RBF> rbf;
