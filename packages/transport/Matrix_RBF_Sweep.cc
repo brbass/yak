@@ -149,14 +149,17 @@ apply(vector<double> &x) const
                     for (int n = 0; n < number_of_neighbors; ++n)
                     {
                         int j = neighbors[n];
+
+                        shared_ptr<RBF> basis_rbf = rbf_mesh_->basis_function(j);
                         
-                        sum += (*lhs_)[j] * equation_rbf->basis(equation_position);
+                        sum += (*lhs_)[j] * basis_rbf->basis(equation_position);
                     }
                     
                     int k_x = g + number_of_groups * (o + number_of_ordinates * i);
                     
                     x[k_x] = sum;
                 }
+                break;
             }
         }
     }

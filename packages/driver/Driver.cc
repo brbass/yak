@@ -18,7 +18,6 @@ Driver::
 Driver(string xml_in):
     xml_in_(xml_in)
 {
-    // xml_out_ = xml_in_.substr(0, filename.find_last_of(".")) + "-out.xml";
     xml_out_ = xml_in_ + ".out";
     
     run_problem();
