@@ -26,7 +26,7 @@ namespace Quadrature_Rule
         if (n <= 33
             || (63 <= n && n <= 65)
             || (127 <= n && n <= 129)
-            || (255 <= n && 257 <= n))
+            || (255 <= n && n <= 257))
         {
             quadrule::legendre_set(n, &ordinates[0], &weights[0]);
         }

@@ -31,7 +31,7 @@ header_directories(global_include_directories)
 ####################
 
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "-std=c++11 -o3")
+set(CMAKE_CXX_FLAGS "-std=c++11 -O3")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 #############
@@ -40,7 +40,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 # find_package(GSL REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/home/software/rhel6/gsl/1.15/lib -lgsl -lgslcblas -I/home/software/rhel6/gsl/1.15/include")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/sw/arcts/centos7/gsl/2.1/lib -lgsl -lgslcblas -I/sw/arcts/centos7/gsl/2.1/include")
 
 #################
 # Find Trilinos #
